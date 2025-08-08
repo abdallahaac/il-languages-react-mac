@@ -1,0 +1,816 @@
+/* Import Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap");
+
+/* Import Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap");
+
+/* Root tokens */
+:root {
+	--brand-blue: #2478c6; /* passes AA on white */
+	--brand-blue-light: #eef5fb;
+	--text-main: #141414; /* high‑contrast body text */
+	--text-muted: #666;
+	--hero-url: url("https://images.unsplash.com/photo-1521295121783-8a321d551ad2?auto=format&fit=crop&w=1800&q=80");
+	font-size: 1.2625rem; /* 17px base for larger text */
+	line-height: 1.6;
+	font-family: "Playfair Display", serif;
+}
+body {
+	font-family: "Playfair Display", serif;
+}
+
+/* Helper for screen‑reader‑only text */
+.sr-only {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+/* ───────── main wrapper */
+.intro-wrapper {
+	color: var(--text-main);
+	max-width: 85ch;
+	margin: 0 auto;
+	padding: 0 1rem 4rem;
+}
+/* ───────── hero (full‑width) */
+.hero {
+	/* pull the banner out of the centred column so it spans 100 vw */
+	position: relative;
+	width: 100vw;
+	height: 800px; /* same desktop height as SectionPage */
+	margin-left: calc(-50vw + 50%); /* negate intro-wrapper’s centring */
+	isolation: isolate;
+	overflow: hidden; /* clips the image */
+}
+
+.hero-img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 800px !important;
+	object-fit: cover;
+	object-position: center;
+	scale: 1.5;
+}
+
+.hero-title {
+	/* unchanged — sits on top of the gradient */
+	position: absolute;
+	inset: 0;
+	display: grid;
+	place-items: center;
+	text-align: center;
+	font-size: 3rem;
+	font-weight: 900;
+	color: #fff;
+	background-position: 20px;
+	text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+	.hero {
+		height: 350px;
+	}
+}
+
+/* ───────── narrative */
+.narrative p {
+	margin-bottom: 1.3rem;
+}
+.dropcap {
+	float: left;
+	font-size: 3rem;
+	line-height: 1;
+	margin: 0 0.4rem 0.1rem 0;
+	color: var(--brand-blue);
+	font-weight: 700;
+	border-bottom: #1a5fa1 2px solid;
+}
+.gina {
+	font-size: 27px;
+}
+.source {
+	font-size: 21px;
+}
+.link-source:hover {
+	color: rgb(36, 120, 198);
+}
+.link-source {
+	color: rgb(36, 120, 198);
+	border-bottom: 1px solid rgb(36, 120, 198);
+}
+.graph-ol > li > strong {
+	color: #2478c6;
+}
+h3 {
+	font-size: 2rem;
+}
+h2 {
+	font-size: 2rem;
+}
+.graph-ol {
+	font-size: 21px;
+}
+.graph-ol > li::marker {
+	color: #2478c6;
+}
+/* ───────── audio interaction */
+.audio-buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	justify-content: center;
+	scale: 0.8;
+}
+.audio-btn {
+	--size: 3rem;
+	width: var(--size);
+	height: var(--size);
+	border-radius: 50%;
+	border: 2px solid var(--brand-blue);
+	background: #f9f9f9;
+	color: var(--brand-blue);
+	font-weight: 600;
+	line-height: 1;
+	display: grid;
+	place-items: center;
+	cursor: pointer;
+	transition: background 0.2s, color 0.2s;
+}
+.audio-btn:hover,
+.audio-btn:focus-visible {
+	background: var(--brand-blue-light);
+}
+.audio-btn.active {
+	background: var(--brand-blue);
+	color: #fff;
+}
+.audio-btn:focus-visible {
+	outline: 3px solid #000;
+	outline-offset: 2px;
+}
+
+/* audio player & transcript */
+.audio-player {
+	margin-block: 1.5rem;
+	display: flex;
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+audio {
+	width: min(90%, 25rem);
+}
+.transcript-toggle {
+	margin-top: 1rem;
+	background: var(--brand-blue);
+	color: #fff;
+	border: none;
+	padding: 0.6rem 1.2rem;
+	border-radius: 4px;
+	cursor: pointer;
+}
+.transcript-toggle:hover,
+.transcript-toggle:focus-visible {
+	background: #1a5fa1;
+}
+.transcript {
+	margin-top: 1rem;
+	background: var(--brand-blue-light);
+	border-left: 4px solid var(--brand-blue);
+	padding: 1rem;
+	overflow-x: auto;
+}
+
+/* ───────── headings & sections */
+h2,
+h3 {
+	color: var(--brand-blue);
+	margin-top: 2rem;
+}
+.instructions ol {
+	padding-left: 1.25rem;
+	list-style-type: decimal;
+}
+.instructions li {
+	margin-bottom: 0.5rem;
+}
+
+/* ───────── word‑cloud container */
+.wordcloud {
+	margin-block: 2rem 1rem;
+	min-height: 420px; /* ensures space before Highcharts loads */
+}
+
+/* ───────── breadcrumb nav */
+.breadcrumb {
+	display: flex;
+	justify-content: space-between;
+	gap: 2rem;
+	margin-top: 3rem;
+}
+.breadcrumb button {
+	background: none;
+	border: none;
+	color: var(--brand-blue);
+	font-size: 1rem;
+	cursor: pointer;
+	padding: 0.25rem 0;
+}
+.breadcrumb button:hover,
+.breadcrumb button:focus-visible {
+	text-decoration: underline;
+	outline: 2px solid transparent; /* keeps focus ring visible in Windows HCM */
+}
+
+/* ───────── accessibility tweaks */
+a:hover,
+button:hover {
+	filter: brightness(1.1);
+}
+a:focus-visible,
+button:focus-visible {
+	outline: 3px solid var(--brand-blue);
+	outline-offset: 2px;
+}
+
+/* large‑screen breathing room */
+@media (min-width: 60rem) {
+	.hero-img {
+		max-height: 45rem;
+	}
+}
+/* ───────── hero (full‑width) */
+.hero {
+	position: relative;
+	width: 100vw;
+	height: 800px; /* full desktop height */
+	margin-left: calc(-50vw + 50%);
+	isolation: isolate;
+	overflow: hidden;
+}
+
+/* a full‑size gradient overlay */
+.hero::after {
+	height: fit-content;
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(
+		to bottom,
+		rgba(0, 0, 0, 0.798) 0%,
+		rgba(0, 0, 0, 0.15) 35%,
+		rgba(0, 0, 0, 0.15) 65%,
+		rgba(0, 0, 0, 0.55) 100%
+	);
+	pointer-events: none; /* keeps it non‑interactive */
+}
+.hero::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1;
+	background-color: rgba(0, 0, 0, 0.45); /* Dark overlay */
+}
+
+.hero-img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%; /* stretch with the header */
+	object-fit: cover;
+	object-position: center;
+}
+
+/* title now needs no background */
+.hero-title {
+	position: absolute;
+	inset: 0;
+	display: grid;
+	place-items: center;
+	text-align: center;
+	font-size: clamp(2rem, 5.5vw, 5.5rem);
+	font-weight: 900;
+	color: #fff;
+	z-index: 1;
+	text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+	.hero {
+		height: 350px;
+	}
+	.gina-img {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		width: 100%;
+	}
+	.gina {
+		width: 100%;
+	}
+	img.gina {
+		width: 200px;
+		border: 3px solid white;
+		box-shadow: #2478c62f 0px 10px 40px 10px;
+	}
+}
+/* ――― hexagon buttons ――― */
+.hex-btn {
+	--edge: 5.5rem; /* overall size */
+	--bg: #2478c6;
+	--stroke: #2478c6;
+	position: relative;
+	width: var(--edge);
+	height: calc(var(--edge) * 0.86); /* √3/2 keeps perfect hex */
+	margin: 0 0.4rem 2.5rem; /* space for label */
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	outline-offset: 3px;
+}
+.hex-btn span {
+	position: absolute;
+	inset: 15% 0 0 0;
+	display: grid;
+	place-items: center;
+	height: 70%;
+	clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0 50%);
+	background: var(--bg);
+	color: #fff;
+	font: 700 1.5rem/1 "Playfair Display", serif;
+}
+.hex-btn::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+	border: 2.5px solid var(--stroke);
+	background: #fff;
+	transition: transform 0.2s;
+}
+.hex-btn:hover::before,
+.hex-btn.is‑active::before {
+	transform: scale(1.05);
+}
+.hex-btn .hex-label {
+	position: absolute;
+	bottom: -1.8rem;
+	left: 50%;
+	transform: translateX(-50%);
+	width: max-content;
+	font-size: 1rem;
+	color: var(--text-main);
+	font-style: normal;
+	pointer-events: none;
+}
+
+/* ――― back‑to‑top button ――― */
+.to-top {
+	position: fixed;
+	bottom: 2rem;
+	right: 2rem;
+	width: 4.2rem;
+	height: 4.2rem;
+	border: none;
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+	cursor: pointer;
+	padding: 0;
+	z-index: 999;
+}
+.to-top svg {
+	width: 100%;
+	height: 100%;
+}
+.to-top .ring {
+	fill: none;
+	stroke: var(--brand-blue);
+	stroke-width: 8;
+	stroke-dasharray: 283; /* 2πr (approx) */
+	stroke-dashoffset: 70; /* little gap */
+}
+.to-top .arrow {
+	fill: none;
+	stroke: var(--brand-blue);
+	stroke-width: 8;
+}
+
+/* small helper for reduced‑motion users */
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}
+/* Styles moved from the original SVG file */
+#Audio_SVG .cls-1 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-2 {
+	letter-spacing: 0.03em;
+}
+#Audio_SVG .cls-3 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-4 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-5 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-6 {
+	font-family: MinionConceptRoman-Bold, "Minion Variable Concept";
+	font-variation-settings: "wght" 700, "opsz" 11;
+	font-weight: 700;
+}
+#Audio_SVG .cls-6,
+#Audio_SVG .cls-7 {
+	font-size: 36px;
+}
+#Audio_SVG .cls-8 {
+	letter-spacing: 0.02em;
+}
+#Audio_SVG .cls-9 {
+	letter-spacing: -0.01em;
+}
+#Audio_SVG .cls-10 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-11 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-12 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-13 {
+	letter-spacing: -0.02em;
+}
+#Audio_SVG .cls-14 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-15 {
+	letter-spacing: -0.02em;
+}
+#Audio_SVG .cls-16 {
+	letter-spacing: 0.03em;
+}
+#Audio_SVG .cls-17 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-7 {
+	font-family: MinionConceptRoman-Semibold, "Minion Variable Concept";
+	font-variation-settings: "wght" 600, "opsz" 11;
+	font-weight: 600;
+}
+#Audio_SVG .cls-18 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-19 {
+	letter-spacing: 0.02em;
+}
+#Audio_SVG .cls-20 {
+	fill: #fff;
+	font-family: SourceSerifVariable-Roman, "Source Serif Variable";
+	font-size: 52.9px;
+	font-variation-settings: "wght" 389;
+	letter-spacing: 0.04em;
+}
+#Audio_SVG .cls-21 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-22 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-23 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-24 {
+	letter-spacing: -0.03em;
+}
+#Audio_SVG .cls-25 {
+	fill: none;
+}
+#Audio_SVG .cls-25,
+#Audio_SVG .cls-26 {
+	stroke: #357fc2;
+	stroke-miterlimit: 10;
+	stroke-width: 4px;
+}
+#Audio_SVG .cls-27 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-28 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-26 {
+	fill: #357fc2;
+}
+
+/* New styles for SVG interactivity */
+.hex-interactive-group {
+	cursor: pointer;
+	transition: opacity 0.2s ease-in-out;
+}
+
+.hex-interactive-group:hover .cls-26 {
+	opacity: 0.85;
+}
+
+.hex-interactive-group.is-active .cls-26 {
+	stroke: #ffc42d; /* A gold/yellow color for highlighting */
+	stroke-width: 6px;
+}
+/* Styles moved from the original SVG file */
+#Audio_SVG .cls-1 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-2 {
+	letter-spacing: 0.03em;
+}
+#Audio_SVG .cls-3 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-4 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-5 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-6 {
+	font-family: MinionConceptRoman-Bold, "Minion Variable Concept";
+	font-variation-settings: "wght" 700, "opsz" 11;
+	font-weight: 700;
+}
+#Audio_SVG .cls-6,
+#Audio_SVG .cls-7 {
+	font-size: 36px;
+}
+#Audio_SVG .cls-8 {
+	letter-spacing: 0.02em;
+}
+#Audio_SVG .cls-9 {
+	letter-spacing: -0.01em;
+}
+#Audio_SVG .cls-10 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-11 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-12 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-13 {
+	letter-spacing: -0.02em;
+}
+#Audio_SVG .cls-14 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-15 {
+	letter-spacing: -0.02em;
+}
+#Audio_SVG .cls-16 {
+	letter-spacing: 0.03em;
+}
+#Audio_SVG .cls-17 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-7 {
+	font-family: MinionConceptRoman-Semibold, "Minion Variable Concept";
+	font-variation-settings: "wght" 600, "opsz" 11;
+	font-weight: 600;
+}
+#Audio_SVG .cls-18 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-19 {
+	letter-spacing: 0.02em;
+}
+#Audio_SVG .cls-20 {
+	fill: #fff;
+	font-family: SourceSerifVariable-Roman, "Source Serif Variable";
+	font-size: 52.9px;
+	font-variation-settings: "wght" 389;
+	letter-spacing: 0.04em;
+}
+#Audio_SVG .cls-21 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-22 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-23 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-24 {
+	letter-spacing: -0.03em;
+}
+#Audio_SVG .cls-25 {
+	fill: none;
+}
+#Audio_SVG .cls-25,
+#Audio_SVG .cls-26 {
+	stroke: #357fc2;
+	stroke-miterlimit: 10;
+	stroke-width: 4px;
+}
+#Audio_SVG .cls-27 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-28 {
+	letter-spacing: 0em;
+}
+#Audio_SVG .cls-26 {
+	fill: #357fc2;
+}
+
+/* ♿️ ACCESSIBILITY & INTERACTIVITY STYLES ♿️ */
+.hex-interactive-group {
+	cursor: pointer;
+	transition: opacity 0.3s ease-in-out, transform 0.2s ease;
+}
+
+.hex-interactive-group:focus-visible {
+	outline: 3px solid #ffc42d;
+	outline-offset: 3px;
+	border-radius: 4px;
+}
+
+.hex-interactive-group:focus:not(:focus-visible) {
+	outline: none;
+}
+
+/* ✅ FIX: Apply hover effect ONLY to non-visited items */
+.hex-interactive-group:not(.is-visited):hover {
+}
+
+.hex-interactive-group[aria-pressed="true"] .cls-26 {
+	stroke: #ffc42d;
+	stroke-width: 6px;
+}
+
+.hex-interactive-group.is-visited:not([aria-pressed="true"]) {
+	opacity: 0.6; /* Dim the hexagon to show it's been visited */
+}
+
+.audio-progress {
+	text-align: center;
+	margin: 1.5rem 0 1rem;
+	font-size: 1.1em;
+	font-weight: 500;
+	color: #333;
+}
+
+.gina-img {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+}
+
+/* ✅ NEW: Mobile Transcript Enhancements ✅ */
+@media (max-width: 768px) {
+	.transcript {
+		white-space: pre-wrap; /* Allows text to wrap within the container */
+		word-break: break-word; /* Breaks long words if necessary */
+		font-family: "Noto Sans", sans-serif; /* Use a clearer sans-serif font */
+		font-size: 1rem; /* Adjust font size for mobile */
+		line-height: 1.7; /* Increased line spacing for readability */
+		text-align: left; /* Ensure text is left-aligned */
+	}
+}
+
+/* Root tokens */
+:root {
+	--brand-blue: #2478c6;
+	--brand-blue-light: #eef5fb;
+	--text-main: #141414;
+	font-size: 1.0625rem; /* 17px base */
+	line-height: 1.6;
+}
+
+body {
+	font-family: "Noto Sans", sans-serif;
+	color: var(--text-main);
+	margin: 0;
+}
+
+/* Main content wrapper */
+.intro-wrapper {
+	max-width: 85ch;
+	margin: 0 auto;
+	padding: 0 1rem 4rem;
+}
+
+/* ───────── Hero Section ───────── */
+.hero {
+	/* Positioning context for the image, overlay, and title */
+	position: relative;
+	isolation: isolate;
+	overflow: hidden;
+
+	/* Full-width behavior */
+	width: 100vw;
+	margin-left: calc(-50vw + 50%);
+
+	/* Mobile-first height */
+	height: 350px;
+}
+
+.hero-img {
+	position: absolute;
+	inset: 0;
+	z-index: -1; /* Sit behind the overlay and title */
+
+	/* ✅ FIX: Image now fills its parent container instead of having a fixed height. */
+	width: 100%;
+	height: 100%;
+
+	object-fit: cover;
+	object-position: center;
+}
+
+/* The gradient overlay */
+.hero::after {
+	content: "";
+	position: absolute;
+	inset: 0; /* This makes the overlay the exact same size as the .hero container */
+	pointer-events: none; /* Allows clicks to pass through */
+
+	/* Gradient for text readability */
+	background: linear-gradient(
+		to bottom,
+		rgba(0, 0, 0, 0.6) 0%,
+		rgba(0, 0, 0, 0.15) 40%,
+		rgba(0, 0, 0, 0.15) 60%,
+		rgba(0, 0, 0, 0.6) 100%
+	);
+}
+
+.hero-title {
+	position: absolute;
+	inset: 0;
+	display: grid;
+	place-items: center;
+	text-align: center;
+	z-index: 1; /* Sit on top of the overlay */
+
+	font-family: "Playfair Display", serif;
+	font-size: clamp(2.5rem, 5.5vw, 4.5rem); /* Responsive font size */
+	color: #fff;
+	text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* Taller hero on larger screens */
+@media (min-width: 769px) {
+	.hero {
+		height: 700px;
+	}
+}
+
+/* Other styles from your file (narrative, etc.) would go here */
+/* For example: */
+.narrative p {
+	margin-bottom: 1.3rem;
+}
+
+.dropcap {
+	float: left;
+	font-size: 3rem !important;
+	line-height: 1;
+	margin: 0 0.4rem 0.1rem 0;
+	color: var(--brand-blue);
+	font-family: "Playfair Display", serif;
+	font-weight: 700;
+}
+
+.narrative > p {
+	font-size: 1.4rem;
+}
+
+.narrative > p > span {
+	font-size: 1.4rem;
+}
+
+footer.source {
+	font-size: 1.4rem;
+}
+
+.intro-wrapper p {
+	font-size: 1.4rem;
+}
+
+.graph-ol {
+	font-size: 1.4rem;
+}

@@ -1,0 +1,45 @@
+/* src/App.css */
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap");
+
+body {
+	margin: 0;
+	font-family: "Noto Sans", sans-serif;
+	background-color: #f4f7f9;
+}
+
+.app-wrapper {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+.main-content {
+	flex-grow: 1;
+}
+
+.hero-section {
+	background-image: url("src/assets/home-img.jpeg");
+	background-size: cover;
+	background-position: center;
+	background-attachment: fixed;
+	position: relative;
+	color: white;
+	padding: 4rem 1rem;
+}
+
+/* Dark overlay for better text contrast */
+.hero-section::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(20, 20, 17, 0.6);
+}
+
+.navigation-section {
+	padding: 4rem 1rem;
+	background-color: #141411;
+}

@@ -1,0 +1,112 @@
+/* src/components/Hero.css */
+.hero-content-wrapper {
+	position: relative;
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 120px 1rem 2rem;
+}
+
+.hero-text {
+	text-align: center;
+	margin-bottom: 2.5rem;
+}
+
+.hero-text h1,
+.hero-text h2 {
+	font-family: "Playfair Display", serif;
+	margin: 0;
+	text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.hero-text h1 {
+	font-size: clamp(2.5rem, 6vw, 4rem);
+}
+
+.hero-text h2 {
+	font-size: clamp(1.25rem, 3vw, 1.75rem);
+	font-weight: 400;
+	opacity: 1;
+	color: white;
+}
+
+.introduction-card {
+	background-color: white;
+	color: #2d3748;
+	border-radius: 12px;
+	padding: 2.5rem 2rem;
+	width: 100%;
+	max-width: 600px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+	border-top: 5px solid #005a9c;
+	position: relative;
+	cursor: pointer;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	text-align: center;
+	border: none;
+}
+
+.introduction-card:hover,
+.introduction-card:focus-visible {
+	transform: translateY(-8px);
+	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+	outline: 3px solid #ffbf47;
+	outline-offset: 2px;
+}
+
+.card-number {
+	position: absolute;
+	top: -25px;
+	right: 2rem;
+	background-color: #005a9c;
+	color: white;
+	border-radius: 50%;
+	width: 50px;
+	height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+	font-size: 1.5rem;
+	border: 3px solid white;
+}
+
+.introduction-card h3 {
+	font-family: "Playfair Display", serif;
+	color: #005a9c;
+	margin-top: 0;
+	font-size: 1.8rem;
+}
+
+.action-buttons {
+	margin-top: 2.5rem;
+	display: flex;
+	gap: 1.5rem;
+	flex-wrap: wrap;
+	justify-content: center;
+	width: 100%;
+	max-width: 600px;
+}
+
+.action-btn {
+	background-color: rgba(255, 255, 255, 0.15);
+	backdrop-filter: blur(5px);
+	color: white;
+	border: 2px solid white;
+	flex: 1 1 250px;
+	padding: 1.5rem 1rem;
+	font-size: 1.5rem;
+	font-weight: bold;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.action-btn:hover,
+.action-btn:focus-visible {
+	background-color: rgba(255, 255, 255, 0.3);
+	transform: translateY(-3px);
+	outline: 2px solid #ffbf47;
+	outline-offset: 2px;
+}

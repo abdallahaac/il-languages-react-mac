@@ -1,0 +1,45 @@
+/* General styling for the resources page content */
+.resources-content {
+	color: #5f4b8b; /* Muted purple color from the image */
+	padding: 1rem 0;
+}
+
+/* Styling for the secondary heading */
+.resources-content h2 {
+	font-size: 1.5em; /* Adjust size as needed */
+	font-weight: bold;
+	margin-top: 2.5rem;
+	margin-bottom: 1.25rem;
+	font-family: serif; /* Matches the style in the image */
+}
+
+/* Styling for the resource lists */
+.resources-content ul.res {
+	list-style-type: disc;
+	list-style-position: outside;
+	padding-left: 25px; /* Indent for the bullet points */
+	margin-bottom: 2rem;
+}
+
+/* Styling for individual list items */
+.resources-content ul.res li {
+	margin-bottom: 1em; /* Space between list items */
+	line-height: 1.4;
+}
+
+/* Styling for the links within the lists */
+.resources-content ul.res a {
+	color: inherit; /* Inherits the purple color from the parent */
+	text-decoration: none; /* Removes the default underline */
+}
+
+/* Add an underline on hover for better user experience */
+.resources-content ul.res a:hover {
+	text-decoration: underline;
+}
+
+.resources-content h2,
+.resources-content h3 {
+	/* ✅ ACCESSIBILITY: Darkened purple for WCAG AA contrast */
+	color: rgb(98, 28, 100);
+}

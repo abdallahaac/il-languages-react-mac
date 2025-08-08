@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 957.06 345.93">
+  <defs>
+    <style>
+      .cls-1 {
+        letter-spacing: 0em;
+      }
+
+      .cls-2 {
+        letter-spacing: .03em;
+      }
+
+      .cls-3 {
+        letter-spacing: 0em;
+      }
+
+      .cls-4 {
+        fill: #fff;
+        font-family: ArialMT, Arial;
+        font-size: 52.9px;
+        letter-spacing: .04em;
+      }
+
+      .cls-4, .cls-5 {
+        isolation: isolate;
+      }
+
+      .cls-6 {
+        letter-spacing: 0em;
+      }
+
+      .cls-7 {
+        font-family: MinionConceptRoman-Bold, 'Minion Variable Concept';
+        font-variation-settings: 'wght' 700, 'opsz' 11;
+        font-weight: 700;
+      }
+
+      .cls-7, .cls-8 {
+        font-size: 36px;
+      }
+
+      .cls-9 {
+        letter-spacing: -.01em;
+      }
+
+      .cls-10 {
+        letter-spacing: 0em;
+      }
+
+      .cls-11 {
+        letter-spacing: 0em;
+      }
+
+      .cls-12 {
+        letter-spacing: 0em;
+      }
+
+      .cls-13 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-14 {
+        letter-spacing: 0em;
+      }
+
+      .cls-15 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-16 {
+        letter-spacing: .03em;
+      }
+
+      .cls-17 {
+        letter-spacing: 0em;
+      }
+
+      .cls-18 {
+        letter-spacing: 0em;
+      }
+
+      .cls-8 {
+        font-family: MinionConceptRoman-Semibold, 'Minion Variable Concept';
+        font-variation-settings: 'wght' 600, 'opsz' 11;
+        font-weight: 600;
+      }
+
+      .cls-19 {
+        letter-spacing: 0em;
+      }
+
+      .cls-20 {
+        letter-spacing: .02em;
+      }
+
+      .cls-21 {
+        letter-spacing: .02em;
+      }
+
+      .cls-22 {
+        letter-spacing: 0em;
+      }
+
+      .cls-23 {
+        letter-spacing: 0em;
+      }
+
+      .cls-24 {
+        letter-spacing: 0em;
+      }
+
+      .cls-25 {
+        letter-spacing: -.03em;
+      }
+
+      .cls-26 {
+        fill: none;
+      }
+
+      .cls-26, .cls-27 {
+        stroke: #357fc2;
+        stroke-miterlimit: 10;
+        stroke-width: 4px;
+      }
+
+      .cls-28 {
+        letter-spacing: 0em;
+      }
+
+      .cls-29 {
+        letter-spacing: 0em;
+      }
+
+      .cls-27 {
+        fill: #357fc2;
+      }
+    </style>
+  </defs>
+  <polyline class="cls-26" points="833.18 183.55 889.63 214.25 955.06 176.74 955.06 96.57 887.35 57.77 820.75 95.55 821.86 253 753.35 293.55 684.67 254.49 682.92 100.31 614.97 57.77 546.63 98.36 545.65 255.64 478.64 294.84 409.85 254.79 409.82 98.11 340.25 57.77 273.75 97.6 272.84 254.74 204.84 294.78 138.28 255.89 138.28 96.57 70.5 57 2.06 96.9 2 176.31 70.37 216.91 129.18 181.43"/>
+  <polygon class="cls-27" points="101.93 155.52 101.93 114.73 66.6 94.33 31.27 114.73 31.27 155.52 66.6 175.92 101.93 155.52"/>
+  <polygon class="cls-27" points="241.93 235.52 241.93 194.73 206.6 174.33 171.27 194.73 171.27 235.52 206.6 255.92 241.93 235.52"/>
+  <polygon class="cls-27" points="379.93 157.52 379.93 116.73 344.6 96.33 309.27 116.73 309.27 157.52 344.6 177.92 379.93 157.52"/>
+  <polygon class="cls-27" points="512.93 237.52 512.93 196.73 477.6 176.33 442.27 196.73 442.27 237.52 477.6 257.92 512.93 237.52"/>
+  <polygon class="cls-27" points="652.93 157.52 652.93 116.73 617.6 96.33 582.27 116.73 582.27 157.52 617.6 177.92 652.93 157.52"/>
+  <polygon class="cls-27" points="788.93 237.52 788.93 196.73 753.6 176.33 718.27 196.73 718.27 237.52 753.6 257.92 788.93 237.52"/>
+  <polygon class="cls-27" points="923.93 157.52 923.93 116.73 888.6 96.33 853.27 116.73 853.27 157.52 888.6 177.92 923.93 157.52"/>
+  <g>
+    <polyline class="cls-26" points="150.03 168.57 206.6 137.13 261.09 168.57"/>
+    <polyline class="cls-26" points="286.62 182.87 343.05 215.13 402.03 181.6"/>
+    <polyline class="cls-26" points="425.01 168.06 479.64 137.13 537.6 169.85"/>
+    <polyline class="cls-26" points="561.35 184.4 615.73 215.13 683.78 176.33"/>
+    <polyline class="cls-26" points="698.45 166.53 753.6 135.55 809.77 168.23"/>
+  </g>
+  <g class="cls-5">
+    <text class="cls-4" transform="translate(49.95 148.85) scale(1.25 1)"><tspan x="0" y="0">1</tspan></text>
+  </g>
+  <g class="cls-5">
+    <text class="cls-4" transform="translate(190.37 234.87) scale(1.25 1)"><tspan x="0" y="0">2</tspan></text>
+  </g>
+  <g class="cls-5">
+    <text class="cls-4" transform="translate(328.31 151.49) scale(1.25 1)"><tspan x="0" y="0">3</tspan></text>
+  </g>
+  <g class="cls-5">
+    <text class="cls-4" transform="translate(457.22 232.87) scale(1.25 1)"><tspan x="0" y="0">4</tspan></text>
+  </g>
+  <g class="cls-5">
+    <text class="cls-4" transform="translate(599.46 150.85) scale(1.25 1)"><tspan x="0" y="0">5</tspan></text>
+  </g>
+  <g class="cls-5">
+    <text class="cls-4" transform="translate(736.52 232.87) scale(1.25 1)"><tspan x="0" y="0">6</tspan></text>
+  </g>
+  <g class="cls-5">
+    <text class="cls-4" transform="translate(872.43 154.59) scale(1.25 1)"><tspan x="0" y="0">7</tspan></text>
+  </g>
+  <text class="cls-8" transform="translate(8.85 29.7)"><tspan class="cls-21" x="0" y="0">O</tspan><tspan x="28.12" y="0">ji</tspan><tspan class="cls-19" x="48.35" y="0">b</tspan><tspan class="cls-28" x="67.5" y="0">w</tspan><tspan x="92.27" y="0">é</tspan></text>
+  <text class="cls-8" transform="translate(293.91 29.7)"><tspan class="cls-15" x="0" y="0">M</tspan><tspan class="cls-29" x="31.79" y="0">i</tspan><tspan x="42.23" y="0">chif</tspan><tspan class="cls-2" x="98.78" y="0">	</tspan></text>
+  <text class="cls-7" transform="translate(575 29.7)"><tspan class="cls-25" x="0" y="0">I</tspan><tspan x="12.92" y="0">n</tspan><tspan class="cls-10" x="33.41" y="0">n</tspan><tspan x="53.67" y="0">u</tspan></text>
+  <text class="cls-7" transform="translate(726.82 32.07)"><tspan class="cls-11" x="0" y="0">C</tspan><tspan class="cls-20" x="24.98" y="0">r</tspan><tspan class="cls-6" x="40.28" y="0">i </tspan><tspan class="cls-14" x="58.86" y="0">de</tspan><tspan x="95.51" y="0">s P</tspan><tspan class="cls-28" x="139.68" y="0">l</tspan><tspan x="150.12" y="0">ai</tspan><tspan class="cls-17" x="177.84" y="0">ne</tspan><tspan x="214.99" y="0">s</tspan></text>
+  <text class="cls-7" transform="translate(146.95 332.86)"><tspan class="cls-25" x="0" y="0">I</tspan><tspan class="cls-10" x="12.92" y="0">n</tspan><tspan class="cls-28" x="33.19" y="0">u</tspan><tspan class="cls-24" x="53.21" y="0">k</tspan><tspan class="cls-12" x="71.96" y="0">t</tspan><tspan class="cls-18" x="83.88" y="0">i</tspan><tspan class="cls-9" x="94.18" y="0">t</tspan><tspan class="cls-1" x="105.84" y="0">u</tspan><tspan class="cls-22" x="125.32" y="0">t</tspan></text>
+  <text class="cls-7" transform="translate(440.54 332.86)"><tspan class="cls-13" x="0" y="0">H</tspan><tspan x="28.04" y="0">a</tspan><tspan class="cls-14" x="45.14" y="0">ï</tspan><tspan class="cls-3" x="55.98" y="0">d</tspan><tspan x="76.14" y="0">a</tspan></text>
+  <text class="cls-7" transform="translate(690.79 332.86)"><tspan class="cls-13" x="0" y="0">M</tspan><tspan class="cls-6" x="31.79" y="0">i</tspan><tspan class="cls-16" x="42.41" y="0">’</tspan><tspan class="cls-23" x="52.23" y="0">k</tspan><tspan class="cls-18" x="71.06" y="0">m</tspan><tspan x="100.73" y="0">aq</tspan></text>
+</svg>

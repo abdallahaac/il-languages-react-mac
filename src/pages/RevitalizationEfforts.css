@@ -1,0 +1,138 @@
+/* RevitalizationEfforts.css */
+
+.revitalization-efforts-page h2,
+.revitalization-efforts-page h3 {
+	color: #68206a; /* Purple color for headings */
+}
+.revitalization-efforts-page .dropcap {
+	color: #68206a;
+	border-bottom: 2px solid #68206a;
+}
+
+.program-list {
+	list-style-type: disc;
+	padding-left: 2rem;
+	font-size: 1.1rem;
+	line-height: 1.7;
+	color: #333;
+}
+
+.program-list li {
+	margin-bottom: 0.75rem;
+}
+
+.reactions-section .select-instruction {
+	color: #68206a;
+	font-weight: bold;
+}
+
+/* Accordion Styles */
+.reactions-accordion {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1.5rem;
+	margin-top: 2rem;
+}
+
+
+.accordion-item {
+	width: 100%;
+	height: fit-cont;
+}
+
+.icon-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 200px;
+	height: 200px !important;
+	margin: 0 auto 1.5rem auto;
+	border: 2px solid #68206a;
+	border-radius: 50%;
+	color: #68206a;
+	cursor: pointer;
+	transition: background-color 0.2s, opacity 0.5s, max-height 0.7s, margin 0.7s;
+	opacity: 1;
+}
+
+.icon-button .icon-text {
+	font-family: "Playfair Display", serif;
+	font-size: 1.2rem;
+	font-weight: bold;
+	height: 200px;
+}
+
+.icon-button:hover,
+.icon-button:focus-visible {
+	background-color: #f8f6f8;
+	outline: 2px solid #68206a;
+	outline-offset: 2px;
+}
+
+/* When a section is open, hide its button */
+.icon-button.is-open {
+	opacity: 0;
+	max-height: 0;
+	margin-bottom: 0;
+	pointer-events: none;
+	border-width: 0; /* Prevents border from being visible during collapse */
+}
+
+.info-panel {
+	max-height: 0;
+	opacity: 0;
+	overflow: hidden;
+	transform: translateY(-20px);
+	transition: max-height 0.7s ease-in-out, opacity 0.5s ease-in-out,
+		transform 0.5s ease-in-out;
+}
+
+/* When a section is open, show its panel */
+.info-panel.visible {
+	max-height: 1000px;
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.info-panel h4 {
+	font-family: "Playfair Display", serif;
+	font-size: 1.8rem;
+	color: #68206a;
+	border-bottom: 2px solid #e0d1e1;
+	padding-bottom: 0.5rem;
+	margin-bottom: 1.5rem;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.info-panel h4 i,
+.info-panel h4 img {
+	font-size: 1.5rem;
+	height: 28px;
+}
+
+.icon-button > img {
+	max-height: 100px;
+}
+
+.info-panel p {
+	margin-bottom: 1rem;
+}
+
+.quote {
+	border-left: 4px solid #68206a;
+	padding-left: 1.5rem;
+	margin: 2rem 0;
+	font-style: italic;
+	color: #333;
+}
+
+.quote cite {
+	display: block;
+	text-align: right;
+	margin-top: 1rem;
+	font-style: normal;
+	font-weight: bold;
+}

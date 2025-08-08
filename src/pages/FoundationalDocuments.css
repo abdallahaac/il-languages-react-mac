@@ -1,0 +1,258 @@
+/* --- FoundationalDocuments.css --- */
+
+/* Scoped styles for this page's headings */
+.foundational-documents-page h2,
+.foundational-documents-page h3 {
+	/* ✅ ACCESSIBILITY: Darkened purple for WCAG AA contrast */
+	color: rgb(98, 28, 100);
+}
+.flip-card-back {
+	position: relative;
+	background-color: #f8f6f8;
+	color: var(--text-main);
+	transform: rotateY(180deg);
+	font-size: 1.1rem;
+	padding: 19px;
+	line-height: 1.5;
+	text-align: left;
+}
+
+.foundational-documents-page section.card-grid {
+	color: #68206a;
+}
+.foundational-documents-page .underline-purple,
+.foundational-documents-page a {
+	color: rgb(98, 28, 100);
+}
+
+.foundational-documents-page a:hover {
+	border-bottom-color: rgb(98, 28, 100);
+}
+
+.foundational-documents-page span.dropcap {
+	color: rgb(98, 28, 100);
+	border-bottom: 2px solid rgb(98, 28, 100);
+}
+
+.foundational-documents-page ul {
+	color: rgb(98, 28, 100);
+	font-size: 1.1rem; /* Slightly reduced for better mobile spacing */
+}
+
+.foundational-documents-page .select-instruction {
+	margin-top: 1rem;
+	font-weight: bold;
+	color: rgb(98, 28, 100);
+}
+
+/* ✅ ACCESSIBILITY: Add a clear focus style for all links and buttons */
+.foundational-documents-page a:focus-visible,
+.foundational-documents-page button:focus-visible {
+	outline: 3px solid #0056b3;
+	outline-offset: 2px;
+	border-radius: 4px;
+	text-decoration: none;
+}
+
+/* ✅ RESPONSIVE & ACCESSIBLE: Flip Card Styles ✅ */
+
+/* Grid container for the cards */
+.card-grid {
+	display: grid;
+	/* ✅ RESPONSIVE: Better column sizing for small devices */
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 2rem;
+	margin: 2rem 0;
+	padding: 0;
+	align-items: start;
+}
+
+/* The main container for a single card */
+.flip-card {
+	background-color: transparent;
+	width: 100%;
+	perspective: 1000px;
+	cursor: pointer;
+	border: none;
+	min-height: 220px;
+}
+
+.flip-card:focus-visible {
+	outline: 3px solid #0056b3;
+	outline-offset: 4px;
+	border-radius: 12px;
+}
+
+/* This container does the 3D rotation */
+.flip-card-inner {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	transition: transform 0.6s;
+	transform-style: preserve-3d;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	border-radius: 12px;
+}
+
+.flip-card[aria-pressed="true"] .flip-card-inner {
+	transform: rotateY(180deg);
+}
+
+#action-plan-93 {
+	height: 280px;
+}
+#trc-13 {
+	height: 300px;
+}
+
+/* Front and back faces of the card */
+.flip-card-front,
+.flip-card-back {
+	width: 100%;
+	height: 100%;
+	backface-visibility: hidden;
+	border-radius: 12px;
+	box-sizing: border-box;
+	padding: 3rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.flip-card-front {
+	position: absolute;
+	background-color: #fff;
+	color: rgb(98, 28, 100);
+	border: 1px solid #eee;
+}
+
+.flip-card-back {
+	position: relative;
+	background-color: #f8f6f8;
+	color: var(--text-main);
+	transform: rotateY(180deg);
+	font-size: 1.1rem;
+
+	line-height: 1.5;
+	text-align: left;
+}
+
+.flip-card-front .card-text {
+	font-family: "Playfair Display", serif;
+	font-size: 1.5rem;
+	font-weight: 700;
+	text-align: center;
+	color: #68206a !important;
+
+	padding-bottom: 2rem;
+}
+
+.card-icon {
+	position: absolute;
+	bottom: 1rem;
+	right: 1rem;
+	width: 1.5rem;
+	height: 1.5rem;
+	color: #68206a !important;
+	stroke: rgb(98, 28, 100) !important;
+}
+
+.card-icon-back {
+	right: auto;
+	left: 1rem;
+}
+
+/* Style lists inside the flip cards */
+.flip-card-back ul {
+	padding-left: 20px;
+	text-align: left;
+	width: 100%;
+}
+.flip-card-back li {
+	margin-bottom: 1rem;
+}
+
+/* ✅ UPDATED: Flip Card Styles ✅ */
+
+/* General Grid container for the cards */
+.card-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 2rem;
+	margin: 2rem 0;
+	padding: 0;
+	align-items: start;
+}
+
+/* The main container for a single card */
+.flip-card {
+	background-color: transparent;
+	width: 100%;
+	perspective: 1000px;
+	cursor: pointer;
+	border: none;
+	min-height: 220px;
+}
+
+/* ... (other flip-card styles remain the same) ... */
+
+/* ✅ NEW: Styles for the special TRC Card Layout */
+.trc-card-grid {
+	/* On larger screens, create a two-column layout */
+	grid-template-columns: 1fr 1fr;
+}
+
+#trc-15,
+#trc-13 {
+	height: 400px;
+}
+
+.card-column {
+	display: flex;
+	flex-direction: column;
+	gap: 90px; /* This creates space between the stacked cards */
+}
+
+#cfj-2-1,
+#cfj-2-2,
+#cfj-2-3 {
+	height: 400px;
+}
+
+.card-row {
+	width: 100%;
+}
+
+/* ✅ RESPONSIVE: On smaller screens, stack all TRC cards in a single column */
+@media (max-width: 768px) {
+	.trc-card-grid {
+		grid-template-columns: 1fr; /* Single column layout */
+	}
+}
+
+/* ✅ NEW: Styles for the Calls for Justice Layout */
+.cfj-card-grid {
+	display: grid;
+	grid-template-columns: 1fr; /* A single column grid */
+	gap: 2rem;
+}
+
+.card-row {
+	display: grid;
+	/* Two equal columns for the top row */
+	grid-template-columns: 1fr 1fr;
+	gap: 2rem;
+}
+
+/* On smaller screens, stack all cards in the CFJ section */
+@media (max-width: 768px) {
+	.card-row {
+		grid-template-columns: 1fr;
+	}
+}
+
+#cfj-2-1,
+#cfj-2-2 {
+	height: 600px;
+}

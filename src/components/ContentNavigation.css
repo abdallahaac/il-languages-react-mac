@@ -1,0 +1,73 @@
+/* src/components/ContentNavigation.css */
+.content-navigation-container {
+	max-width: 1340px;
+	margin: 0 auto;
+}
+
+.content-navigation-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 3.6rem;
+}
+
+.nav-card {
+	background-color: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 12px;
+	padding: 1.5rem;
+	text-align: left;
+	cursor: pointer;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	position: relative;
+	min-height: 320px;
+	display: flex;
+	min-width: 330px;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	border-top: 5px solid #005a9c;
+}
+.nav-card:hover,
+.nav-card:focus-visible {
+	transform: translateY(-8px);
+	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+	outline: 3px solid #ffbf47;
+
+	outline-offset: 2px;
+}
+
+.nav-card-number {
+	background-color: #005a9c;
+	color: white;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+	font-size: 1.2rem;
+	margin-bottom: 1rem;
+	position: absolute;
+	top: -25px;
+	right: 1.5rem;
+	border: 2px solid white;
+	box-shadow: rgba(0, 0, 0, 0.4) 0px 4px 8px;
+	/* Add transition for the shadow effect */
+	transition: box-shadow 0.3s ease;
+}
+
+/* Make the shadow more visible on hover/focus of the parent card */
+.nav-card:hover .nav-card-number,
+.nav-card:focus-visible .nav-card-number {
+	box-shadow: rgba(0, 0, 0, 0.4) 0px 6px 15px;
+}
+
+.nav-card-title {
+	font-family: "Playfair Display", serif;
+	font-size: 1.6rem;
+	color: #005a9c;
+	margin: 0;
+	line-height: 1.3;
+}

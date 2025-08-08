@@ -1,0 +1,77 @@
+/* Main footer layout */
+.app-footer {
+	height: 200px;
+	background-color: #141414;
+	color: white; /* Set default text color for footer content */
+	display: flex;
+	align-items: center; /* Vertically center all items */
+	justify-content: space-between; /* Distribute content horizontally */
+	padding: 0 40px; /* Add some space on the sides */
+}
+
+/* Flexbox containers for left, center, and right sections */
+.footer-content-left,
+.footer-content-center,
+.footer-content-right {
+	flex: 1; /* Each section takes up equal space */
+	display: flex;
+	align-items: center;
+}
+
+.footer-content-left {
+	justify-content: flex-start; /* Align content to the left */
+}
+
+.footer-content-center {
+	justify-content: center; /* Align content to the center */
+}
+
+/* Right container is empty, acting as a spacer */
+.footer-content-right {
+	justify-content: flex-end;
+}
+
+/* Styling for the new page tracker text */
+.page-tracker {
+	font-size: 1.2rem;
+	font-weight: 500;
+}
+
+/* Your existing feedback component styles */
+.feedback-container {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.feedback-icon {
+	background-color: white;
+	border-radius: 50%;
+	width: 100px;
+	height: 100px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+	color: #005a9c;
+}
+
+.feedback-link {
+	background-color: white;
+	padding: 0.5rem 1rem;
+	border-radius: 8px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+	text-decoration: none;
+	color: #005a9c;
+	font-weight: normal; /* "none" is not a valid value */
+	transition: background-color 0.3s ease;
+	font-size: 1.3rem;
+}
+
+.feedback-link:hover {
+	background-color: #f0f2f5;
+}
+
+.feedback-icon > svg {
+	transform: scale(1.5); /* Use transform for scaling */
+}
