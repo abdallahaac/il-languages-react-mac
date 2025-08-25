@@ -1,0 +1,114 @@
+.tour-root {
+	position: fixed;
+	inset: 0;
+	z-index: 2147483000;
+	opacity: 0;
+	transition: opacity 180ms ease;
+}
+.tour-root--in {
+	opacity: 1;
+}
+
+/* Blockers make the “hole” clickable (no overlay there). */
+.tour-blocker,
+.tour-center-blocker {
+	position: fixed;
+	z-index: 1;
+}
+.tour-blocker {
+	background: rgba(0, 0, 0, 0.55);
+}
+.tour-center-blocker {
+	background: transparent;
+} /* blocks clicks only when interact === false */
+
+/* Card above everything */
+.tour-card {
+	position: fixed;
+	z-index: 3;
+	min-width: min(560px, 92vw);
+	max-width: min(560px, 92vw);
+	background: #fff;
+	color: #1a202c;
+	border-radius: 12px;
+	box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+	padding: 16px 16px 12px;
+	border-top: 5px solid #005a9c;
+}
+.tour-title {
+	margin: 0 0 6px;
+	font-family: "Playfair Display", serif;
+	color: #005a9c;
+	font-size: 1.25rem;
+}
+.tour-body {
+	margin: 0 0 12px;
+	line-height: 1.55;
+	font-size: 1rem;
+}
+.tour-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.tour-spacer {
+	flex: 1;
+}
+.tour-btn {
+	background: #edf2f7;
+	color: #2d3748;
+	border: 1px solid #cbd5e0;
+	padding: 8px 12px;
+	border-radius: 8px;
+	cursor: pointer;
+	font-weight: 600;
+}
+.tour-btn--primary {
+	background: #005a9c;
+	color: #fff;
+	border-color: #005a9c;
+}
+.tour-btn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+.tour-dots {
+	display: flex;
+	justify-content: center;
+	gap: 6px;
+	margin-top: 10px;
+}
+.tour-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #cbd5e0;
+}
+.tour-dot.active {
+	background: #005a9c;
+}
+
+/* Focus ring on target */
+.tour-focus {
+	position: relative !important;
+	isolation: isolate;
+	z-index: 2 !important; /* above blockers; card is z=3 */
+	outline: 3px solid #ffbf47;
+	border-radius: 10px;
+	box-shadow: 0 0 0 6px rgba(255, 191, 71, 0.35), 0 0 0 2px #ffbf47 inset;
+	transition: box-shadow 200ms ease, outline-color 200ms ease;
+}
+
+/* gentle “nudge” motion */
+@keyframes tourNudge {
+	0%,
+	100% {
+		transform: translate(0, 0);
+	}
+	50% {
+		transform: translate(0, -2px);
+	}
+}
+.tour-nudge {
+	animation: tourNudge 800ms ease;
+}

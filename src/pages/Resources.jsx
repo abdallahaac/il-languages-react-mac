@@ -2,6 +2,7 @@ import React from "react";
 import image from "../assets/resource.png";
 
 import "./resources.css";
+import BackToTop from "../components/BackToTop";
 
 const Resources = ({ onNavigate }) => {
 	return (
@@ -153,7 +154,7 @@ const Resources = ({ onNavigate }) => {
 					</li>
 				</ul>
 			</section>
-
+			<BackToTop />
 			<nav className="breadcrumb" aria-label="Page navigation">
 				<button onClick={() => onNavigate?.("knowledge-check")}>
 					&laquo;&nbsp;Back

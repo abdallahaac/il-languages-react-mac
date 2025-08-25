@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import "../KnowledgeCheck.css"; // Using the same stylesheet as the English version
 import image from "../../assets/check.png";
+import BackToTop from "../../components/BackToTop";
 
 // Updated to accept visitedPages and lang props
 const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
@@ -34,13 +35,13 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 		en: {
 			title: "Quiz Locked",
 			message:
-				"Please review all the material in the first five sections before attempting the knowledge check.",
+				"Please review all the material  before attempting the knowledge check.",
 			button: "Back to Content",
 		},
 		fr: {
 			title: "Questionnaire Verrouillé",
 			message:
-				"Veuillez consulter tout le matériel des cinq premières sections avant de répondre au questionnaire.",
+				"Veuillez consulter tout le contenu avant de répondre au questionnaire.",
 			button: "Retour au Contenu",
 		},
 	};
@@ -351,11 +352,23 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 				)}
 			</main>
 
-			<nav className="breadcrumb" aria-label="Page navigation">
-				<button onClick={() => onNavigate?.("public-service")}>
-					&laquo;&nbsp;Précédent
+			<BackToTop />
+			<nav className="breadcrumb" aria-label="Navigation de la page">
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("public-service");
+					}}
+				>
+					&laquo;&nbsp;Retour
 				</button>
-				<button onClick={() => onNavigate?.("resources")}>
+
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("resources");
+					}}
+				>
 					Suivant&nbsp;&raquo;
 				</button>
 			</nav>

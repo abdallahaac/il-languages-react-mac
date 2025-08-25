@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import "./KnowledgeCheck.css";
 import image from "../assets/check.png";
+import BackToTop from "../components/BackToTop";
 
 const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 	const scorm = useMemo(
@@ -30,7 +31,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 		en: {
 			title: "Quiz Locked",
 			message:
-				"Please review all the material in the first five sections before attempting the knowledge check.",
+				"Please review all the material before attempting the knowledge check.",
 			button: "Back to Content",
 		},
 		fr: {
@@ -326,6 +327,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 					</div>
 				)}
 			</main>
+			<BackToTop />
 			<nav className="breadcrumb" aria-label="Page navigation">
 				<button onClick={() => onNavigate?.("public-service")}>
 					&laquo;&nbsp;Back

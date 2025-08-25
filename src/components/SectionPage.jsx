@@ -20,29 +20,29 @@ import React from "react";
 import "./SectionPage.css";
 
 const SectionPage = ({ section }) => {
-  if (!section) {
-    return null;
-  }
+	if (!section) {
+		return null;
+	}
 
-  const { title, heroImage, content } = section;
+	const { title, heroImage, content } = section;
 
-  return (
-    <main className="section-page">
-      <header
-        className="section-hero"
-        style={{ backgroundImage: `url(${heroImage})` }}
-      >
-        <div className="section-hero-overlay">
-          <h1 className="section-title">{title}</h1>
-        </div>
-      </header>
-      <article className="section-content">
-        {content.map((paragraph, idx) => (
-          <p key={idx}>{paragraph}</p>
-        ))}
-      </article>
-    </main>
-  );
+	return (
+		<main className="section-page">
+			<header
+				className="section-hero"
+				style={{ backgroundImage: `url(${heroImage})` }}
+			>
+				<div className="section-hero-overlay">
+					<h1 className="section-title">{title}</h1>
+				</div>
+			</header>
+			<article className="section-content">
+				{content.map((paragraph, idx) => (
+					<p key={idx}>{paragraph}</p>
+				))}
+			</article>
+		</main>
+	);
 };
 
 export default SectionPage;

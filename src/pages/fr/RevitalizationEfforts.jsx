@@ -6,6 +6,7 @@ import image from "../../assets/efforts.png";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFeather, faInfinity } from "@fortawesome/free-solid-svg-icons";
+import BackToTop from "../../components/BackToTop";
 
 const RevitalizationEfforts_fr = ({ onNavigate }) => {
 	const [openSections, setOpenSections] = useState(new Set());
@@ -27,7 +28,7 @@ const RevitalizationEfforts_fr = ({ onNavigate }) => {
 			<header className="hero" role="banner">
 				<img src={image} alt="" className="hero-img" aria-hidden="true" />
 				<h1 className="hero-title">
-					Efforts pour revitaliser les langues autochtones
+					Efforts pour revitaliser <br /> les langues autochtones
 				</h1>
 			</header>
 			<br />
@@ -255,12 +256,23 @@ const RevitalizationEfforts_fr = ({ onNavigate }) => {
 					</div>
 				</div>
 			</section>
-
-			<nav className="breadcrumb" aria-label="Page navigation">
-				<button onClick={() => onNavigate?.("indigenous-languages-act")}>
-					&laquo;&nbsp;Précédent
+			<BackToTop />
+			<nav className="breadcrumb" aria-label="Navigation de la page">
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("indigenous-languages-act");
+					}}
+				>
+					&laquo;&nbsp;Retour
 				</button>
-				<button onClick={() => onNavigate?.("public-service")}>
+
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("public-service");
+					}}
+				>
 					Suivant&nbsp;&raquo;
 				</button>
 			</nav>

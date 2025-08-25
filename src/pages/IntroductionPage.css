@@ -15,6 +15,34 @@
 	--hero-url: url("https://images.unsplash.com/photo-1521295121783-8a321d551ad2?auto=format&fit=crop&w=1800&q=80");
 	font-size: 1.2625rem; /* 17px base for larger text */
 	line-height: 1.6;
+	/* Blues */
+	--blue-900: #0d3d6b;
+	--blue-800: #15528b;
+	--blue-700: #1c578a; /* body text */
+	--blue-600: #0d66a1; /* focus outline */
+	--blue-500: #2478c6; /* headings */
+	--blue-300: #cfe3f5; /* subtle borders */
+	--blue-100: #eaf3fb; /* chip/hover bg */
+
+	/* Type scale (rem-based) */
+	--fs-xs: 0.875rem; /* 14px */
+	--fs-sm: 0.95rem; /* 15.2px */
+	--fs-md: 1rem; /* 16px (base) */
+	--fs-lg: 1.225rem; /* 18px */
+	--fs-xl: clamp(1.25rem, 1.2vw + 1rem, 1.5rem); /* 20–24px for h2 */
+	--fs-hero: clamp(
+		3.5rem,
+		2.2vw + 1rem,
+		2rem
+	); /* 24–32px (optional for hero) */
+
+	/* Letter-spacing (em so it scales with size) */
+	--ls-tight: 0.005em;
+	--ls-normal: 0.01em;
+	--ls-wide: 0.02em;
+
+	/* Rhythm */
+	--lh-body: 1.6;
 	font-family: "Playfair Display", serif;
 }
 body {
@@ -47,30 +75,6 @@ body {
 	margin-left: calc(-50vw + 50%); /* negate intro-wrapper’s centring */
 	isolation: isolate;
 	overflow: hidden; /* clips the image */
-}
-
-.hero-img {
-	position: absolute;
-	inset: 0;
-	width: 100%;
-	height: 800px !important;
-	object-fit: cover;
-	object-position: center;
-	scale: 1.5;
-}
-
-.hero-title {
-	/* unchanged — sits on top of the gradient */
-	position: absolute;
-	inset: 0;
-	display: grid;
-	place-items: center;
-	text-align: center;
-	font-size: 3rem;
-	font-weight: 900;
-	color: #fff;
-	background-position: 20px;
-	text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
 @media (max-width: 768px) {
@@ -241,12 +245,6 @@ button:focus-visible {
 	outline-offset: 2px;
 }
 
-/* large‑screen breathing room */
-@media (min-width: 60rem) {
-	.hero-img {
-		max-height: 45rem;
-	}
-}
 /* ───────── hero (full‑width) */
 .hero {
 	position: relative;
@@ -255,55 +253,6 @@ button:focus-visible {
 	margin-left: calc(-50vw + 50%);
 	isolation: isolate;
 	overflow: hidden;
-}
-
-/* a full‑size gradient overlay */
-.hero::after {
-	height: fit-content;
-	content: "";
-	position: absolute;
-	inset: 0;
-	background: linear-gradient(
-		to bottom,
-		rgba(0, 0, 0, 0.798) 0%,
-		rgba(0, 0, 0, 0.15) 35%,
-		rgba(0, 0, 0, 0.15) 65%,
-		rgba(0, 0, 0, 0.55) 100%
-	);
-	pointer-events: none; /* keeps it non‑interactive */
-}
-.hero::before {
-	content: "";
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 1;
-	background-color: rgba(0, 0, 0, 0.45); /* Dark overlay */
-}
-
-.hero-img {
-	position: absolute;
-	inset: 0;
-	width: 100%;
-	height: 100%; /* stretch with the header */
-	object-fit: cover;
-	object-position: center;
-}
-
-/* title now needs no background */
-.hero-title {
-	position: absolute;
-	inset: 0;
-	display: grid;
-	place-items: center;
-	text-align: center;
-	font-size: clamp(2rem, 5.5vw, 5.5rem);
-	font-weight: 900;
-	color: #fff;
-	z-index: 1;
-	text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
 @media (max-width: 768px) {
@@ -722,23 +671,9 @@ body {
 
 	/* Full-width behavior */
 	width: 100vw;
-	margin-left: calc(-50vw + 50%);
 
 	/* Mobile-first height */
 	height: 350px;
-}
-
-.hero-img {
-	position: absolute;
-	inset: 0;
-	z-index: -1; /* Sit behind the overlay and title */
-
-	/* ✅ FIX: Image now fills its parent container instead of having a fixed height. */
-	width: 100%;
-	height: 100%;
-
-	object-fit: cover;
-	object-position: center;
 }
 
 /* The gradient overlay */
@@ -813,4 +748,21 @@ footer.source {
 
 .graph-ol {
 	font-size: 1.4rem;
+}
+/* Breadcrumb */
+.breadcrumb {
+	margin-top: 1rem !important ;
+}
+.breadcrumb button {
+	background: transparent !important;
+	border: 1px solid var(--blue-300) !important;
+	color: var(--blue-800) !important;
+	padding: 0.5rem 0.75rem !important;
+	border-radius: 8px !important;
+	cursor: pointer;
+	font-size: var(--fs-sm);
+	letter-spacing: var(--ls-normal);
+}
+.breadcrumb button:hover {
+	background: var(--blue-100);
 }

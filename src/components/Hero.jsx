@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./Hero.css";
+import heroImage from "../assets/home-img.jpeg";
 
-/* ── helper hook: keep an eye on <html lang=""> ──────────────── */
+/* watch <html lang=""> */
 const useLanguage = () => {
 	const [lang, setLang] = useState(
 		(document.documentElement.lang || "en").toLowerCase()
 	);
-
 	useEffect(() => {
 		const obs = new MutationObserver((m) => {
 			m.forEach((mu) => {
@@ -18,15 +18,15 @@ const useLanguage = () => {
 		obs.observe(document.documentElement, { attributes: true });
 		return () => obs.disconnect();
 	}, []);
-
 	return lang;
 };
 
-/* ── copy of your bilingual strings ──────────────────────────── */
+/* strings with a single H1 (HTML allowed) */
 const content = {
 	en: {
-		heroTitle: "Revitalizing Voices",
-		heroSubtitle: "Navigating the <em>Indigenous Languages Act</em>",
+		// Optional break via <wbr> so it wraps nicely on smaller screens
+		heroTitle:
+			"Revitalizing Voices<wbr> Navigating the <br> <em>Indigenous Languages Act</em>",
 		introCardTitle: "Introduction and overview",
 		introCardAria: "Navigate to Introduction and overview",
 		introCardText:
@@ -35,8 +35,9 @@ const content = {
 		resources: "Resources",
 	},
 	fr: {
-		heroTitle: "Raviver les voix",
-		heroSubtitle: "Naviguer dans la <em>Loi sur les langues autochtones</em>",
+		// Emphasize “la Loi … autochtones” and add a soft break with <wbr>
+		heroTitle:
+			"Revitalisation des voix autochtones<wbr> comprendre la <em>Loi sur les langues autochtones</em>",
 		introCardTitle: "Introduction et survol",
 		introCardAria: "Naviguer vers Introduction et survol",
 		introCardText:
@@ -50,33 +51,27 @@ const Hero = ({ onNavigate, lang: langProp }) => {
 	const lang = (langProp || useLanguage()).toLowerCase();
 	const t = content[lang] || content.en;
 
-	/* ——— local navigation helpers ——— */
 	const go = (id) => onNavigate?.(id);
 
 	return (
-		<div className="hero-content-wrapper">
-			<div className="hero-text">
-				<h1>{t.heroTitle}</h1>
-				{/* subtitle contains <em> tags, so use dangerouslySetInnerHTML */}
-				<h2 dangerouslySetInnerHTML={{ __html: t.heroSubtitle }} />
-			</div>
+		<div
+			className="hero-container hero-page"
+			style={{ backgroundImage: `url(${heroImage})` }}
+		>
+			<div className="hero-content-wrapper">
+				<div className="hero-text">
+					{/* Single H1 only */}
+					<h1 dangerouslySetInnerHTML={{ __html: t.heroTitle }} />
+				</div>
 
-			<button
-				className="introduction-card"
-				onClick={() => go("introduction")}
-				aria-label={t.introCardAria}
-			>
-				<span className="card-number">1</span>
-				<h3>{t.introCardTitle}</h3>
-				<p>{t.introCardText}</p>
-			</button>
-
-			<div className="action-buttons">
-				<button className="action-btn" onClick={() => go("knowledge-check")}>
-					{t.knowledgeCheck}
-				</button>
-				<button className="action-btn" onClick={() => go("resources")}>
-					{t.resources}
+				<button
+					className="introduction-card"
+					onClick={() => go("introduction")}
+					aria-label={t.introCardAria}
+				>
+					<span className="card-number">1</span>
+					<h3>{t.introCardTitle}</h3>
+					<p>{t.introCardText}</p>
 				</button>
 			</div>
 		</div>

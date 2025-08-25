@@ -12,6 +12,15 @@
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
+	/* Blues */
+	--blue-900: #0d3d6b;
+	--blue-800: #15528b;
+	--blue-700: #1c578a; /* body text */
+	--blue-600: #0d66a1; /* focus outline */
+	--blue-500: #2478c6; /* headings */
+	--blue-300: #cfe3f5; /* subtle borders */
+	--blue-100: #eaf3fb; /* chip/hover bg */
+
 	-moz-osx-font-smoothing: grayscale;
 }
 

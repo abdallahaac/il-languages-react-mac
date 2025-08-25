@@ -1,6 +1,7 @@
 import React from "react";
 import image from "../../assets/resource.png"; // Note the path change ../../
 import "../resources.css";
+import BackToTop from "../../components/BackToTop";
 
 const Resources = ({ onNavigate }) => {
 	return (
@@ -153,10 +154,26 @@ const Resources = ({ onNavigate }) => {
 					</li>
 				</ul>
 			</section>
+			<BackToTop />
 
+			{/* Breadcrumb / Navigation */}
 			<nav className="breadcrumb" aria-label="Navigation de la page">
-				<button onClick={() => onNavigate?.("knowledge-check")}>
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("knowledge-check");
+					}}
+				>
 					&laquo;&nbsp;Retour
+				</button>
+
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("home");
+					}}
+				>
+					Page d'acceuil&nbsp;&raquo;
 				</button>
 			</nav>
 		</div>

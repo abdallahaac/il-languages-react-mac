@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../IntroductionPage.css"; // For shared styles
 import "../PublicService.css"; // For page-specific styles
 import image from "../../assets/what.png";
+import BackToTop from "../../components/BackToTop";
 
 const PublicService_fr = ({ onNavigate }) => {
 	// State for the sign language accordion
@@ -458,12 +459,24 @@ const PublicService_fr = ({ onNavigate }) => {
 					</a>
 				</p>
 			</section>
+			<BackToTop />
 
-			<nav className="breadcrumb" aria-label="Page navigation">
-				<button onClick={() => onNavigate?.("efforts")}>
-					&laquo;&nbsp;Précédent
+			<nav className="breadcrumb" aria-label="Navigation de la page">
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("revitalization-efforts");
+					}}
+				>
+					&laquo;&nbsp;Retour
 				</button>
-				<button onClick={() => onNavigate?.("knowledge-check")}>
+
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("results-fr");
+					}}
+				>
 					Suivant&nbsp;&raquo;
 				</button>
 			</nav>

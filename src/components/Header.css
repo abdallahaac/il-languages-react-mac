@@ -2,6 +2,15 @@
    Header.css - Styles for the Header component
    ========================================================================== */
 
+:root {
+	/* Accent + neutrals */
+	--accent: #005a9c;
+	--ink-900: #2d3748;
+	--ink-700: #3b4758;
+	--panel-border: #e9eef5;
+}
+
+/* ---------- Top header bar ---------- */
 .main-header {
 	position: fixed;
 	top: 0;
@@ -10,7 +19,7 @@
 	z-index: 1000;
 	padding: 0 2rem;
 	height: 100px;
-	color: white;
+	color: #fff;
 	background-color: transparent;
 	transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 	font-family: "Playfair Display", serif;
@@ -18,9 +27,9 @@
 }
 
 .main-header.scrolled {
-	background-color: white;
+	background-color: #fff;
 	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-	color: #2d3748;
+	color: var(--ink-900);
 	text-shadow: none;
 }
 
@@ -33,7 +42,7 @@
 	position: relative;
 }
 
-/* Left Section */
+/* Left section */
 .header-left {
 	display: flex;
 	justify-content: flex-start;
@@ -54,7 +63,7 @@
 	margin-right: 15px;
 }
 
-/* Center Section */
+/* Center section */
 .welcome-message {
 	font-family: "Noto Sans", sans-serif;
 	font-weight: bold;
@@ -66,11 +75,11 @@
 	white-space: nowrap;
 }
 
-/* Right Section */
+/* Right section */
 .header-right {
 	display: flex;
 	align-items: center;
-	gap: 1.5rem;
+	gap: 1rem;
 }
 
 .lang-toggle {
@@ -87,175 +96,190 @@
 .main-header.scrolled .lang-toggle:hover {
 	background-color: #f0f2f5;
 }
-
 .main-header:not(.scrolled) .lang-toggle:hover {
 	background-color: rgba(255, 255, 255, 0.1);
 }
 
+/* Burger / close buttons */
 .burger-menu,
 .close-menu {
-	display: block;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	background: none;
 	border: none;
 	color: inherit;
 	cursor: pointer;
+	padding: 0.5rem;
+	border-radius: 8px;
+}
+.burger-menu:focus-visible,
+.close-menu:focus-visible {
+	outline: 2px solid #ffbf47;
+	outline-offset: 2px;
+}
+.burger-menu {
+	margin-right: 0;
 }
 
-.burger-menu {
-	margin-right: 100px;
-}
-/* Fullscreen Navigation Menu */
+/* ---------- Fullscreen Navigation (overlay + panel) ---------- */
 .fullscreen-nav {
 	position: fixed;
-	top: 0;
-	right: 0;
-	width: 100vw;
-	height: 100vh;
-	padding: 0px;
-	background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.5); /* semi-transparent overlay */
 	z-index: 2000;
+
+	/* 🔒 prevent overlay scrolling & background scroll chains */
+	overflow: hidden;
+	touch-action: none;
 
 	visibility: hidden;
 	opacity: 0;
-	transition: visibility 0.4s, opacity 0.4s ease;
+	transition: visibility 0.35s, opacity 0.35s ease;
 }
-/*  */
-
 .fullscreen-nav.open {
 	visibility: visible;
 	opacity: 1;
 }
 
+/* Slide-in panel */
 .fullscreen-nav-panel {
 	position: absolute;
-	top: 0;
+	top: max(0px, env(safe-area-inset-top));
 	right: 0;
-	width: 320px;
-	max-width: 80%;
-	height: 100%;
-	background-color: white;
+	bottom: max(0px, env(safe-area-inset-bottom));
+	width: clamp(320px, 85vw, 560px);
+	background-color: #fff;
 	display: flex;
 	flex-direction: column;
-	box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+	box-shadow: -5px 0 20px rgba(0, 0, 0, 0.25);
+	border-left: 1px solid var(--panel-border);
+
 	transform: translateX(100%);
 	transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
-}
 
+	/* allow the inner scroller to work inside flex column */
+	overflow: hidden;
+	min-height: 0;
+}
 .fullscreen-nav.open .fullscreen-nav-panel {
 	transform: translateX(0);
 }
 
+/* Panel header (close button row) */
 .fullscreen-nav-header {
-	padding: 1rem 2rem;
 	display: flex;
 	justify-content: flex-end;
-	height: 80px; /* Match header height */
 	align-items: center;
+	height: 80px; /* match header height on desktop */
+	padding: 0 0.75rem;
+	border-bottom: 1px solid var(--panel-border);
+	flex: 0 0 auto;
 }
 
-.close-menu {
-	font-size: 1.5rem;
-	color: #2d3748;
-}
-
+/* Links area: scrollable, good tap targets */
 .fullscreen-nav-links {
-	padding: 2rem;
-	display: flex;
-	flex-direction: column;
-	flex-grow: 1; /* Allows pushing footer to bottom */
+	padding: 0.75rem;
+	display: grid;
+	grid-template-columns: 1fr; /* single column */
+	gap: 0.5rem;
+
+	flex: 1 1 auto; /* fill remaining space */
+	min-height: 0; /* critical for scrolling in flex columns */
+	overflow-y: auto; /* scroll menu, not the overlay */
+	overscroll-behavior: contain;
+	-webkit-overflow-scrolling: touch;
 }
 
 .fullscreen-nav-links a,
 .lang-toggle-mobile {
-	color: #2d3748;
+	display: block;
+	color: var(--ink-900);
 	text-decoration: none;
-	padding: 0.8rem;
-	border-radius: 6px;
-	font-weight: bold;
+	padding: 0.85rem 0.9rem;
+	border-radius: 10px;
+	font-weight: 700;
 	font-size: 1rem;
-	/* UPDATED: Align text to the left */
-	text-align: center;
-	/* Make active link visually distinct */
-	transition: background-color 0.2s;
+	text-align: left;
+	border: 1px solid var(--panel-border);
+	background: #fff;
+	transition: background-color 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
-.fullscreen-nav-links a:hover {
-	background-color: #f0f2f5;
+.fullscreen-nav-links a:hover,
+.fullscreen-nav-links a:focus-visible {
+	background-color: #f7fbff;
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
 }
 
-/* Style for the active navigation link */
 .fullscreen-nav-links a.active {
-	background-color: #005a9c;
-	color: white;
+	background-color: var(--accent);
+	color: #fff;
+	border-color: var(--accent);
+	box-shadow: 0 0 0 3px rgba(0, 90, 156, 0.15) inset;
 }
 
+/* Optional mobile language toggle as a CTA */
 .lang-toggle-mobile {
-	background: #005a9c;
-	color: white;
+	background: var(--accent);
+	color: #fff;
 	border: none;
-	margin-top: 75px; /* Pushes to the bottom */
+	margin-top: 0.25rem;
 	cursor: pointer;
-	text-align: center; /* Keep button text centered */
-	padding: 20px;
+	text-align: center;
 }
 
-/* Accessibility: Skip Link Styling */
+/* Accessibility: Skip Link */
 .skip-link {
 	position: absolute;
 	top: -43px;
 	left: 0;
-	background: #005a9c;
-	color: white;
+	background: var(--accent);
+	color: #fff;
 	padding: 8px;
 	z-index: 1100;
 	transition: top 0.3s;
 }
-
 .skip-link:focus {
 	top: 10px;
 }
 
-/* --- Responsive Styles --- */
+/* ---------- Responsive tweaks ---------- */
 @media (max-width: 1250px) {
 	.fullscreen-nav-links a {
-		color: #2d3748;
-		text-decoration: none;
-		padding: 0.4rem;
-		border-radius: 6px;
-		font-weight: bold;
-		font-size: 1rem;
-		/* UPDATED: Align text to the left */
-		text-align: center;
-	}
-	.fullscreen-nav-links {
-		height: 100%;
+		padding: 0.7rem 0.8rem;
+		font-size: 0.98rem;
 	}
 }
-@media (max-width: 850px) {
+@media (max-width: 950px) {
 	.welcome-message {
 		display: none;
 	}
 }
-
 @media (max-width: 768px) {
 	.main-header {
 		padding: 0 1rem;
 		height: 70px;
 	}
-
-	.lang-toggle {
-		display: none;
-	}
-
-	.logo-link {
-		font-size: 1rem;
-	}
-
 	.header-logo {
 		height: 40px;
 	}
-
+	.logo-link {
+		font-size: 1rem;
+	}
+	.lang-toggle {
+		display: none;
+	}
 	.fullscreen-nav-header {
-		height: 70px; /* Match mobile header height */
+		height: 70px;
+	}
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+	.fullscreen-nav,
+	.fullscreen-nav-panel {
+		transition: none !important;
 	}
 }

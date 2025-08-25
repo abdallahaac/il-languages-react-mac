@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../IntroductionPage.css";
 import "../FoundationalDocuments.css";
 import image from "../../assets/foundation.jpeg";
+import BackToTop from "../../components/BackToTop";
 
 // A reusable FlipCard component
 const FlipCard = ({
@@ -135,9 +136,21 @@ const FoundationalDocuments = ({ onNavigate }) => {
 			id: 2,
 			cardId: "trc-14",
 			front: "Appel à l'action 14",
-			back: `<p>Nous demandons au gouvernement fédéral d’adopter une <em>Loi sur les langues autochtones</em> qui incorpore les principes suivants :</p><ol><li>Les langues autochtones représentent une composante fondamentale et valorisée de la culture et de la société canadiennes, et il y a urgence de les préserver.</li><li>Les droits linguistiques autochtones sont renforcés par les traités.</li><li>Le gouvernement fédéral a la responsabilité de fournir des fonds suffisants pour la revitalisation et la préservation des langues autochtones.</li><li>Ce sont les peuples et les collectivités autochtones qui sont les mieux à même de gérer la préservation, la revitalisation et le renforcement des langues et des cultures autochtones.</li><li>Le financement accordé pour les besoins des initiatives liées aux langues autochtones doit refléter la diversité de ces langues.</li></ul>`,
+			back: `
+					<div class="trc14-content">
+					<p>Nous demandons au gouvernement fédéral d’adopter une <em>Loi sur les langues autochtones</em> qui incorpore les principes suivants&nbsp;:</p>
+					<ol>
+						<li>Les langues autochtones représentent une composante fondamentale et valorisée de la culture et de la société canadiennes, et il y a urgence de les préserver.</li>
+						<li>Les droits linguistiques autochtones sont renforcés par les traités.</li>
+						<li>Le gouvernement fédéral a la responsabilité de fournir des fonds suffisants pour la revitalisation et la préservation des langues autochtones.</li>
+						<li>Ce sont les peuples et les collectivités autochtones qui sont les mieux à même de gérer la préservation, la revitalisation et le renforcement des langues et des cultures autochtones.</li>
+						<li>Le financement accordé pour les besoins des initiatives liées aux langues autochtones doit refléter la diversité de ces langues.</li>
+					</ol>
+					</div>
+				`,
 			height: "420px",
 		},
+
 		{
 			id: 3,
 			cardId: "trc-15",
@@ -394,29 +407,33 @@ const FoundationalDocuments = ({ onNavigate }) => {
 				</p>
 			</section>
 
+			{/* --- TRC Calls to Action --- */}
 			<section className="card-grid trc-card-grid">
-				<div className="card-column">
-					<FlipCard
-						key={trcCardData[0].id}
-						id={trcCardData[0].id}
-						cardId={trcCardData[0].cardId}
-						frontContent={trcCardData[0].front}
-						backContent={trcCardData[0].back}
-						isFlipped={flippedTrcCards.has(trcCardData[0].id)}
-						onFlip={handleTrcFlip}
-						customHeight={trcCardData[0].height}
-					/>
-					<FlipCard
-						key={trcCardData[2].id}
-						id={trcCardData[2].id}
-						cardId={trcCardData[2].cardId}
-						frontContent={trcCardData[2].front}
-						backContent={trcCardData[2].back}
-						isFlipped={flippedTrcCards.has(trcCardData[2].id)}
-						onFlip={handleTrcFlip}
-						customHeight={trcCardData[2].height}
-					/>
-				</div>
+				{/* top-left: TRC 13 */}
+				<FlipCard
+					key={trcCardData[0].id}
+					id={trcCardData[0].id}
+					cardId={trcCardData[0].cardId}
+					frontContent={trcCardData[0].front}
+					backContent={trcCardData[0].back}
+					isFlipped={flippedTrcCards.has(trcCardData[0].id)}
+					onFlip={handleTrcFlip}
+					customHeight={trcCardData[0].height}
+				/>
+
+				{/* top-right: TRC 15 */}
+				<FlipCard
+					key={trcCardData[2].id}
+					id={trcCardData[2].id}
+					cardId={trcCardData[2].cardId}
+					frontContent={trcCardData[2].front}
+					backContent={trcCardData[2].back}
+					isFlipped={flippedTrcCards.has(trcCardData[2].id)}
+					onFlip={handleTrcFlip}
+					customHeight={trcCardData[2].height}
+				/>
+
+				{/* bottom full-width: TRC 14 */}
 				<FlipCard
 					key={trcCardData[1].id}
 					id={trcCardData[1].id}
@@ -428,6 +445,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 					customHeight={trcCardData[1].height}
 				/>
 			</section>
+
 			<p style={{ width: "100%", display: "block" }}>
 				<em>La Loi sur les langues autochtones</em> ayant reçu la sanction
 				royale, le gouvernement a répondu aux appels à l’action 13 et 14. Il a
@@ -542,12 +560,24 @@ const FoundationalDocuments = ({ onNavigate }) => {
 					/>
 				))}
 			</section>
-
-			<nav className="breadcrumb" aria-label="Page navigation">
-				<button onClick={() => onNavigate?.("introduction")}>
-					&laquo;&nbsp;Précédent
+			<BackToTop />
+			{/* ███ fil d'Ariane ███ */}
+			<nav className="breadcrumb" aria-label="Navigation de la page">
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("languages-fr");
+					}}
+				>
+					&laquo;&nbsp;Retour
 				</button>
-				<button onClick={() => onNavigate?.("indigenous-languages-act")}>
+
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("indigenous-languages-act");
+					}}
+				>
 					Suivant&nbsp;&raquo;
 				</button>
 			</nav>

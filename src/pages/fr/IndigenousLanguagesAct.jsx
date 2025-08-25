@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../IndigenousLanguagesAct.css";
 import image from "../../assets/ila.png";
+import BackToTop from "../../components/BackToTop";
 
 // Custom hook to get the current language from the <html> tag
 const useLanguage = () => {
@@ -163,13 +164,24 @@ const IndigenousLanguagesAct = ({ onNavigate }) => {
 					)}
 				</section>
 			))}
-
-			<nav className="breadcrumb" aria-label="Page navigation">
-				<button onClick={() => onNavigate?.("foundational-documents")}>
-					&laquo;&nbsp;Back
+			<BackToTop />
+			<nav className="breadcrumb" aria-label="Navigation de la page">
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("foundational-documents");
+					}}
+				>
+					&laquo;&nbsp;Retour
 				</button>
-				<button onClick={() => onNavigate?.("revitalization-efforts")}>
-					Next&nbsp;&raquo;
+
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("revitalization-efforts");
+					}}
+				>
+					Suivant&nbsp;&raquo;
 				</button>
 			</nav>
 		</div>

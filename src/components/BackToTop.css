@@ -1,0 +1,51 @@
+/*
+ * Styles for the Back to Top Button
+ */
+.back-to-top-button {
+	/* Positioning */
+	position: fixed;
+	bottom: 30px;
+	right: 30px;
+	z-index: 1000;
+
+	/* Box Model & Sizing */
+	width: 110px;
+	height: 110px;
+	border-radius: 50%; /* Makes it a perfect circle */
+	border: none; /* We use a background to create the border effect */
+
+	/* Display & Alignment */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	/* Appearance & Interaction */
+	color: #005a9c; /* Arrow color */
+	cursor: pointer;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+	/* Visibility & Animation */
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(20px); /* Start slightly lower */
+	transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+
+/* Class added via JavaScript when the button should be visible */
+.back-to-top-button.visible {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0); /* Move to its final position */
+}
+
+/* Hover effect for better user feedback */
+.back-to-top-button:hover {
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+	transform: translateY(-2px); /* Slight lift on hover */
+}
+
+/* Ensure the SVG icon inside scales correctly */
+.back-to-top-button svg {
+	width: 45px;
+	height: 45px;
+}

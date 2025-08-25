@@ -1,3 +1,4 @@
+// ContentNavigation.jsx (updated)
 import React from "react";
 import "./ContentNavigation.css";
 
@@ -5,13 +6,7 @@ import "./ContentNavigation.css";
 const useLanguage = () => (document.documentElement.lang || "en").toLowerCase();
 
 /* ——— one card ——— */
-const NavCard = ({
-	number,
-	titleHTML, // string that may include <em>
-	id,
-	onNavigate,
-	isFR,
-}) => {
+const NavCard = ({ number, titleHTML, id, onNavigate, isFR }) => {
 	// strip any HTML for the aria-label
 	const plain = titleHTML.replace(/<[^>]+>/g, "");
 
@@ -21,7 +16,12 @@ const NavCard = ({
 			onClick={() => onNavigate?.(id)}
 			aria-label={(isFR ? "Aller à " : "Navigate to ") + plain}
 		>
-			<span className="nav-card-number">{number}</span>
+			{/* outer circle */}
+			<span className="nav-card-number" aria-hidden="true">
+				{/* inner element you can move independently */}
+				<span className="nav-card-number__inner">{number}</span>
+			</span>
+
 			{/* render HTML so <em> shows */}
 			<p
 				className="nav-card-title"
@@ -39,48 +39,66 @@ const ContentNavigation = ({ onNavigate, lang: langProp }) => {
 		? [
 				{
 					number: 2,
+					titleHTML: "Objectifs d’apprentissage",
+					id: "objective-fr",
+				},
+				{ number: 3, titleHTML: "Voix Autochtones", id: "voices-fr" },
+				{
+					number: 4,
+					titleHTML: "Survol des langues autochtones",
+					id: "languages-fr",
+				},
+				{
+					number: 5,
 					titleHTML: "Documents fondamentaux",
 					id: "foundational-documents",
 				},
 				{
-					number: 3,
-					// — highlight —
+					number: 6,
 					titleHTML: "<em>Loi sur les langues autochtones</em>",
 					id: "indigenous-languages-act",
 				},
 				{
-					number: 4,
+					number: 7,
 					titleHTML: "Efforts pour revitaliser les langues autochtones",
 					id: "revitalization-efforts",
 				},
 				{
-					number: 5,
+					number: 8,
 					titleHTML: "Ce que signifie la Loi pour les fonctionnaires",
 					id: "public-service",
 				},
+				{ number: 9, titleHTML: "Résultats d’apprentissage", id: "results-fr" },
 		  ]
 		: [
+				{ number: 2, titleHTML: "Learning Objectives", id: "objective-en" },
+				{ number: 3, titleHTML: "Indigenous Voices", id: "voices-en" },
 				{
-					number: 2,
+					number: 4,
+					titleHTML: "Overview of Indigenous Languages",
+					id: "languages-en",
+				},
+				{
+					number: 5,
 					titleHTML: "Foundational Documents",
 					id: "foundational-documents",
 				},
 				{
-					number: 3,
-					// — highlight —
+					number: 6,
 					titleHTML: "<em>Indigenous Languages Act</em>",
 					id: "indigenous-languages-act",
 				},
 				{
-					number: 4,
-					titleHTML: "Efforts to revitalize Indigenous languages",
+					number: 7,
+					titleHTML: "Efforts to Revitalize Indigenous Languages",
 					id: "revitalization-efforts",
 				},
 				{
-					number: 5,
-					titleHTML: "What this means for the public service",
+					number: 8,
+					titleHTML: "What This Means for the Public Service",
 					id: "public-service",
 				},
+				{ number: 9, titleHTML: "Learning Results", id: "results-en" },
 		  ];
 
 	return (

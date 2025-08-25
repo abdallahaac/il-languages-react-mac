@@ -6,6 +6,7 @@ import image from "../assets/efforts.png";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFeather, faInfinity } from "@fortawesome/free-solid-svg-icons";
+import BackToTop from "../components/BackToTop";
 
 const RevitalizationEfforts = ({ onNavigate }) => {
 	const [openSections, setOpenSections] = useState(new Set());
@@ -247,6 +248,7 @@ const RevitalizationEfforts = ({ onNavigate }) => {
 				</div>
 			</section>
 
+			<BackToTop />
 			<nav className="breadcrumb" aria-label="Page navigation">
 				<button onClick={() => onNavigate?.("indigenous-languages-act")}>
 					&laquo;&nbsp;Back

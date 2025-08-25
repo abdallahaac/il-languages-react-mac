@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./IntroductionPage.css";
 import "./FoundationalDocuments.css";
 import image from "../assets/foundation.jpeg";
+import BackToTop from "../components/BackToTop";
 
 // A reusable FlipCard component
 const FlipCard = ({
@@ -388,29 +389,33 @@ We call upon all governments to recognize Indigenous languages as official langu
 				<p className="select-instruction">Select each item to learn more.</p>
 			</section>
 
+			{/* --- TRC Calls to Action --- */}
 			<section className="card-grid trc-card-grid">
-				<div className="card-column">
-					<FlipCard
-						key={trcCardData[0].id}
-						id={trcCardData[0].id}
-						cardId={trcCardData[0].cardId}
-						frontContent={trcCardData[0].front}
-						backContent={trcCardData[0].back}
-						isFlipped={flippedTrcCards.has(trcCardData[0].id)}
-						onFlip={handleTrcFlip}
-						customHeight={trcCardData[0].height}
-					/>
-					<FlipCard
-						key={trcCardData[2].id}
-						id={trcCardData[2].id}
-						cardId={trcCardData[2].cardId}
-						frontContent={trcCardData[2].front}
-						backContent={trcCardData[2].back}
-						isFlipped={flippedTrcCards.has(trcCardData[2].id)}
-						onFlip={handleTrcFlip}
-						customHeight={trcCardData[2].height}
-					/>
-				</div>
+				{/* top-left: TRC 13 */}
+				<FlipCard
+					key={trcCardData[0].id}
+					id={trcCardData[0].id}
+					cardId={trcCardData[0].cardId}
+					frontContent={trcCardData[0].front}
+					backContent={trcCardData[0].back}
+					isFlipped={flippedTrcCards.has(trcCardData[0].id)}
+					onFlip={handleTrcFlip}
+					customHeight={trcCardData[0].height}
+				/>
+
+				{/* top-right: TRC 15 */}
+				<FlipCard
+					key={trcCardData[2].id}
+					id={trcCardData[2].id}
+					cardId={trcCardData[2].cardId}
+					frontContent={trcCardData[2].front}
+					backContent={trcCardData[2].back}
+					isFlipped={flippedTrcCards.has(trcCardData[2].id)}
+					onFlip={handleTrcFlip}
+					customHeight={trcCardData[2].height}
+				/>
+
+				{/* bottom full-width: TRC 14 */}
 				<FlipCard
 					key={trcCardData[1].id}
 					id={trcCardData[1].id}
@@ -422,6 +427,7 @@ We call upon all governments to recognize Indigenous languages as official langu
 					customHeight={trcCardData[1].height}
 				/>
 			</section>
+
 			<p style={{ width: "100%", display: "block" }}>
 				With the royal assent of the <em>Indigenous Languages Act</em>, Calls to
 				Action 13 and 14 are complete. With the creation of the Office of the
@@ -525,7 +531,7 @@ We call upon all governments to recognize Indigenous languages as official langu
 				))}
 			</section>
 			{/* END: Corrected render section */}
-
+			<BackToTop />
 			<nav className="breadcrumb" aria-label="Page navigation">
 				<button onClick={() => onNavigate?.("introduction")}>
 					&laquo;&nbsp;Back

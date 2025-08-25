@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useScorm } from "../App";
 import "./Header.css";
 import logo from "../assets/logo.svg";
 
-/* ——— tiny helper to follow <html lang=""> live ——— */
+/* ——— follow <html lang=""> live ——— */
 const useLanguage = () => {
 	const [lang, setLang] = useState(
 		(document.documentElement.lang || "en").toLowerCase()
 	);
-
 	useEffect(() => {
 		const obs = new MutationObserver((m) => {
 			m.forEach((mu) => {
@@ -20,7 +19,6 @@ const useLanguage = () => {
 		obs.observe(document.documentElement, { attributes: true });
 		return () => obs.disconnect();
 	}, []);
-
 	return lang;
 };
 
@@ -31,61 +29,123 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 	const [scrolled, setScrolled] = useState(false);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const { learnerName } = useScorm();
+	const firstLinkRef = useRef(null);
 
-	/* ——— nav labels by language ——— */
-	const navLinks = isFR
-		? [
-				{ label: "Accueil", id: "home" },
-				{ label: "Introduction et aperçu", id: "introduction" },
-				{ label: "Documents fondamentaux", id: "foundational-documents" },
-				{
-					label: "<em>Loi sur les langues autochtones</em>",
-					id: "indigenous-languages-act",
-				},
-				{
-					label: "Efforts pour revitaliser les langues autochtones",
-					id: "revitalization-efforts",
-				},
-				{
-					label: "Implications pour la fonction publique",
-					id: "public-service",
-				},
-				{ label: "Vérification des connaissances", id: "knowledge-check" },
-				{ label: "Ressources", id: "resources" },
-				{ label: "Rétroaction", id: "feedback" },
-		  ]
-		: [
-				{ label: "Home", id: "home" },
-				{ label: "Introduction and overview", id: "introduction" },
-				{ label: "Foundational Documents", id: "foundational-documents" },
-				{ label: "Indigenous Languages Act", id: "indigenous-languages-act" },
-				{
-					label: "Efforts to revitalize Indigenous languages",
-					id: "revitalization-efforts",
-				},
-				{
-					label: "What this means for the public service",
-					id: "public-service",
-				},
-				{ label: "Knowledge Check", id: "knowledge-check" },
-				{ label: "Resources", id: "resources" },
-				{ label: "Feedback", id: "feedback" },
-		  ];
+	// External feedback link
+	const feedbackUrl =
+		"https://airtable.com/appiWB5orohCHzA35/shrfyFm9N7HuQBhe8";
 
-	/* ——— scroll / menu effects ——— */
+	// ---------------- NAV LINKS ----------------
+	const navLinksEN = [
+		{ label: "Home", id: "home" },
+		{ label: "Introduction and overview", id: "introduction" },
+		{ label: "Learning Objectives", id: "objective-en" },
+		{ label: "Foundational Documents", id: "foundational-documents" },
+		{ label: "Indigenous Languages Act", id: "indigenous-languages-act" },
+		{
+			label: "Efforts to revitalize Indigenous languages",
+			id: "revitalization-efforts",
+		},
+		{ label: "What this means for the public service", id: "public-service" },
+		{ label: "Knowledge Check", id: "knowledge-check" },
+		{ label: "Resources", id: "resources" },
+		{ label: "Feedback", id: "feedback", url: feedbackUrl, isExternal: true },
+	];
+
+	// FR pages (includes your new sections)
+	const navLinksFR = [
+		{ label: "Accueil", id: "home" },
+		{ label: "Introduction et aperçu", id: "introduction" },
+		{ label: "Objectifs d’apprentissage", id: "objective-fr" },
+		{ label: "Voix Autochtones", id: "voices-fr" },
+		{ label: "Survol des langues autochtones", id: "languages-fr" },
+		{ label: "Résultats d’apprentissage", id: "results-fr" },
+		{ label: "Documents fondamentaux", id: "foundational-documents" },
+		{
+			label: "<em>Loi sur les langues autochtones</em>",
+			id: "indigenous-languages-act",
+		},
+		{
+			label: "Efforts pour revitaliser les langues autochtones",
+			id: "revitalization-efforts",
+		},
+		{ label: "Implications pour la fonction publique", id: "public-service" },
+		{ label: "Vérification des connaissances", id: "knowledge-check" },
+		{ label: "Ressources", id: "resources" },
+		{
+			label: "Rétroaction",
+			id: "feedback",
+			url: feedbackUrl,
+			isExternal: true,
+		},
+	];
+
+	const navLinks = isFR ? navLinksFR : navLinksEN;
+
+	// ----- header shadow on scroll + BODY SCROLL LOCK when menu open -----
+	const scrollYRef = useRef(0);
 	useEffect(() => {
-		const handleScroll = () => setScrolled(window.scrollY > 50);
-		window.addEventListener("scroll", handleScroll);
-		document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
+		const onScroll = () => setScrolled(window.scrollY > 50);
+		window.addEventListener("scroll", onScroll);
+
+		if (isMenuOpen) {
+			// lock the page (iOS-friendly)
+			scrollYRef.current = window.scrollY || window.pageYOffset || 0;
+			document.body.style.position = "fixed";
+			document.body.style.top = `-${scrollYRef.current}px`;
+			document.body.style.left = "0";
+			document.body.style.right = "0";
+			document.body.style.width = "100%";
+			document.body.style.overflow = "hidden";
+		} else {
+			// restore page scroll position
+			const y = -parseInt(document.body.style.top || "0", 10) || 0;
+			document.body.style.position = "";
+			document.body.style.top = "";
+			document.body.style.left = "";
+			document.body.style.right = "";
+			document.body.style.width = "";
+			document.body.style.overflow = "";
+			window.scrollTo(0, y);
+		}
+
 		return () => {
-			window.removeEventListener("scroll", handleScroll);
-			document.body.style.overflow = "auto";
+			window.removeEventListener("scroll", onScroll);
+			// cleanup if unmounted while open
+			document.body.style.position = "";
+			document.body.style.top = "";
+			document.body.style.left = "";
+			document.body.style.right = "";
+			document.body.style.width = "";
+			document.body.style.overflow = "";
 		};
 	}, [isMenuOpen]);
 
-	/* ——— navigation click ——— */
+	// focus first link when menu opens; Esc closes
+	useEffect(() => {
+		if (!isMenuOpen) return;
+		const t = setTimeout(() => {
+			const firstLink =
+				firstLinkRef.current ||
+				document.querySelector("#app-nav .fullscreen-nav-links a");
+			if (firstLink) firstLink.focus();
+		}, 50);
+
+		const onKey = (e) => {
+			if (e.key === "Escape") setIsMenuOpen(false);
+		};
+		window.addEventListener("keydown", onKey);
+		return () => {
+			clearTimeout(t);
+			window.removeEventListener("keydown", onKey);
+		};
+	}, [isMenuOpen]);
+
+	// navigation click
 	const handleNavClick = (id, e) => {
 		e.preventDefault();
+		if (!id) return;
+		if (id === "feedback") return; // external link handled by <a>
 		setIsMenuOpen(false);
 		onNavigate?.(id);
 	};
@@ -117,7 +177,9 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 								className="header-logo"
 							/>
 							<span>
-								{isFR ? "Apprentissage autochtone" : "Indigenous Learning"}
+								{isFR
+									? "Apprentissage sur les réalités autochtones"
+									: "Indigenous Learning"}
 							</span>
 						</a>
 					</div>
@@ -128,12 +190,12 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 
 					<div className="header-right">
 						<button
-							className="burger-menu"
+							className="burger-button burger-menu"
 							onClick={() => setIsMenuOpen(true)}
 							aria-label={isFR ? "Ouvrir le menu" : "Open navigation menu"}
 							aria-expanded={isMenuOpen}
+							aria-controls="app-nav"
 						>
-							{/* burger icon */}
 							<svg
 								width="24"
 								height="24"
@@ -153,10 +215,13 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 				</div>
 			</header>
 
-			{/* ——— Full-screen menu ——— */}
 			<nav
+				id="app-nav"
 				className={`fullscreen-nav ${isMenuOpen ? "open" : ""}`}
 				aria-hidden={!isMenuOpen}
+				role="dialog"
+				aria-modal="true"
+				aria-label={isFR ? "Menu de navigation" : "Navigation menu"}
 			>
 				<div className="fullscreen-nav-panel">
 					<div className="fullscreen-nav-header">
@@ -181,22 +246,32 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 						</button>
 					</div>
 
-					<div className="fullscreen-nav-links">
-						{navLinks.map(({ label, id }) => (
-							<a
-								key={id}
-								href="#"
-								onClick={(e) => handleNavClick(id, e)}
-								className={
-									currentPage === id ||
-									(id === "home" && currentPage === "home")
-										? "active"
-										: ""
-								}
-								// render HTML so <em> is parsed
-								dangerouslySetInnerHTML={{ __html: label }}
-							/>
-						))}
+					<div className="fullscreen-nav-links" role="menu">
+						{navLinks.map(({ label, id, url, isExternal }, idx) => {
+							if (isExternal && url) {
+								return (
+									<a
+										key={id}
+										href={url}
+										target="_blank"
+										rel="noopener noreferrer"
+										role="menuitem"
+										dangerouslySetInnerHTML={{ __html: label }}
+									/>
+								);
+							}
+							return (
+								<a
+									key={id}
+									href="#"
+									role="menuitem"
+									ref={idx === 0 ? firstLinkRef : undefined}
+									onClick={(e) => handleNavClick(id, e)}
+									className={currentPage === id ? "active" : ""}
+									dangerouslySetInnerHTML={{ __html: label }}
+								/>
+							);
+						})}
 					</div>
 				</div>
 			</nav>

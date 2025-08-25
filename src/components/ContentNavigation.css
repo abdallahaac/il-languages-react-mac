@@ -1,4 +1,4 @@
-/* src/components/ContentNavigation.css */
+/* ContentNavigation.css (updated) */
 .content-navigation-container {
 	max-width: 1340px;
 	margin: 0 auto;
@@ -28,34 +28,45 @@
 	text-align: center;
 	border-top: 5px solid #005a9c;
 }
+
 .nav-card:hover,
 .nav-card:focus-visible {
 	transform: translateY(-8px);
 	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 	outline: 3px solid #ffbf47;
-
 	outline-offset: 2px;
 }
 
+/* Circle container */
 .nav-card-number {
+	--num-offset-y: -4px; /* 👈 adjust this to move ONLY the number up/down */
+	--num-offset-x: 0px; /* 👈 optional: left/right nudge */
+
 	background-color: #005a9c;
 	color: white;
+	position: absolute;
 	border-radius: 50%;
 	width: 40px;
 	height: 40px;
+
 	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-weight: bold;
-	font-size: 1.2rem;
-	margin-bottom: 1rem;
-	position: absolute;
+	align-items: center; /* centers inner wrapper vertically */
+	justify-content: center; /* centers inner wrapper horizontally */
+
 	top: -25px;
 	right: 1.5rem;
 	border: 2px solid white;
 	box-shadow: rgba(0, 0, 0, 0.4) 0px 4px 8px;
-	/* Add transition for the shadow effect */
 	transition: box-shadow 0.3s ease;
+}
+
+/* The actual number. You can nudge it using the CSS variables above. */
+.nav-card-number__inner {
+	display: inline-block;
+	line-height: 1; /* remove baseline weirdness */
+	transform: translate(var(--num-offset-x), var(--num-offset-y));
+	font-weight: bold;
+	font-size: 1.4rem;
 }
 
 /* Make the shadow more visible on hover/focus of the parent card */
