@@ -633,7 +633,7 @@ Miyo-Kîsikanisik (Have a nice day!)`,
 			{/* ███ breadcrumbs ███ */}
 			<nav className="breadcrumb" aria-label="Page navigation">
 				<button onClick={() => onNavigate?.("home")}>&laquo;&nbsp;Back</button>
-				<button onClick={() => onNavigate?.("foundational-documents")}>
+				<button onClick={() => onNavigate?.("objective-en")}>
 					Next&nbsp;&raquo;
 				</button>
 			</nav>
