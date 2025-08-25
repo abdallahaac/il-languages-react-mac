@@ -66,7 +66,7 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 		// in the same order as ContentNavigation
 		{ label: "Objectifs d’apprentissage", id: "objective-fr" },
 		{ label: "Voix autochtones", id: "voices-fr" },
-		{ label: "Survol des langues autochtones", id: "languages-fr" },
+		{ label: "Les langues autochtones au Canada", id: "languages-fr" },
 		{ label: "Documents fondamentaux", id: "foundational-documents" },
 		{
 			label: "<em>Loi sur les langues autochtones</em>",

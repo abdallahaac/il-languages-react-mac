@@ -13,6 +13,7 @@ import SectionPage from "./components/SectionPage";
 import Footer from "./components/Footer";
 import sections from "./pages/sectionData";
 import "./App.css";
+import "./typography.css";
 
 // --- English & French Page Imports ---
 import IntroductionPage_EN from "./pages/IntroductionPage";

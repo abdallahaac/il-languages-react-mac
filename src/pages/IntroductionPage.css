@@ -5,6 +5,7 @@
 /* Import Google Fonts */
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap");
+@import url("src/typography.css");
 
 /* Root tokens */
 :root {
@@ -112,12 +113,7 @@ body {
 .graph-ol > li > strong {
 	color: #2478c6;
 }
-h3 {
-	font-size: 2rem;
-}
-h2 {
-	font-size: 2rem;
-}
+
 .graph-ol {
 	font-size: 21px;
 }
@@ -730,25 +726,6 @@ body {
 	font-weight: 700;
 }
 
-.narrative > p {
-	font-size: 1.4rem;
-}
-
-.narrative > p > span {
-	font-size: 1.4rem;
-}
-
-footer.source {
-	font-size: 1.4rem;
-}
-
-.intro-wrapper p {
-	font-size: 1.4rem;
-}
-
-.graph-ol {
-	font-size: 1.4rem;
-}
 /* Breadcrumb */
 .breadcrumb {
 	margin-top: 1rem !important ;

@@ -65,7 +65,7 @@ const Results = ({ onNavigate }) => {
 					<button
 						onClick={() => {
 							window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-							onNavigate?.("introduction");
+							onNavigate?.("public-service");
 						}}
 					>
 						&laquo;&nbsp;Retour

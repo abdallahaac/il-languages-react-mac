@@ -42,10 +42,10 @@ const ContentNavigation = ({ onNavigate, lang: langProp }) => {
 					titleHTML: "Objectifs d’apprentissage",
 					id: "objective-fr",
 				},
-				{ number: 3, titleHTML: "Voix Autochtones", id: "voices-fr" },
+				{ number: 3, titleHTML: "Voix autochtones", id: "voices-fr" },
 				{
 					number: 4,
-					titleHTML: "Survol des langues autochtones",
+					titleHTML: "Les langues <br>autochtones au Canada",
 					id: "languages-fr",
 				},
 				{
@@ -60,7 +60,7 @@ const ContentNavigation = ({ onNavigate, lang: langProp }) => {
 				},
 				{
 					number: 7,
-					titleHTML: "Efforts pour revitaliser les langues autochtones",
+					titleHTML: "Efforts pour<br> revitaliser les langues autochtones",
 					id: "revitalization-efforts",
 				},
 				{

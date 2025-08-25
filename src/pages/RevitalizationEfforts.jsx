@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./IntroductionPage.css"; // For shared
 import "./RevitalizationEfforts.css"; // For page-specific styles
+import inuk from "../assets/inuk.svg";
 
 import image from "../assets/efforts.png";
 
@@ -138,7 +139,7 @@ const RevitalizationEfforts = ({ onNavigate }) => {
 								(e.key === "Enter" || e.key === " ") && handleToggle("inuit")
 							}
 						>
-							<img src="src/assets/inuk.svg" alt="inuk symbol" />
+							<img src={inuk} alt="inuk symbol" />
 						</div>
 						<div
 							className={`info-panel ${
@@ -148,7 +149,7 @@ const RevitalizationEfforts = ({ onNavigate }) => {
 							<h4>
 								Inuit
 								<span>
-									<img src="src/assets/inuk.svg" alt="inuk symbol" />
+									<img src={inuk} alt="inuk symbol" />
 								</span>
 							</h4>
 							<p>
