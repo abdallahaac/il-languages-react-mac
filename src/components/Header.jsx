@@ -287,6 +287,7 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 						})}
 					</div>
 				</div>
+				{/*  */}
 			</nav>
 		</>
 	);
