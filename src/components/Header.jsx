@@ -36,30 +36,37 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 		"https://airtable.com/appiWB5orohCHzA35/shrfyFm9N7HuQBhe8";
 
 	// ---------------- NAV LINKS ----------------
+	// ---------------- NAV LINKS ----------------
 	const navLinksEN = [
 		{ label: "Home", id: "home" },
-		{ label: "Introduction and overview", id: "introduction" },
+		{ label: "Introduction and Overview", id: "introduction" },
+
+		// in the same order as ContentNavigation
 		{ label: "Learning Objectives", id: "objective-en" },
+		{ label: "Indigenous Voices", id: "voices-en" },
+		{ label: "Overview of Indigenous Languages", id: "languages-en" },
 		{ label: "Foundational Documents", id: "foundational-documents" },
 		{ label: "Indigenous Languages Act", id: "indigenous-languages-act" },
 		{
-			label: "Efforts to revitalize Indigenous languages",
+			label: "Efforts to Revitalize Indigenous Languages",
 			id: "revitalization-efforts",
 		},
-		{ label: "What this means for the public service", id: "public-service" },
+		{ label: "What This Means for the Public Service", id: "public-service" },
+		{ label: "Learning Results", id: "results-en" },
+
+		// extras at the end
 		{ label: "Knowledge Check", id: "knowledge-check" },
 		{ label: "Resources", id: "resources" },
 		{ label: "Feedback", id: "feedback", url: feedbackUrl, isExternal: true },
 	];
-
-	// FR pages (includes your new sections)
 	const navLinksFR = [
 		{ label: "Accueil", id: "home" },
 		{ label: "Introduction et aperçu", id: "introduction" },
+
+		// in the same order as ContentNavigation
 		{ label: "Objectifs d’apprentissage", id: "objective-fr" },
 		{ label: "Voix Autochtones", id: "voices-fr" },
 		{ label: "Survol des langues autochtones", id: "languages-fr" },
-		{ label: "Résultats d’apprentissage", id: "results-fr" },
 		{ label: "Documents fondamentaux", id: "foundational-documents" },
 		{
 			label: "<em>Loi sur les langues autochtones</em>",
@@ -69,7 +76,13 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 			label: "Efforts pour revitaliser les langues autochtones",
 			id: "revitalization-efforts",
 		},
-		{ label: "Implications pour la fonction publique", id: "public-service" },
+		{
+			label: "Ce que signifie la Loi pour les fonctionnaires",
+			id: "public-service",
+		},
+		{ label: "Résultats d’apprentissage", id: "results-fr" },
+
+		// extras at the end
 		{ label: "Vérification des connaissances", id: "knowledge-check" },
 		{ label: "Ressources", id: "resources" },
 		{
