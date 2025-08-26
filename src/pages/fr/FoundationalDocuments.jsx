@@ -224,7 +224,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 		<div className="intro-wrapper foundational-documents-page">
 			<header className="hero" role="banner">
 				<img src={image} alt="" className="hero-img" aria-hidden="true" />
-				<h1 className="hero-title">Documents Fondamentaux</h1>
+				<h1 className="hero-title">Documents fondamentaux</h1>
 			</header>
 
 			<section className="acknowledge">
