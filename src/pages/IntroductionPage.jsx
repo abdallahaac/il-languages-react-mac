@@ -578,7 +578,7 @@ Miyo-Kîsikanisik (Have a nice day!)`,
 			{/* ███ hero ███ */}
 			<header className="hero" role="banner">
 				<img src={image} alt="" className="hero-img" aria-hidden="true" />
-				<h1 className="hero-title">Introduction and overview</h1>
+				<h1 className="hero-title">Introduction and Overview</h1>
 			</header>
 
 			{/* ███ narrative ███ */}
