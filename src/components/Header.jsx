@@ -47,7 +47,7 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 			id: "revitalization-efforts",
 		},
 		{ label: "What This Means for the Public Service", id: "public-service" },
-		{ label: "Learning Results", id: "results-en" },
+		{ label: "Learning Outcomes", id: "results-en" },
 		{ label: "Knowledge Check", id: "knowledge-check" },
 		{ label: "Resources", id: "resources" },
 		{ label: "Feedback", id: "feedback", url: feedbackUrl, isExternal: true },

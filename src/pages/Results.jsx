@@ -15,7 +15,7 @@ const Results = ({ onNavigate }) => {
 					className="hero-img"
 					aria-hidden="true"
 				/>
-				<h1 className="hero-title">Learning Results</h1>
+				<h1 className="hero-title">Learning Outcomes</h1>
 			</header>
 
 			{/* Content */}

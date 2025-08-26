@@ -94,7 +94,7 @@ const ContentNavigation = ({ onNavigate, lang: langProp }) => {
 					titleHTML: "What This Means for the Public Service",
 					id: "public-service",
 				},
-				{ number: 9, titleHTML: "Learning Results", id: "results-en" },
+				{ number: 9, titleHTML: "Learning Outcomes", id: "results-en" },
 		  ];
 
 	return (
