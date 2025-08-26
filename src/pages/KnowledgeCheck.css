@@ -26,6 +26,16 @@
 	margin-left: 1rem;
 	color: #2478c6;
 }
+.back-button {
+	background-color: #2478c6 !important;
+	color: white !important;
+}
+.back-button > a {
+	color: white !important;
+}
+.back-button > a:visited {
+	color: white !important;
+}
 #quiz-form {
 	letter-spacing: 1px;
 }

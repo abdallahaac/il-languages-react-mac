@@ -24,7 +24,6 @@ const useLanguage = () => {
 /* strings with a single H1 (HTML allowed) */
 const content = {
 	en: {
-		// Optional break via <wbr> so it wraps nicely on smaller screens
 		heroTitle:
 			"Revitalizing Voices<wbr> Navigating the <br> <em>Indigenous Languages Act</em>",
 		introCardTitle: "Introduction and overview",
@@ -35,7 +34,6 @@ const content = {
 		resources: "Resources",
 	},
 	fr: {
-		// Emphasize “la Loi … autochtones” and add a soft break with <wbr>
 		heroTitle:
 			"Revitalisation des voix autochtones<wbr> comprendre la <em>Loi sur les langues autochtones</em>",
 		introCardTitle: "Introduction et survol",
@@ -68,8 +66,13 @@ const Hero = ({ onNavigate, lang: langProp }) => {
 					className="introduction-card"
 					onClick={() => go("introduction")}
 					aria-label={t.introCardAria}
+					data-num="1"
 				>
-					<span className="card-number">1</span>
+					{/* Badge with INNER wrapper for digit nudging */}
+					<span className="card-number" aria-hidden="true">
+						<span className="card-number__inner">1</span>
+					</span>
+
 					<h3>{t.introCardTitle}</h3>
 					<p>{t.introCardText}</p>
 				</button>
