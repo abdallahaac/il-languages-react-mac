@@ -257,7 +257,7 @@ const AudioInteractionSVG = ({
 					</tspan>
 					<tspan x="195.08" y="0">
 						e
-					</tspan>
+				</tspan>
 					<tspan x="210.08" y="0">
 						s
 					</tspan>
