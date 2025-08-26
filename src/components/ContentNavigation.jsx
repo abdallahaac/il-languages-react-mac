@@ -7,22 +7,19 @@ const useLanguage = () => (document.documentElement.lang || "en").toLowerCase();
 
 /* ——— one card ——— */
 const NavCard = ({ number, titleHTML, id, onNavigate, isFR }) => {
-	// strip any HTML for the aria-label
 	const plain = titleHTML.replace(/<[^>]+>/g, "");
 
 	return (
 		<button
 			className="nav-card"
+			data-num={number}
 			onClick={() => onNavigate?.(id)}
 			aria-label={(isFR ? "Aller à " : "Navigate to ") + plain}
 		>
-			{/* outer circle */}
 			<span className="nav-card-number" aria-hidden="true">
-				{/* inner element you can move independently */}
 				<span className="nav-card-number__inner">{number}</span>
 			</span>
 
-			{/* render HTML so <em> shows */}
 			<p
 				className="nav-card-title"
 				dangerouslySetInnerHTML={{ __html: titleHTML }}
@@ -30,7 +27,6 @@ const NavCard = ({ number, titleHTML, id, onNavigate, isFR }) => {
 		</button>
 	);
 };
-
 const ContentNavigation = ({ onNavigate, lang: langProp }) => {
 	const lang = (langProp || useLanguage()).toLowerCase();
 	const isFR = lang === "fr";

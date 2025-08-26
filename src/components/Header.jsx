@@ -31,17 +31,12 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 	const { learnerName } = useScorm();
 	const firstLinkRef = useRef(null);
 
-	// External feedback link
 	const feedbackUrl =
 		"https://airtable.com/appiWB5orohCHzA35/shrfyFm9N7HuQBhe8";
 
-	// ---------------- NAV LINKS ----------------
-	// ---------------- NAV LINKS ----------------
 	const navLinksEN = [
 		{ label: "Home", id: "home" },
 		{ label: "Introduction and Overview", id: "introduction" },
-
-		// in the same order as ContentNavigation
 		{ label: "Learning Objectives", id: "objective-en" },
 		{ label: "Indigenous Voices", id: "voices-en" },
 		{ label: "Overview of Indigenous Languages", id: "languages-en" },
@@ -53,17 +48,14 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 		},
 		{ label: "What This Means for the Public Service", id: "public-service" },
 		{ label: "Learning Results", id: "results-en" },
-
-		// extras at the end
 		{ label: "Knowledge Check", id: "knowledge-check" },
 		{ label: "Resources", id: "resources" },
 		{ label: "Feedback", id: "feedback", url: feedbackUrl, isExternal: true },
 	];
+
 	const navLinksFR = [
 		{ label: "Accueil", id: "home" },
 		{ label: "Introduction et aperçu", id: "introduction" },
-
-		// in the same order as ContentNavigation
 		{ label: "Objectifs d’apprentissage", id: "objective-fr" },
 		{ label: "Voix autochtones", id: "voices-fr" },
 		{ label: "Les langues autochtones au Canada", id: "languages-fr" },
@@ -81,8 +73,6 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 			id: "public-service",
 		},
 		{ label: "Résultats d’apprentissage", id: "results-fr" },
-
-		// extras at the end
 		{ label: "Vérification des connaissances", id: "knowledge-check" },
 		{ label: "Ressources", id: "resources" },
 		{
@@ -95,14 +85,13 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 
 	const navLinks = isFR ? navLinksFR : navLinksEN;
 
-	// ----- header shadow on scroll + BODY SCROLL LOCK when menu open -----
+	// header shadow + body scroll lock
 	const scrollYRef = useRef(0);
 	useEffect(() => {
 		const onScroll = () => setScrolled(window.scrollY > 50);
 		window.addEventListener("scroll", onScroll);
 
 		if (isMenuOpen) {
-			// lock the page (iOS-friendly)
 			scrollYRef.current = window.scrollY || window.pageYOffset || 0;
 			document.body.style.position = "fixed";
 			document.body.style.top = `-${scrollYRef.current}px`;
@@ -111,7 +100,6 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 			document.body.style.width = "100%";
 			document.body.style.overflow = "hidden";
 		} else {
-			// restore page scroll position
 			const y = -parseInt(document.body.style.top || "0", 10) || 0;
 			document.body.style.position = "";
 			document.body.style.top = "";
@@ -124,7 +112,6 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 
 		return () => {
 			window.removeEventListener("scroll", onScroll);
-			// cleanup if unmounted while open
 			document.body.style.position = "";
 			document.body.style.top = "";
 			document.body.style.left = "";
@@ -134,7 +121,7 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 		};
 	}, [isMenuOpen]);
 
-	// focus first link when menu opens; Esc closes
+	// focus first link when menu opens + ESC closes
 	useEffect(() => {
 		if (!isMenuOpen) return;
 		const t = setTimeout(() => {
@@ -154,11 +141,10 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 		};
 	}, [isMenuOpen]);
 
-	// navigation click
 	const handleNavClick = (id, e) => {
 		e.preventDefault();
 		if (!id) return;
-		if (id === "feedback") return; // external link handled by <a>
+		if (id === "feedback") return;
 		setIsMenuOpen(false);
 		onNavigate?.(id);
 	};
@@ -197,9 +183,12 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 						</a>
 					</div>
 
-					<div className="welcome-message">
-						{isFR ? `Bienvenue, ${learnerName} !` : `Welcome, ${learnerName}!`}
-					</div>
+					{/* ✅ Show welcome only on the home page */}
+					{currentPage === "home" && (
+						<div className="welcome-message" aria-live="polite">
+							{isFR ? `Bienvenue ${learnerName} ` : `Welcome ${learnerName}`}
+						</div>
+					)}
 
 					<div className="header-right">
 						<button
@@ -287,7 +276,6 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 						})}
 					</div>
 				</div>
-				{/*  */}
 			</nav>
 		</>
 	);

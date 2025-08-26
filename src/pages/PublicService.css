@@ -12,6 +12,22 @@
 	border-bottom-color: #07820f;
 }
 
+.public-service-page a {
+	color: #07820f;
+	border-bottom: 1px solid #07820f;
+}
+.public-service-page a:hover {
+	color: #056f0b;
+}
+
+.public-service-page ul {
+	color: #07820f;
+}
+.public-service-page ul > li > a {
+	color: #07820f;
+	border-bottom: 1px solid #07820f;
+}
+
 .public-service-page .quote {
 	border-left-color: #07820f;
 	margin: 2rem 0;
