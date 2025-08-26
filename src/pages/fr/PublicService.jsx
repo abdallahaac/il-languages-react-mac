@@ -346,7 +346,7 @@ const PublicService_fr = ({ onNavigate }) => {
 							aria-expanded={openSignLanguage === "msl"}
 							onClick={() => handleSignLanguageToggle("msl")}
 						>
-							la Langue des signes michif
+							La langue des signes michif
 						</button>
 						<div
 							className={`sign-language-panel ${
