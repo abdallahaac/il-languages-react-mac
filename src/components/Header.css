@@ -283,3 +283,26 @@
 		transition: none !important;
 	}
 }
+.main-header .welcome-message {
+	font-family: inherit; /* inherit site font */
+	font-weight: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	letter-spacing: inherit;
+	color: inherit;
+	margin-inline: 1rem; /* space from logo */
+	white-space: nowrap;
+}
+
+.header-content .welcome-message {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-weight: 900;
+}
+
+@media (max-width: 420px) {
+	.main-header .welcome-message {
+		white-space: normal;
+	}
+}
