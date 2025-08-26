@@ -155,9 +155,24 @@ const Resources = ({ onNavigate }) => {
 				</ul>
 			</section>
 			<BackToTop />
-			<nav className="breadcrumb" aria-label="Page navigation">
-				<button onClick={() => onNavigate?.("knowledge-check")}>
+			{/* Breadcrumb / Navigation */}
+			<nav className="breadcrumb" aria-label="Navigation ">
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("knowledge-check");
+					}}
+				>
 					&laquo;&nbsp;Back
+				</button>
+
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("home");
+					}}
+				>
+					Home&nbsp;&raquo;
 				</button>
 			</nav>
 		</div>
