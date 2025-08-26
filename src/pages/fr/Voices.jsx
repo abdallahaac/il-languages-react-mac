@@ -10,7 +10,7 @@ import clip5 from "../../assets/audio/fr/Innu Fr Pam Dough.wav";
 import clip6 from "../../assets/audio/fr/Inuktitut Fr Lauralee.wav";
 import clip7 from "../../assets/audio/fr/Colleen Fr Plains Cree.wav";
 
-import image from "../../assets/voices.jpeg";
+import image from "../../assets/voices.jpg";
 import BackToTop from "../../components/BackToTop";
 
 // This component renders the SVG and now indicates which clips have been visited.

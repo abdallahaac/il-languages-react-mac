@@ -329,11 +329,21 @@ We call upon all governments to recognize Indigenous languages as official langu
 
 			<section className="instructions" aria-labelledby="instr-heading">
 				<h3 id="instr-heading">
-					The United Nations Declaration on the Rights of Indigenous Peoples Act
+					The{" "}
+					<em>
+						<em>
+							United Nations Declaration on the Rights of Indigenous Peoples Act
+						</em>
+					</em>
 					(UN Declaration Act) Action Plan
 				</h3>
 				<p>
-					The United Nations Declaration on the Rights of Indigenous Peoples Act
+					The{" "}
+					<em>
+						<em>
+							United Nations Declaration on the Rights of Indigenous Peoples Act
+						</em>
+					</em>
 					Action Plan 2023–2028 is the result of two years of consultation and
 					cooperation with First Nations, Inuit, and Métis from across Canada.
 					It provides a roadmap of actions Canada needs to take, in partnership

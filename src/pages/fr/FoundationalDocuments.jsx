@@ -334,8 +334,11 @@ const FoundationalDocuments = ({ onNavigate }) => {
 
 			<section className="instructions" aria-labelledby="instr-heading">
 				<h3 id="instr-heading">
-					Le Plan d’action de la Loi sur la Déclaration des Nations Unies sur
-					les droits des peuples autochtones
+					Le Plan d’action de la{" "}
+					<em>
+						Loi sur la Déclaration des Nations Unies sur les droits des peuples
+						autochtones
+					</em>
 				</h3>
 				<p>
 					Le{" "}
@@ -346,14 +349,19 @@ const FoundationalDocuments = ({ onNavigate }) => {
 					>
 						Plan d’action 2023-2028
 					</a>{" "}
-					de la Loi sur la Déclaration des Nations Unies sur les droits des
-					peuples autochtones est le fruit de deux années de travail mené en
-					consultation et en collaboration avec des membres des Premières
-					Nations, du peuple inuit et de la Nation métisse de partout au Canada.
-					Il fournit une feuille de route énonçant les mesures que le Canada
-					doit prendre, en partenariat avec les peuples autochtones, pour mettre
-					en œuvre les principes et les droits énoncés dans la Déclaration des
-					Nations Unies et faire progresser de façon concrète la réconciliation.
+					de la
+					<em>
+						{" "}
+						Loi sur la Déclaration des Nations Unies sur les droits des peuples
+						autochtones
+					</em>{" "}
+					est le fruit de deux années de travail mené en consultation et en
+					collaboration avec des membres des Premières Nations, du peuple inuit
+					et de la Nation métisse de partout au Canada. Il fournit une feuille
+					de route énonçant les mesures que le Canada doit prendre, en
+					partenariat avec les peuples autochtones, pour mettre en œuvre les
+					principes et les droits énoncés dans la Déclaration des Nations Unies
+					et faire progresser de façon concrète la réconciliation.
 				</p>
 				<p>
 					Le plan d’action énonce des{" "}

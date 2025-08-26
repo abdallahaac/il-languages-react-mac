@@ -22,7 +22,7 @@ const Objective = ({ onNavigate }) => {
 				{/* Meta */}
 				<div className="objective-meta" aria-label="Key information">
 					<span className="meta-chip" aria-label="Anticipated completion time">
-						120 minutes
+						Duration: 120 minutes
 					</span>
 				</div>
 

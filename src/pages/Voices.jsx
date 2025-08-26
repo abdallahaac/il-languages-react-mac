@@ -9,7 +9,7 @@ import clip5 from "../assets/audio/en/Innu En Pam Dough.mp3";
 import clip6 from "../assets/audio/en/Bedford Institute of Oceanography 7.wav"; // Mi’kmaq
 import clip7 from "../assets/audio/en/Colleen En Recording 14.wav"; // Plains Cree
 
-import image from "../assets/voices.jpeg";
+import image from "../assets/voices.jpg";
 import BackToTop from "../components/BackToTop";
 
 // This new component renders your SVG and handles click events on the hexagons.
