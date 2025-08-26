@@ -12,7 +12,7 @@ import clip7 from "../../assets/audio/fr/Colleen Fr Plains Cree.wav";
 
 import image from "../../assets/voices.jpg";
 import BackToTop from "../../components/BackToTop";
-
+//
 // This component renders the SVG and now indicates which clips have been visited.
 const AudioInteractionSVG = ({
 	activeClipId,
