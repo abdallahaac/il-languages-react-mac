@@ -123,7 +123,9 @@
 /* —— Per-card overrides —— */
 /* Card “2”: nudge number down */
 .nav-card[data-num="2"] {
-	--num-offset-y: -1px;
+	--badge-size: 46px;
+	--badge-right: 1.25rem;
+	--num-offset-y: -3px;
 }
 
 /* Card “3”: make badge larger and shift right */
@@ -132,8 +134,35 @@
 	--badge-right: 1.25rem;
 	--num-offset-y: -4px;
 }
+.nav-card[data-num="4"] {
+	--badge-size: 46px;
+	--badge-right: 1.25rem;
+	--num-offset-y: -4px;
+}
+.nav-card[data-num="5"] {
+	--badge-size: 46px;
+	--badge-right: 1.25rem;
+	--num-offset-y: -4px;
+}
+.nav-card[data-num="6"] {
+	--badge-size: 46px;
+	--badge-right: 1.25rem;
+	--num-offset-y: -1px;
+}
 
 /* Card “7”: nudge number down more */
 .nav-card[data-num="7"] {
-	--num-offset-y: 8px;
+	--badge-size: 46px;
+	--badge-right: 1.25rem;
+	--num-offset-y: -4px;
+}
+.nav-card[data-num="8"] {
+	--badge-size: 46px;
+	--badge-right: 1.25rem;
+	--num-offset-y: -1px;
+}
+.nav-card[data-num="9"] {
+	--badge-size: 46px;
+	--badge-right: 1.25rem;
+	--num-offset-y: -4px;
 }
