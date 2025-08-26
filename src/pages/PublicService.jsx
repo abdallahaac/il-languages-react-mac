@@ -19,7 +19,7 @@ const PublicService = ({ onNavigate }) => {
 		<div className="intro-wrapper public-service-page">
 			<header className="hero" role="banner">
 				<img src={image} alt="" className="hero-img" aria-hidden="true" />
-				<h1 className="hero-title">What this means for the public service</h1>
+				<h1 className="hero-title">What This Means for the Public Service</h1>
 			</header>
 
 			<section className="acknowledge">
