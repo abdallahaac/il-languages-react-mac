@@ -2,6 +2,7 @@ import React from "react";
 import image from "../../assets/results.jpeg"; // Path unchanged
 import "../objective.css"; // ✅ Updated stylesheet
 import BackToTop from "../../components/BackToTop";
+import { getHeroURL } from "../../prefetchHeroes";
 
 const Results = ({ onNavigate }) => {
 	return (

@@ -5,6 +5,7 @@ import React, {
 	useContext,
 	useMemo,
 	useRef,
+	useCallback,
 } from "react";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -43,6 +44,10 @@ import Results_FR from "./pages/fr/Results.jsx";
 import KnowledgeActions from "./components/KnowledgeActions";
 import TourModal from "./components/TourModal"; // <- guided tour
 
+// 🔥 Preloader helpers
+import { preloadImagesInBatches, preloadImage } from "./utils/imagePreloader";
+import { HERO_IMAGES } from "./heroManifest";
+
 // --- useLanguage Hook ---
 const useLanguage = () => {
 	const [lang, setLang] = useState("en");
@@ -77,7 +82,7 @@ function parseScormName(raw = "") {
 	const s = String(raw).trim();
 	if (!s) return { firstName: "", lastName: "" };
 
-	// Common SCORM 1.2 format
+	// Common SCORM 1.2 format "Last, First Middle"
 	if (s.includes(",")) {
 		const [last, rest = ""] = s.split(",");
 		const [first = ""] = rest.trim().split(/\s+/);
@@ -209,6 +214,56 @@ function App() {
 		}
 	}, [lmsConnected, scorm]);
 
+	// 🔥 Gather hero URLs for the current language
+	const heroUrlsToPreload = useMemo(() => {
+		// Prefer sections' own hero field if present
+		const fromSections = sections
+			.filter((s) => (s.lang === "both" || s.lang === lang) && s.hero)
+			.map((s) => s.hero);
+
+		if (fromSections.length) return Array.from(new Set(fromSections));
+
+		// Fallback to manual manifest if no hero fields on sections
+		const map = HERO_IMAGES[lang] || {};
+		return Array.from(new Set(Object.values(map)));
+	}, [lang]);
+
+	// 🔥 Preload all hero images for this language (idle + batched)
+	useEffect(() => {
+		if (!heroUrlsToPreload.length) return;
+		let cancelled = false;
+		const run = () => {
+			if (cancelled) return;
+			preloadImagesInBatches(heroUrlsToPreload, { batchSize: 4, delay: 120 });
+		};
+		if ("requestIdleCallback" in window) {
+			const id = requestIdleCallback(run, { timeout: 1000 });
+			return () => {
+				cancelled = true;
+				try {
+					cancelIdleCallback(id);
+				} catch {}
+			};
+		} else {
+			const t = setTimeout(run, 100);
+			return () => {
+				cancelled = true;
+				clearTimeout(t);
+			};
+		}
+	}, [heroUrlsToPreload]);
+
+	// Optional: warm a specific page on hover/focus
+	const preloadPageHero = useCallback(
+		(pageId) => {
+			const sec = sections.find((s) => s.id === pageId);
+			if (sec?.hero) return preloadImage(sec.hero);
+			const src = (HERO_IMAGES[lang] || {})[pageId];
+			if (src) return preloadImage(src);
+		},
+		[lang]
+	);
+
 	// Navigation: always record non-home visits + scroll-to-top
 	const handleNavigate = (id) => {
 		const newPageId = !id || id === "home" ? "home" : id;
@@ -299,7 +354,11 @@ function App() {
 	const Pages = lang === "fr" ? Pages_FR : Pages_EN;
 	const StaticPage = Pages[currentPage];
 
-	// Guided tour steps (EN/FR)
+	// Guided tour steps (EN/FR). Requires:
+	//  - .burger-button  on the header menu button
+	//  - .fullscreen-nav-links inside the open menu
+	//  - .close-menu     on the “X” button
+	//  - .content-navigation-container for the sections grid
 	const steps =
 		lang === "fr"
 			? [
@@ -321,7 +380,7 @@ function App() {
 						onEnter: () => {
 							document.querySelector(".burger-button")?.click();
 						},
-						recalcDelay: 300,
+						recalcDelay: 300, // wait for menu animation
 					},
 					{
 						target: null,
@@ -382,6 +441,7 @@ function App() {
 				onNavigate={handleNavigate}
 				currentPage={currentPage}
 				lang={lang}
+				onPrefetch={preloadPageHero} // ⭐ prefetch on menu hover/focus
 			/>
 			<main id="main-content" className="main-content">
 				{currentPage === "home" ? (
@@ -390,7 +450,10 @@ function App() {
 							<Hero onNavigate={handleNavigate} />
 						</div>
 						<div className="navigation-section">
-							<ContentNavigation onNavigate={handleNavigate} />
+							<ContentNavigation
+								onNavigate={handleNavigate}
+								onPrefetch={preloadPageHero} // ⭐ optional: prefetch on grid hover/focus
+							/>
 							<KnowledgeActions onNavigate={handleNavigate} />
 						</div>
 					</>

@@ -12,6 +12,8 @@ import clip7 from "../assets/audio/en/Colleen En Recording 14.wav"; // Plains�
 import image from "../assets/voices.jpg";
 import BackToTop from "../components/BackToTop";
 
+import { getHeroURL } from "../prefetchHeroes";
+
 // This new component renders your SVG and handles click events on the hexagons.
 
 // This component renders the SVG and now indicates which clips have been visited.
@@ -448,114 +450,6 @@ Miyo-Kîsikanisik (Have a nice day!)`,
 		},
 	];
 	/* ───────── word‑cloud data (same) ───────── */
-	const wordCloudData = [
-		{ category: "Cree languages", weight: 86475, percentage: -6.1 },
-		{ category: "Inuktitut", weight: 40320, percentage: 1.4 },
-		{ category: "Ojibwe languages", weight: 25440, percentage: -5.4 },
-		{ category: "Oji-Cree", weight: 15210, percentage: -1.1 },
-		{ category: "Innu Aimun", weight: 11605, percentage: -0.4 },
-		{ category: "Dene", weight: 11375, percentage: -10.9 },
-		{ category: "Mi’kmaq", weight: 9000, percentage: 8.0 },
-		{ category: "Atikamekw", weight: 6740, percentage: 2.2 },
-		{ category: "Siksiká’powahsin", weight: 6585, percentage: 19.1 },
-		{ category: "Slavey-Hare languages", weight: 2215, percentage: -20.3 },
-		{ category: "Tlicho ", weight: 2115, percentage: -10.0 },
-		{ category: "Anicinabemowin ", weight: 1925, percentage: -21.1 },
-		{ category: "Michif", weight: 1845, percentage: 57.7 },
-		{ category: "Dakelh ", weight: 1530, percentage: -25.9 },
-		{ category: "Dakota", weight: 1505, percentage: 0.7 },
-		{ category: "Kanien’kéha", weight: 1435, percentage: 11.7 },
-		{ category: "Halkomelem", weight: 1335, percentage: 29.6 },
-		{ category: "Gitxsan ", weight: 1110, percentage: -14.0 },
-		{ category: "Nisga’a", weight: 1080, percentage: 4.3 },
-		{ category: "Secwepemctsin ", weight: 1050, percentage: -12.9 },
-		{ category: "Stoney", weight: 915, percentage: 14.4 },
-		{ category: "Tsilhqot’in ", weight: 855, percentage: -15.3 },
-		{ category: "Wolastoqewi ", weight: 790, percentage: 6.8 },
-		{ category: "Kwak’wala ", weight: 760, percentage: 29.9 },
-		{ category: "Inuinnaqtun", weight: 750, percentage: -43.2 },
-		{ category: "Syilx ", weight: 665, percentage: -18.4 },
-		{ category: "Nuu-chah-nulth ", weight: 665, percentage: 25.5 },
-		{ category: "St’at’imcets", weight: 580, percentage: -24.7 },
-		{ category: "Ntlakapamux ", weight: 470, percentage: 11.9 },
-		{ category: "Tsimshian", weight: 445, percentage: 7.2 },
-		{ category: "Inuvialuktun", weight: 350, percentage: -45.3 },
-		{ category: "Assiniboine", weight: 350, percentage: 0.0 },
-		{ category: "Sḵwx̱wú7mesh", weight: 345, percentage: 23.2 },
-		{ category: "Heiltsuk", weight: 325, percentage: 160.0 },
-		{ category: "Haisla", weight: 285, percentage: 62.9 },
-		{ category: "Straits", weight: 280, percentage: -21.1 },
-		{ category: "Gwich’in", weight: 275, percentage: -22.5 },
-		{ category: "Dane-zaa ", weight: 270, percentage: -18.2 },
-		{ category: "Tutchone languages", weight: 255, percentage: -36.3 },
-		{ category: "Wetsuwet’en-Babine", weight: 240, percentage: 17.1 },
-		{ category: "Tahltan", weight: 235, percentage: -9.6 },
-		{ category: "Kaska ", weight: 225, percentage: -36.6 },
-		{ category: "Xaayda Kil", weight: 220, percentage: -51.1 },
-		{ category: "Gayogo̱hó", weight: 220, percentage: 76.0 },
-		{ category: "Ktunaxa ", weight: 210, percentage: 23.5 },
-		{ category: "Oneida", weight: 200, percentage: 14.3 },
-		{ category: "Tsuu T’ina ", weight: 175, percentage: 66.7 },
-		{ category: "Tse’khene ", weight: 135, percentage: -25.0 },
-		{ category: "Tlingit", weight: 120, percentage: -52.9 },
-	];
-
-	/* ───────── Highcharts loader (same) ───────── */
-	useEffect(() => {
-		let chart;
-		const render = () => {
-			if (!window.Highcharts) return;
-			const Highcharts = window.Highcharts;
-			if (!Highcharts.seriesTypes.wordcloud && window.HighchartsWordcloud)
-				window.HighchartsWordcloud(Highcharts);
-
-			chart = Highcharts.chart("indigenous-wordcloud", {
-				chart: { type: "wordcloud", height: 400 },
-				title: { text: null },
-				series: [
-					{
-						type: "wordcloud",
-						name: "Speakers",
-						data: wordCloudData.map((d) => ({
-							name: d.category, // <— here
-							weight: d.weight,
-							percentage: d.percentage,
-						})),
-						minFontSize: 10,
-						maxFontSize: 44,
-					},
-				],
-				tooltip: {
-					pointFormat:
-						"<b>{point.name}</b><br/>Speakers: {point.weight}<br/>Change: {point.percentage}%",
-				},
-				accessibility: {
-					point: {
-						valueDescriptionFormat:
-							"{index}. {point.name}, {point.weight} speakers, change {point.percentage}%.",
-					},
-				},
-			});
-		};
-
-		const load = (u) =>
-			new Promise((r) => {
-				const s = document.createElement("script");
-				s.src = u;
-				s.onload = r;
-				document.head.appendChild(s);
-			});
-
-		(async () => {
-			if (!window.Highcharts)
-				await load("https://code.highcharts.com/highcharts.js");
-			if (!window.Highcharts?.seriesTypes.wordcloud)
-				await load("https://code.highcharts.com/modules/wordcloud.js");
-			render();
-		})();
-
-		return () => chart && chart.destroy();
-	}, []);
 
 	/* ───────── helpers ───────── */
 	const toggleTranscript = (id) =>

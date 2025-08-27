@@ -1,16 +1,18 @@
 import React from "react";
-import image from "../assets/objective.jpeg"; // EN path (pages/ -> assets/)
 import "./objective.css"; // EN path (pages/ -> pages/objective.css)
 import BackToTop from "../components/BackToTop";
 
+import { getHeroURL } from "../prefetchHeroes";
+
 const Objective = ({ onNavigate }) => {
+	const url = getHeroURL("en", "objective-en");
+
 	return (
 		<div className="intro-wrapper objective-page">
 			{/* Hero */}
 			<header className="hero" role="banner">
 				<img
-					loading="lazy"
-					src={image}
+					src={url}
 					alt="Decorative image with floral elements"
 					className="hero-img"
 					aria-hidden="true"

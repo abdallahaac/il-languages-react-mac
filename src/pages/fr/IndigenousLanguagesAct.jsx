@@ -3,6 +3,8 @@ import "../IndigenousLanguagesAct.css";
 import image from "../../assets/ila.png";
 import BackToTop from "../../components/BackToTop";
 
+import { getHeroURL } from "../../prefetchHeroes";
+
 // Custom hook to get the current language from the <html> tag
 const useLanguage = () => {
 	const [lang, setLang] = useState("en"); // Default to English

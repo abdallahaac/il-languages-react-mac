@@ -4,6 +4,8 @@ import image from "../assets/resource.png";
 import "./resources.css";
 import BackToTop from "../components/BackToTop";
 
+import { getHeroURL } from "../prefetchHeroes";
+
 const Resources = ({ onNavigate }) => {
 	return (
 		<div className="intro-wrapper resources-page">

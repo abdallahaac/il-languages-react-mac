@@ -3,6 +3,8 @@ import "../KnowledgeCheck.css"; // Using the same stylesheet as the English vers
 import image from "../../assets/check.png";
 import BackToTop from "../../components/BackToTop";
 
+import { getHeroURL } from "../../prefetchHeroes";
+
 // Updated to accept visitedPages and lang props
 const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 	const scorm = useMemo(

@@ -2,7 +2,10 @@
 import React from "react";
 import image from "../assets/results.jpeg"; // EN path
 import "./objective.css"; // EN path
-import BackToTop from "../components/BackToTop"; // EN path
+import BackToTop from "../components/BackToTop";
+
+import { getHeroURL } from "../prefetchHeroes";
+// EN path
 
 const Results = ({ onNavigate }) => {
 	return (

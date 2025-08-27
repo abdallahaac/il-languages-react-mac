@@ -3,6 +3,8 @@ import "./KnowledgeCheck.css";
 import image from "../assets/check.png";
 import BackToTop from "../components/BackToTop";
 
+import { getHeroURL } from "../prefetchHeroes";
+
 const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 	const scorm = useMemo(
 		() => (window.pipwerks ? window.pipwerks.SCORM : null),

@@ -4,6 +4,8 @@ import "./PublicService.css"; // For page-specific styles
 import image from "../assets/what.png";
 import BackToTop from "../components/BackToTop";
 
+import { getHeroURL } from "../prefetchHeroes";
+
 const PublicService = ({ onNavigate }) => {
 	// State for the sign language accordion
 	const [openSignLanguage, setOpenSignLanguage] = useState(null);

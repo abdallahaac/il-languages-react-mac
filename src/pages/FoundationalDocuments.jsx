@@ -4,6 +4,8 @@ import "./FoundationalDocuments.css";
 import image from "../assets/foundation.jpeg";
 import BackToTop from "../components/BackToTop";
 
+import { getHeroURL } from "../prefetchHeroes";
+
 // A reusable FlipCard component
 const FlipCard = ({
 	id,

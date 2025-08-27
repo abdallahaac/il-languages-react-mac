@@ -22,26 +22,13 @@ const useLanguage = () => {
 	return lang;
 };
 
-const Header = ({ onNavigate, currentPage, lang: langProp }) => {
+const Header = ({ onNavigate, currentPage, lang: langProp, onPrefetch }) => {
 	const lang = (langProp || useLanguage()).toLowerCase();
 	const isFR = lang === "fr";
 
 	const [scrolled, setScrolled] = useState(false);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-	// 👇 now provided by context: displayName is "First Last"
-	const { displayName, firstName, lastName, learnerName } = useScorm();
-	const nameToShow =
-		(displayName && displayName.trim()) ||
-		[firstName, lastName].filter(Boolean).join(" ") ||
-		learnerName ||
-		"";
-
-	// Extra log so you can see it from the Header too
-	useEffect(() => {
-		console.log(`first name: ${firstName} , last name: ${lastName}`);
-	}, [firstName, lastName]);
-
+	const { learnerName } = useScorm();
 	const firstLinkRef = useRef(null);
 
 	const feedbackUrl =
@@ -180,7 +167,6 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 							}}
 						>
 							<img
-								loading="lazy"
 								src={logo}
 								alt={
 									isFR
@@ -197,13 +183,7 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 						</a>
 					</div>
 
-					{/* ✅ Show welcome only on the home page */}
-					{currentPage === "home" && (
-						<div className="welcome-message" aria-live="polite">
-							{isFR ? `Bienvenue ${nameToShow}` : `Welcome ${nameToShow}`}
-						</div>
-					)}
-
+					{/* ✅ Keep header as-is (no welcome text here per your request) */}
 					<div className="header-right">
 						<button
 							className="burger-button burger-menu"
@@ -284,6 +264,8 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 									ref={idx === 0 ? firstLinkRef : undefined}
 									onClick={(e) => handleNavClick(id, e)}
 									className={currentPage === id ? "active" : ""}
+									onMouseEnter={() => onPrefetch?.(id)} // ⭐ warm hero on hover
+									onFocus={() => onPrefetch?.(id)} // ⭐ warm hero on keyboard focus
 									dangerouslySetInnerHTML={{ __html: label }}
 								/>
 							);

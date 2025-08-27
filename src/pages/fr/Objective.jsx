@@ -2,7 +2,7 @@ import React from "react";
 import image from "../../assets/objective.jpeg"; // Path unchanged
 import "../objective.css"; // ✅ Updated stylesheet
 import BackToTop from "../../components/BackToTop";
-
+import { getHeroURL } from "../../prefetchHeroes";
 const Objective = ({ onNavigate }) => {
 	return (
 		<div className="intro-wrapper objective-page">

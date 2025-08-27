@@ -8,6 +8,7 @@ import image from "../../assets/efforts.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFeather, faInfinity } from "@fortawesome/free-solid-svg-icons";
 import BackToTop from "../../components/BackToTop";
+import { getHeroURL } from "../../prefetchHeroes";
 
 const RevitalizationEfforts_fr = ({ onNavigate }) => {
 	const [openSections, setOpenSections] = useState(new Set());
