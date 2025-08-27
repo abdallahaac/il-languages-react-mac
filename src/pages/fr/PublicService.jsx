@@ -20,13 +20,7 @@ const PublicService_fr = ({ onNavigate }) => {
 	return (
 		<div className="intro-wrapper public-service-page">
 			<header className="hero" role="banner">
-				<img
-					loading="lazy"
-					src={image}
-					alt=""
-					className="hero-img"
-					aria-hidden="true"
-				/>
+				<img src={image} alt="" className="hero-img" aria-hidden="true" />
 				<h1 className="hero-title">
 					Ce que signifie la Loi pour les fonctionnaires
 				</h1>

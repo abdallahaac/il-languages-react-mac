@@ -142,7 +142,7 @@ const RevitalizationEfforts = ({ onNavigate }) => {
 								(e.key === "Enter" || e.key === " ") && handleToggle("inuit")
 							}
 						>
-							<img loading="lazy" src={inuk} alt="inuk symbol" />
+							<img src={inuk} alt="inuk symbol" />
 						</div>
 						<div
 							className={`info-panel ${
@@ -152,7 +152,7 @@ const RevitalizationEfforts = ({ onNavigate }) => {
 							<h4>
 								Inuit
 								<span>
-									<img loading="lazy" src={inuk} alt="inuk symbol" />
+									<img src={inuk} alt="inuk symbol" />
 								</span>
 							</h4>
 							<p>

@@ -374,13 +374,7 @@ const Voices = ({ onNavigate }) => {
 		<div className="intro-wrapper">
 			{/* ███ hero ███ */}
 			<header className="hero" role="banner">
-				<img
-					loading="lazy"
-					src={image}
-					alt=""
-					className="hero-img"
-					aria-hidden="true"
-				/>
+				<img src={image} alt="" className="hero-img" aria-hidden="true" />
 				<h1 className="hero-title">Voix autochtones</h1>
 			</header>
 

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./IntroductionPage.css"; // For shared styles
 import "./PublicService.css"; // For page-specific styles
-import image from "../assets/what.png";
 import BackToTop from "../components/BackToTop";
 
 import { getHeroURL } from "../prefetchHeroes";

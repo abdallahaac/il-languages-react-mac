@@ -228,13 +228,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 		return (
 			<div className="intro-wrapper knowledge-check-page">
 				<header className="hero" role="banner">
-					<img
-						loading="lazy"
-						src={url}
-						alt=""
-						className="hero-img"
-						aria-hidden="true"
-					/>
+					<img src={url} alt="" className="hero-img" aria-hidden="true" />
 					<h1 className="hero-title">{currentText.title}</h1>
 				</header>
 				<main className="quiz-container locked-quiz">
@@ -253,13 +247,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 	return (
 		<div className="intro-wrapper knowledge-check-page">
 			<header className="hero" role="banner">
-				<img
-					loading="lazy"
-					src={image}
-					alt=""
-					className="hero-img"
-					aria-hidden="true"
-				/>
+				<img src={image} alt="" className="hero-img" aria-hidden="true" />
 				<h1 className="hero-title">Knowledge Check</h1>
 			</header>
 			<main className="quiz-container">

@@ -28,13 +28,7 @@ const RevitalizationEfforts_fr = ({ onNavigate }) => {
 	return (
 		<div className="intro-wrapper revitalization-efforts-page">
 			<header className="hero" role="banner">
-				<img
-					loading="lazy"
-					src={image}
-					alt=""
-					className="hero-img"
-					aria-hidden="true"
-				/>
+				<img src={image} alt="" className="hero-img" aria-hidden="true" />
 				<h1 className="hero-title">
 					Efforts pour revitaliser <br /> les langues autochtones
 				</h1>
@@ -148,7 +142,7 @@ const RevitalizationEfforts_fr = ({ onNavigate }) => {
 								(e.key === "Enter" || e.key === " ") && handleToggle("inuit")
 							}
 						>
-							<img loading="lazy" src={inuk} alt="inuk symbol" />
+							<img src={inuk} alt="inuk symbol" />
 						</div>
 						<div
 							className={`info-panel ${
@@ -158,7 +152,7 @@ const RevitalizationEfforts_fr = ({ onNavigate }) => {
 							<h4>
 								Peuple Inuit
 								<span>
-									<img loading="lazy" src={inuk} alt="inuk symbol" />
+									<img src={inuk} alt="inuk symbol" />
 								</span>
 							</h4>
 							<p>
