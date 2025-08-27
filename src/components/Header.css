@@ -306,3 +306,46 @@
 		white-space: normal;
 	}
 }
+/* 0) Reset any legacy underline on the anchor itself */
+.logo-link,
+.logo-link:hover,
+.logo-link:focus,
+.logo-link:active,
+.logo-link:focus-visible {
+	text-decoration: none;
+	border-bottom: none; /* ensure the anchor never draws the line */
+}
+
+/* 1) Base span styles (no line by default) */
+.logo-link span {
+	transition: color 0.1s, border-color 0.3s;
+	border-bottom: 0; /* explicitly none */
+}
+
+/* 2) Transparent header (before scroll): keep white + show white line on hover */
+.main-header:not(.scrolled) .logo-link:hover span {
+	color: #fff;
+	border-bottom: 1px solid #fff;
+}
+
+/* 3) White header (after scroll): turn blue on hover, NO underline */
+.main-header.scrolled .logo-link:hover span {
+	color: var(--accent);
+	border-bottom: 0; /* no line */
+}
+
+/* 4) Extra guard: when scrolled & NOT hovered, keep no line */
+.main-header.scrolled .logo-link span {
+	border-bottom: 0;
+}
+
+/* Optional a11y: focus outline on the span instead of underline */
+.logo-link:focus-visible span {
+	outline: 2px solid #ffbf47;
+	outline-offset: 2px;
+	border-bottom: 0;
+}
+.main-header:not(.scrolled) .logo-link:focus-visible span {
+	/* If you prefer a white focus outline on dark header */
+	outline-color: #fff;
+}
