@@ -1,3 +1,4 @@
+// src/components/Header.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useScorm } from "../App";
 import "./Header.css";
@@ -28,7 +29,36 @@ const Header = ({ onNavigate, currentPage, lang: langProp, onPrefetch }) => {
 
 	const [scrolled, setScrolled] = useState(false);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const { learnerName } = useScorm();
+
+	// ✅ Pull parsed values and connection state from SCORM context
+	const { lmsConnected, firstName, lastName } = useScorm();
+
+	// 🔎 Console logs (with clear fallback when not connected)
+	useEffect(() => {
+		if (lmsConnected) {
+			console.log(
+				`first name: ${firstName || "(empty)"} , last name: ${
+					lastName || "(empty)"
+				}`
+			);
+		} else {
+			console.log("[SCORM] Not connected — using placeholder name.");
+		}
+	}, [lmsConnected, firstName, lastName]);
+
+	// Greeting with placeholder when not connected or empty name
+	const hasName = Boolean(
+		(firstName && firstName.trim()) || (lastName && lastName.trim())
+	);
+	const greetingName = hasName
+		? `${firstName ?? ""} ${lastName ?? ""}`.trim()
+		: isFR
+		? "apprenant·e"
+		: "learner";
+	const greetingText = isFR
+		? `Bienvenue ${greetingName}`
+		: `Welcome ${greetingName}`;
+
 	const firstLinkRef = useRef(null);
 
 	const feedbackUrl =
@@ -183,7 +213,13 @@ const Header = ({ onNavigate, currentPage, lang: langProp, onPrefetch }) => {
 						</a>
 					</div>
 
-					{/* ✅ Keep header as-is (no welcome text here per your request) */}
+					{/* ✅ Welcome on home; placeholder when SCORM name missing */}
+					{currentPage === "home" && (
+						<div className="welcome-message" aria-live="polite">
+							{greetingText}
+						</div>
+					)}
+
 					<div className="header-right">
 						<button
 							className="burger-button burger-menu"

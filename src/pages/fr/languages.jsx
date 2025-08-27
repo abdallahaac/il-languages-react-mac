@@ -1,18 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "../IntroductionPage.css";
 import image from "../../assets/language.jpeg";
 import BackToTop from "../../components/BackToTop";
-
-import { getHeroURL } from "../../prefetchHeroes";
-
 import { loadHighcharts, ensureModule } from "../../utils/highchartsLoader";
 
 const Languages = ({ onNavigate }) => {
-	/* ───────── état (kept for parity if you expand later) ───────── */
-	const [activeClipId] = useState(null);
-	const [transcriptOpen] = useState({});
-	const [visitedClips] = useState(new Set());
-
 	/* ───────── données du nuage de mots ───────── */
 	const wordCloudData = [
 		{ category: "Langues cries", weight: 86475, percentage: -6.1 },
@@ -70,22 +62,18 @@ const Languages = ({ onNavigate }) => {
 		{ category: "Tlingit", weight: 120, percentage: -52.9 },
 	];
 
-	/* ───────── Highcharts (one-time) ───────── */
+	/* ───────── Highcharts (singleton) ───────── */
 	useEffect(() => {
 		let chart;
 
 		(async () => {
-			// If any page in your SPA uses Stock charts, set useStock: true and
-			// remove all other highcharts.js loads site-wide.
 			const Highcharts = await loadHighcharts({ useStock: false });
-
-			// Load the wordcloud module only if missing
 			await ensureModule(
 				"https://code.highcharts.com/modules/wordcloud.js",
 				(hc) => !!hc?.seriesTypes?.wordcloud
 			);
 
-			chart = Highcharts.chart("indigenous-wordcloud-fr", {
+			chart = Highcharts.chart("indigenous-wordcloud", {
 				chart: { type: "wordcloud", height: 400 },
 				title: { text: null },
 				series: [
@@ -116,19 +104,19 @@ const Languages = ({ onNavigate }) => {
 			});
 		})();
 
-		return () => {
-			if (chart) chart.destroy();
-		};
+		return () => chart && chart.destroy();
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	/* ───────── rendu ───────── */
 	return (
 		<div className="intro-wrapper">
+			{/* ███ hero ███ */}
 			<header className="hero" role="banner">
 				<img src={image} alt="" className="hero-img" aria-hidden="true" />
 				<h1 className="hero-title">Les langues autochtones au Canada</h1>
 			</header>
 
+			{/* ███ contexte élargi ███ */}
 			<section className="context">
 				<h2>Les langues autochtones au Canada</h2>
 
@@ -140,17 +128,33 @@ const Languages = ({ onNavigate }) => {
 					maternelle, qu’elle se sent le plus à l’aise. En 2022, à l’occasion du
 					lancement de la Décennie internationale des langues autochtones
 					proclamée par les Nations Unies, Son Excellence a fait une allocution
-					sur l’importance des langues autochtones…
+					sur l’importance des langues autochtones. Elle a souligné qu’il n’y
+					avait pas de meilleure façon de préserver les langues autochtones que
+					de les parler, ajoutant que les langues constituent une partie
+					importante de l’identité autochtone et sont essentielles à la survie
+					des peuples autochtones. Selon elle, nous devons utiliser tous les
+					outils dont nous disposons pour protéger les langues autochtones, car
+					plusieurs se sont perdues en raison des pensionnats, de la
+					colonisation et des politiques d’assimilation.
 				</p>
 
 				<p className="dis">
 					Les langues autochtones sont au cœur de l’identité des peuples
 					autochtones : les langues des Premières Nations, du peuple inuit et de
-					la Nation métisse transmettent des visions du monde…
+					la Nation métisse transmettent des visions du monde et inspirent les
+					valeurs, les relations avec le territoire et les systèmes juridiques
+					autochtones. L’histoire de la colonisation au Canada, de même que les
+					lois et les politiques du gouvernement du Canada ont profondément nui
+					aux langues autochtones. En raison des politiques d’assimilation
+					restrictives, plusieurs langues autochtones ont disparu ou sont en
+					voie de disparaître au Canada. Toutefois, plusieurs communautés
+					autochtones travaillent activement à la revitalisation de leur langue
+					et honorent les aîné·es et gardien·nes du savoir pour que leur langue
+					reste vivante.
 				</p>
 
 				<div className="gina-img">
-					<div>
+					<div className="">
 						<a
 							className="link-source"
 							id="bigger"
@@ -182,24 +186,53 @@ const Languages = ({ onNavigate }) => {
 						className="link-source"
 						rel="noopener noreferrer"
 					>
-						70 langues autochtones distinctes sont parlées
-					</a>{" "}
-					actuellement au Canada…
+						70 langues autochtones distinctes sont parlées actuellement au
+						Canada par les membres des Premières Nations, du peuple inuit et de
+						la Nation métisse
+					</a>
+					. On peut regrouper ces langes en 12 familles : les langues
+					algonquiennes, inuites, athabascanes, sioux, salishennes, tsimshians,
+					wakashanes et iroquoiennes, ainsi que le michif, le tlingit, le
+					kutenai et le haïda. En 2021, environ 237 420 Autochtones au Canada
+					ont déclaré{" "}
+					<a
+						href="https://www12.statcan.gc.ca/census-recensement/2021/ref/dict/az/Definition-fra.cfm?ID=pop054"
+						className="link-source"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						connaître assez bien une langue autochtone pour pouvoir soutenir une
+						conversation
+					</a>
+					. Malheureusement, le nombre d’Autochtones qui indiquent une langue
+					autochtone comme première langue apprise à la maison durant l’enfance
+					ne cesse de baisser.
 				</p>
 
 				<p>
-					Selon l’Atlas des langues en danger dans le monde de l’UNESCO, les
-					langues autochtones dans le monde entier sont menacées de disparition…
+					Selon l’Atlas des langues en danger dans le monde de l’Organisation
+					des Nations Unies pour l’éducation, la science et la culture (UNESCO),
+					les langues autochtones dans le monde entier sont menacées de
+					disparition et sont classées comme étant vulnérables, en danger,
+					sérieusement en danger ou en situation critique. Au Canada, les trois
+					quarts des langues autochtones sont en danger, et aucune n’est sûre.
 				</p>
 				<p>
 					La Commission de vérité et réconciliation du Canada a elle aussi
-					constaté que les langues autochtones sont aujourd’hui fragilisées…
+					constaté que les langues autochtones sont aujourd’hui fragilisées par
+					les séquelles intergénérationnelles du génocide culturel et les
+					politiques colonialistes discriminatoires du passé. Les pensionnats
+					autochtones, notamment, visaient à éradiquer les cultures et les
+					langues autochtones en retirant de force les enfants de leur famille
+					et en interdisant tout usage de leur langue, sous peine de punition et
+					d’humiliation.
 				</p>
 
 				<h3>Diversité des langues autochtones</h3>
 				<p>
 					Le tableau suivant fournit des informations sur le nombre de personnes
-					autochtones qui pouvaient parler une langue autochtone en 2021…
+					autochtones qui pouvaient parler une langue autochtone en 2021, y
+					compris le pourcentage de changement par rapport à 2016.
 				</p>
 
 				<ol className="graph-ol">
@@ -208,24 +241,29 @@ const Languages = ({ onNavigate }) => {
 						une langue.
 					</li>
 					<li>
-						<strong>Voir les détails :</strong> Infobulle avec locuteurs et
-						évolution (2016→2021).
+						<strong>Voir les détails de la langue :</strong> Une infobulle
+						apparaît, indiquant le nombre de locuteurs et l'évolution en
+						pourcentage entre 2016 et 2021.
 					</li>
 					<li>
-						<strong>Télécharger les données :</strong> Menu d’export CSV/Excel.
+						<strong>Télécharger les données :</strong> Utilisez le menu
+						d'exportation pour télécharger les statistiques en format CSV ou
+						Excel.
 					</li>
 					<li>
-						<strong>Voir le tableau :</strong> “Voir les données” dans le menu
-						d’exportation.
+						<strong>Visualiser le tableau des données :</strong> Cliquez sur
+						“Voir les données” dans le menu d'exportation pour afficher le
+						tableau complet.
 					</li>
 				</ol>
 			</section>
 
+			{/* ███ nuage de mots ███ */}
 			<figure
 				className="wordcloud"
 				aria-label="Nuage de mots des langues autochtones"
 			>
-				<div id="indigenous-wordcloud-fr" />
+				<div id="indigenous-wordcloud" />
 				<figcaption>
 					Nombre de personnes autochtones capables de parler une langue
 					autochtone en 2021 et pourcentage de changement par rapport à 2016.
@@ -234,6 +272,7 @@ const Languages = ({ onNavigate }) => {
 
 			<BackToTop />
 
+			{/* ███ fil d'Ariane ███ */}
 			<nav className="breadcrumb" aria-label="Navigation de la page">
 				<button
 					onClick={() => {
@@ -243,6 +282,7 @@ const Languages = ({ onNavigate }) => {
 				>
 					&laquo;&nbsp;Retour
 				</button>
+
 				<button
 					onClick={() => {
 						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });

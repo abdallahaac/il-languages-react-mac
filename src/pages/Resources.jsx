@@ -7,12 +7,13 @@ import BackToTop from "../components/BackToTop";
 import { getHeroURL } from "../prefetchHeroes";
 
 const Resources = ({ onNavigate }) => {
+	const url = getHeroURL("en", "resources");
+
 	return (
 		<div className="intro-wrapper resources-page">
 			<header className="hero" role="banner">
 				<img
-					loading="lazy"
-					src={image}
+					src={url}
 					alt="Decorative image with floral elements"
 					className="hero-img"
 					aria-hidden="true"

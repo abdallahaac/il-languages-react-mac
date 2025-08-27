@@ -6,10 +6,10 @@ import objectiveIMG from "./assets/objective.jpeg";
 import voicesIMG from "./assets/voices.jpeg";
 import languagesIMG from "./assets/language.jpeg";
 import resultsIMG from "./assets/results.jpeg";
-import docsIMG from "./assets/hero-documents.png";
+import docsIMG from "./assets/foundation.jpeg";
 import ilaIMG from "./assets/hero-languages-act.png";
-import revitalizeIMG from "./assets/hero-revitalize.png";
-import publicServiceIMG from "./assets/hero-public-service.png";
+import revitalizeIMG from "./assets/efforts.png";
+import publicServiceIMG from "./assets/what.png";
 import checkIMG from "./assets/check.png";
 import resourcesIMG from "./assets/resource.png";
 

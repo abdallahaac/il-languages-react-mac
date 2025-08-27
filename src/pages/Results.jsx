@@ -8,13 +8,15 @@ import { getHeroURL } from "../prefetchHeroes";
 // EN path
 
 const Results = ({ onNavigate }) => {
+	const url = getHeroURL("en", "results-en");
+
 	return (
 		<div className="intro-wrapper objective-page">
 			{/* Hero */}
 			<header className="hero" role="banner">
 				<img
 					loading="lazy"
-					src={image}
+					src={url}
 					alt="Decorative image with floral elements"
 					className="hero-img"
 					aria-hidden="true"

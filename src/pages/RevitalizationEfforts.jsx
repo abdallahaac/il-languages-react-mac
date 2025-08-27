@@ -25,17 +25,12 @@ const RevitalizationEfforts = ({ onNavigate }) => {
 			return newOpen;
 		});
 	};
+	const url = getHeroURL("en", "revitalization-efforts");
 
 	return (
 		<div className="intro-wrapper revitalization-efforts-page">
 			<header className="hero" role="banner">
-				<img
-					loading="lazy"
-					src={image}
-					alt=""
-					className="hero-img"
-					aria-hidden="true"
-				/>
+				<img src={url} alt="" className="hero-img" aria-hidden="true" />
 				<h1 className="hero-title">
 					Efforts to Revitalize Indigenous Languages
 				</h1>

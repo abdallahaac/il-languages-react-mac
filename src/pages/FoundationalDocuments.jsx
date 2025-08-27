@@ -76,6 +76,8 @@ const FlipCard = ({
 const FoundationalDocuments = ({ onNavigate }) => {
 	// State for the first set of cards (Action Plan)
 	const [flippedCards, setFlippedCards] = useState(new Set());
+	const url = getHeroURL("en", "foundational-documents");
+
 	const handleFlip = (cardId) => {
 		setFlippedCards((prevFlipped) => {
 			const newFlipped = new Set(prevFlipped);
@@ -215,13 +217,7 @@ We call upon all governments to recognize Indigenous languages as official langu
 	return (
 		<div className="intro-wrapper foundational-documents-page">
 			<header className="hero" role="banner">
-				<img
-					loading="lazy"
-					src={image}
-					alt=""
-					className="hero-img"
-					aria-hidden="true"
-				/>
+				<img src={url} alt="" className="hero-img" aria-hidden="true" />
 				<h1 className="hero-title">Foundational Documents</h1>
 			</header>
 

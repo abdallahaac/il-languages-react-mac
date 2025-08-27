@@ -16,17 +16,12 @@ const PublicService = ({ onNavigate }) => {
 	const handleSignLanguageToggle = (sectionId) => {
 		setOpenSignLanguage((prev) => (prev === sectionId ? null : sectionId));
 	};
+	const url = getHeroURL("en", "public-service");
 
 	return (
 		<div className="intro-wrapper public-service-page">
 			<header className="hero" role="banner">
-				<img
-					loading="lazy"
-					src={image}
-					alt=""
-					className="hero-img"
-					aria-hidden="true"
-				/>
+				<img src={url} alt="" className="hero-img" aria-hidden="true" />
 				<h1 className="hero-title">What This Means for the Public Service</h1>
 			</header>
 

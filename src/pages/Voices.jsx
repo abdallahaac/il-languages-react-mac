@@ -297,6 +297,7 @@ const Voices = ({ onNavigate }) => {
 	const [activeClipId, setActiveClipId] = useState(null);
 	const [transcriptOpen, setTranscriptOpen] = useState({});
 	const [visitedClips, setVisitedClips] = useState(new Set()); // New state for tracking visited clips
+	const url = getHeroURL("en", "voices-en");
 
 	/* ───────── audio data (same) ───────── */
 	const clips = [
@@ -471,13 +472,7 @@ Miyo-Kîsikanisik (Have a nice day!)`,
 		<div className="intro-wrapper intro-page">
 			{/* ███ hero ███ */}
 			<header className="hero" role="banner">
-				<img
-					loading="lazy"
-					src={image}
-					alt=""
-					className="hero-img"
-					aria-hidden="true"
-				/>
+				<img src={url} alt="" className="hero-img" aria-hidden="true" />
 				<h1 className="hero-title">Indigenous Voices</h1>
 			</header>
 

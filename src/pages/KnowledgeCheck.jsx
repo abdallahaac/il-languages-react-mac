@@ -6,6 +6,8 @@ import BackToTop from "../components/BackToTop";
 import { getHeroURL } from "../prefetchHeroes";
 
 const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
+	const url = getHeroURL("en", "knowledge-check");
+
 	const scorm = useMemo(
 		() => (window.pipwerks ? window.pipwerks.SCORM : null),
 		[]
@@ -228,7 +230,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 				<header className="hero" role="banner">
 					<img
 						loading="lazy"
-						src={image}
+						src={url}
 						alt=""
 						className="hero-img"
 						aria-hidden="true"
