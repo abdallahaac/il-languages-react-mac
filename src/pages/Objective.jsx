@@ -1,21 +1,33 @@
 import React from "react";
-import "./objective.css"; // EN path (pages/ -> pages/objective.css)
+import "./objective.css"; // EN path
 import BackToTop from "../components/BackToTop";
 
 import { getHeroURL } from "../prefetchHeroes";
+import { useHeroSrc } from "../utils/useHeroSrc";
 
 const Objective = ({ onNavigate }) => {
+	// Resolve bundled hero URL from the manifest
 	const url = getHeroURL("en", "objective-en");
+
+	// Use the custom hook for cached/preloaded hero src
+	const src = useHeroSrc(url);
 
 	return (
 		<div className="intro-wrapper objective-page">
 			{/* Hero */}
 			<header className="hero" role="banner">
 				<img
-					src={url}
-					alt="Decorative image with floral elements"
 					className="hero-img"
+					src={src}
+					alt=""
 					aria-hidden="true"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
+					onError={() => {
+						// If a blob URL fails, fall back to the original
+						if (src !== url) setSrc(url);
+					}}
 				/>
 				<h1 className="hero-title">Learning Objectives</h1>
 			</header>
@@ -81,8 +93,6 @@ const Objective = ({ onNavigate }) => {
 					</ul>
 				</article>
 
-				{/* Learning Outcomes */}
-
 				<BackToTop />
 
 				{/* Breadcrumb / Navigation */}
@@ -95,7 +105,6 @@ const Objective = ({ onNavigate }) => {
 					>
 						&laquo;&nbsp;Back
 					</button>
-
 					<button
 						onClick={() => {
 							window.scrollTo({ top: 0, left: 0, behavior: "smooth" });

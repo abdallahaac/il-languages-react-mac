@@ -67,3 +67,11 @@ button:focus-visible {
 	button {
 	}
 }
+.hero-img {
+	transition: none !important;
+}
+.hero-img {
+	width: 100%;
+	aspect-ratio: 16/9;
+	object-fit: cover;
+}

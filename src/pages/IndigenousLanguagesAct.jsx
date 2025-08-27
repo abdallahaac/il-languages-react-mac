@@ -1,41 +1,31 @@
 import React, { useState, useEffect } from "react";
 import "./IndigenousLanguagesAct.css";
-import image from "../assets/ila.png";
+import BackToTop from "../components/BackToTop";
+import { getHeroURL } from "../prefetchHeroes";
+import { useHeroSrc } from "../utils/useHeroSrc";
 
 // Custom hook to get the current language from the <html> tag
 const useLanguage = () => {
 	const [lang, setLang] = useState("en"); // Default to English
-
 	useEffect(() => {
-		// Observer to watch for changes on the lang attribute of the html element
 		const observer = new MutationObserver((mutations) => {
 			mutations.forEach((mutation) => {
 				if (
 					mutation.type === "attributes" &&
 					mutation.attributeName === "lang"
 				) {
-					setLang(mutation.target.lang);
+					setLang(mutation.target.lang || "en");
 				}
 			});
 		});
-
-		// Start observing
-		observer.observe(document.documentElement, {
-			attributes: true,
-		});
-
-		// Set initial language
+		observer.observe(document.documentElement, { attributes: true });
 		setLang(document.documentElement.lang || "en");
-
-		// Cleanup observer on component unmount
 		return () => observer.disconnect();
 	}, []);
-
 	return lang;
 };
 
-// --- Content Objects ---
-
+// --- Content Objects (unchanged) ---
 const content_en = {
 	title: "Indigenous Languages Act",
 	sections: [
@@ -118,14 +108,21 @@ const IndigenousLanguagesAct = ({ onNavigate }) => {
 	const lang = useLanguage();
 	const content = lang === "fr" ? content_fr : content_en;
 
+	// 🔥 Resolve hero URL via manifest, then use cached/pinned blob via hook
+	const url = getHeroURL(lang, "indigenous-languages-act");
+	const src = useHeroSrc(url);
+
 	return (
 		<div className="intro-wrapper ila-page">
 			<header className="hero" role="banner">
 				<img
-					src={image}
+					src={src}
 					alt="Decorative image related to the Indigenous Languages Act"
 					className="hero-img"
 					aria-hidden="true"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
 				/>
 				<h1 className="hero-title">
 					<em dangerouslySetInnerHTML={{ __html: content.title }} />
@@ -164,12 +161,14 @@ const IndigenousLanguagesAct = ({ onNavigate }) => {
 				</section>
 			))}
 
+			<BackToTop />
+
 			<nav className="breadcrumb" aria-label="Page navigation">
 				<button onClick={() => onNavigate?.("foundational-documents")}>
-					&laquo;&nbsp;Back
+					« Back
 				</button>
 				<button onClick={() => onNavigate?.("revitalization-efforts")}>
-					Next&nbsp;&raquo;
+					Next »
 				</button>
 			</nav>
 		</div>

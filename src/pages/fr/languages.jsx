@@ -3,6 +3,9 @@ import "../IntroductionPage.css";
 import image from "../../assets/language.jpeg";
 import BackToTop from "../../components/BackToTop";
 import { loadHighcharts, ensureModule } from "../../utils/highchartsLoader";
+// 🔥 use the same manifest + hook as other hero pages
+import { getHeroURL } from "../../prefetchHeroes";
+import { useHeroSrc } from "../../utils/useHeroSrc";
 
 const Languages = ({ onNavigate }) => {
 	/* ───────── données du nuage de mots ───────── */
@@ -107,15 +110,26 @@ const Languages = ({ onNavigate }) => {
 		return () => chart && chart.destroy();
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+	/* ───────── hero URL (manifest + preloader) ───────── */
+	const url = getHeroURL("fr", "languages-fr"); // or "en" / "languages-en" depending on page
+	const src = useHeroSrc(url);
+
 	/* ───────── rendu ───────── */
 	return (
 		<div className="intro-wrapper">
 			{/* ███ hero ███ */}
 			<header className="hero" role="banner">
-				<img src={image} alt="" className="hero-img" aria-hidden="true" />
+				<img
+					src={src}
+					alt=""
+					className="hero-img"
+					aria-hidden="true"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
+				/>
 				<h1 className="hero-title">Les langues autochtones au Canada</h1>
 			</header>
-
 			{/* ███ contexte élargi ███ */}
 			<section className="context">
 				<h2>Les langues autochtones au Canada</h2>

@@ -15,7 +15,7 @@ import Footer from "./components/Footer";
 import sections from "./pages/sectionData";
 import "./App.css";
 import "./typography.css";
-
+import HeadPreloads from "./meta/HeadPreloads";
 // --- English & French Page Imports ---
 import IntroductionPage_EN from "./pages/IntroductionPage";
 import FoundationalDocuments_EN from "./pages/FoundationalDocuments";
@@ -40,6 +40,7 @@ import Objective_FR from "./pages/fr/Objective.jsx";
 import Voices_FR from "./pages/fr/Voices.jsx";
 import Languages_FR from "./pages/fr/languages.jsx";
 import Results_FR from "./pages/fr/Results.jsx";
+import { preloadAll } from "./utils/imagePreloader";
 
 import KnowledgeActions from "./components/KnowledgeActions";
 import TourModal from "./components/TourModal"; // <- guided tour
@@ -227,30 +228,12 @@ function App() {
 		const map = HERO_IMAGES[lang] || {};
 		return Array.from(new Set(Object.values(map)));
 	}, [lang]);
+	// top
 
-	// 🔥 Preload all hero images for this language (idle + batched)
+	// fastest: launch at language change
 	useEffect(() => {
 		if (!heroUrlsToPreload.length) return;
-		let cancelled = false;
-		const run = () => {
-			if (cancelled) return;
-			preloadImagesInBatches(heroUrlsToPreload, { batchSize: 4, delay: 120 });
-		};
-		if ("requestIdleCallback" in window) {
-			const id = requestIdleCallback(run, { timeout: 1000 });
-			return () => {
-				cancelled = true;
-				try {
-					cancelIdleCallback(id);
-				} catch {}
-			};
-		} else {
-			const t = setTimeout(run, 100);
-			return () => {
-				cancelled = true;
-				clearTimeout(t);
-			};
-		}
+		preloadAll(heroUrlsToPreload);
 	}, [heroUrlsToPreload]);
 
 	// Optional: warm a specific page on hover/focus

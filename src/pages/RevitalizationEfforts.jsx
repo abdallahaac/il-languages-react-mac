@@ -1,36 +1,42 @@
 import React, { useState } from "react";
-import "./IntroductionPage.css"; // For shared
-import "./RevitalizationEfforts.css"; // For page-specific styles
-import inuk from "../assets/inuk.svg";
-
-import image from "../assets/efforts.png";
+import "./IntroductionPage.css"; // shared
+import "./RevitalizationEfforts.css"; // page-specific
+import inuk from "../assets/inuk.svg"; // keep if you use it elsewhere
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFeather, faInfinity } from "@fortawesome/free-solid-svg-icons";
 import BackToTop from "../components/BackToTop";
 
 import { getHeroURL } from "../prefetchHeroes";
+import { useHeroSrc } from "../utils/useHeroSrc"; // <-- add
 
 const RevitalizationEfforts = ({ onNavigate }) => {
 	const [openSections, setOpenSections] = useState(new Set());
 
 	const handleToggle = (sectionId) => {
 		setOpenSections((prevOpen) => {
-			const newOpen = new Set(prevOpen);
-			if (newOpen.has(sectionId)) {
-				newOpen.delete(sectionId);
-			} else {
-				newOpen.add(sectionId);
-			}
-			return newOpen;
+			const next = new Set(prevOpen);
+			next.has(sectionId) ? next.delete(sectionId) : next.add(sectionId);
+			return next;
 		});
 	};
+
+	// Resolve hero URL from manifest and get cached/pinned blob src
 	const url = getHeroURL("en", "revitalization-efforts");
+	const src = useHeroSrc(url); // <-- use the hook
 
 	return (
 		<div className="intro-wrapper revitalization-efforts-page">
 			<header className="hero" role="banner">
-				<img src={url} alt="" className="hero-img" aria-hidden="true" />
+				<img
+					src={src}
+					alt=""
+					className="hero-img"
+					aria-hidden="true"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
+				/>
 				<h1 className="hero-title">
 					Efforts to Revitalize Indigenous Languages
 				</h1>

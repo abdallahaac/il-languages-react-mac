@@ -1,29 +1,24 @@
-// ContentNavigation.jsx
+// src/components/ContentNavigation.jsx
 import React from "react";
 import "./ContentNavigation.css";
-import { prefetchHero, hintHero } from "../prefetchHeroes";
 
 /* ——— helper: current <html lang=""> ——— */
 const useLanguage = () => (document.documentElement.lang || "en").toLowerCase();
 
 /* ——— one card ——— */
-const NavCard = ({ number, titleHTML, id, onNavigate, isFR }) => {
+const NavCard = ({ number, titleHTML, id, onNavigate, onPrefetch, isFR }) => {
 	const plain = titleHTML.replace(/<[^>]+>/g, "");
-	const lang = isFR ? "fr" : "en";
 
-	const warm = () => {
-		// Never throws; logs success/fail instead.
-		prefetchHero(lang, id);
-		hintHero(lang, id);
-	};
+	const handleClick = () => onNavigate?.(id);
+	const handleHint = () => onPrefetch?.(id); // warm hero on hover/focus if provided
 
 	return (
 		<button
 			className="nav-card"
 			data-num={number}
-			onClick={() => onNavigate?.(id)}
-			onMouseEnter={warm}
-			onFocus={warm}
+			onClick={handleClick}
+			onMouseEnter={handleHint}
+			onFocus={handleHint}
 			aria-label={(isFR ? "Aller à " : "Navigate to ") + plain}
 		>
 			<span className="nav-card-number" aria-hidden="true">
@@ -38,7 +33,7 @@ const NavCard = ({ number, titleHTML, id, onNavigate, isFR }) => {
 	);
 };
 
-const ContentNavigation = ({ onNavigate, lang: langProp }) => {
+const ContentNavigation = ({ onNavigate, onPrefetch, lang: langProp }) => {
 	const lang = (langProp || useLanguage()).toLowerCase();
 	const isFR = lang === "fr";
 
@@ -119,6 +114,7 @@ const ContentNavigation = ({ onNavigate, lang: langProp }) => {
 						key={item.number}
 						{...item}
 						onNavigate={onNavigate}
+						onPrefetch={onPrefetch} // <-- pass through for hover/focus preloading
 						isFR={isFR}
 					/>
 				))}

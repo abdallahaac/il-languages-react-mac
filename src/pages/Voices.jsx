@@ -6,13 +6,15 @@ import clip2 from "../assets/audio/en/Inuktitut En Lauralee.wav";
 import clip3 from "../assets/audio/en/Alison En Mitchif.wav";
 import clip4 from "../assets/audio/en/Xaayda Kil.wav"; // Haida
 import clip5 from "../assets/audio/en/Innu En Pam Dough.mp3";
-import clip6 from "../assets/audio/en/Bedford Institute of Oceanography 7.wav"; // Mi’kmaq
-import clip7 from "../assets/audio/en/Colleen En Recording 14.wav"; // Plains Cree
+import clip6 from "../assets/audio/en/Bedford Institute of Oceanography 7.wav"; // Mi’kmaq
+import clip7 from "../assets/audio/en/Colleen En Recording 14.wav"; // Plains Cree
 
-import image from "../assets/voices.jpg";
+// ❌ removed: import image from "../assets/voices.jpg";
 import BackToTop from "../components/BackToTop";
 
 import { getHeroURL } from "../prefetchHeroes";
+// ✅ added for preloading/swap
+import { preloadImage, getCachedOrUrl } from "../utils/imagePreloader";
 
 // This new component renders your SVG and handles click events on the hexagons.
 
@@ -293,11 +295,26 @@ const AudioInteractionSVG = ({
 
 // ... The rest of the IntroductionPage component remains unchanged
 const Voices = ({ onNavigate }) => {
-	/* ───────── state ───────── */
+	/* ───────── state (unchanged) ───────── */
 	const [activeClipId, setActiveClipId] = useState(null);
 	const [transcriptOpen, setTranscriptOpen] = useState({});
 	const [visitedClips, setVisitedClips] = useState(new Set()); // New state for tracking visited clips
+
+	// ✅ image-only changes start
 	const url = getHeroURL("en", "voices-en");
+	const [src, setSrc] = useState(getCachedOrUrl(url));
+
+	useEffect(() => {
+		let cancelled = false;
+		if (!url) return;
+		preloadImage(url).then((objectURL) => {
+			if (!cancelled) setSrc(objectURL || url);
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, [url]);
+	// ✅ image-only changes end
 
 	/* ───────── audio data (same) ───────── */
 	const clips = [
@@ -450,9 +467,9 @@ Kinanâskomitinâwâw (Thank you, everyone.)
 Miyo-Kîsikanisik (Have a nice day!)`,
 		},
 	];
-	/* ───────── word‑cloud data (same) ───────── */
+	/* ───────── word-cloud data (same) ───────── */
 
-	/* ───────── helpers ───────── */
+	/* ───────── helpers (unchanged) ───────── */
 	const toggleTranscript = (id) =>
 		setTranscriptOpen((p) => ({ ...p, [id]: !p[id] }));
 
@@ -472,7 +489,18 @@ Miyo-Kîsikanisik (Have a nice day!)`,
 		<div className="intro-wrapper intro-page">
 			{/* ███ hero ███ */}
 			<header className="hero" role="banner">
-				<img src={url} alt="" className="hero-img" aria-hidden="true" />
+				<img
+					src={src} // ✅ swapped to preloaded/cached src
+					alt=""
+					className="hero-img"
+					aria-hidden="true"
+					loading="eager" // ✅ eager load
+					fetchpriority="high" // ✅ correct attribute spelling
+					decoding="sync" // ✅ decode ASAP
+					onError={() => {
+						if (src !== url) setSrc(url); // ✅ fallback to original if blob fails
+					}}
+				/>
 				<h1 className="hero-title">Indigenous Voices</h1>
 			</header>
 
@@ -531,7 +559,6 @@ Miyo-Kîsikanisik (Have a nice day!)`,
 				</ol>
 			</section>
 
-			{/* ███ audio interaction ███ */}
 			{/* ███ audio interaction ███ */}
 			<section className="audio-block" aria-labelledby="audio-heading">
 				<h3 id="audio-heading" className="sr-only">

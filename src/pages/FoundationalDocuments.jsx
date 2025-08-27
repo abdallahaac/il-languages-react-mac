@@ -5,6 +5,7 @@ import image from "../assets/foundation.jpeg";
 import BackToTop from "../components/BackToTop";
 
 import { getHeroURL } from "../prefetchHeroes";
+import { useHeroSrc } from "../utils/useHeroSrc";
 
 // A reusable FlipCard component
 const FlipCard = ({
@@ -77,6 +78,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 	// State for the first set of cards (Action Plan)
 	const [flippedCards, setFlippedCards] = useState(new Set());
 	const url = getHeroURL("en", "foundational-documents");
+	const src = useHeroSrc(url);
 
 	const handleFlip = (cardId) => {
 		setFlippedCards((prevFlipped) => {
@@ -213,11 +215,20 @@ We call upon all governments to recognize Indigenous languages as official langu
 		},
 	];
 	// END: Added for Inuit-specific Calls for Justice
+	// 🔥 Resolve bundled hero URL, then preload+pin with hook
 
 	return (
 		<div className="intro-wrapper foundational-documents-page">
 			<header className="hero" role="banner">
-				<img src={url} alt="" className="hero-img" aria-hidden="true" />
+				<img
+					src={src}
+					alt=""
+					className="hero-img"
+					aria-hidden="true"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
+				/>
 				<h1 className="hero-title">Foundational Documents</h1>
 			</header>
 

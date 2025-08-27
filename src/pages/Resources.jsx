@@ -1,26 +1,27 @@
-import React from "react";
-import image from "../assets/resource.png";
-
 import "./resources.css";
 import BackToTop from "../components/BackToTop";
 
 import { getHeroURL } from "../prefetchHeroes";
+import { useHeroSrc } from "../utils/useHeroSrc";
 
 const Resources = ({ onNavigate }) => {
 	const url = getHeroURL("en", "resources");
+	const src = useHeroSrc(url);
 
 	return (
 		<div className="intro-wrapper resources-page">
 			<header className="hero" role="banner">
 				<img
-					src={url}
+					src={src}
 					alt="Decorative image with floral elements"
 					className="hero-img"
 					aria-hidden="true"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
 				/>
 				<h1 className="hero-title">Resources</h1>
 			</header>
-
 			<section className="resources-content">
 				<ul className="res">
 					<li>

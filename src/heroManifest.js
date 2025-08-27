@@ -7,7 +7,7 @@ import voicesIMG from "./assets/voices.jpeg";
 import languagesIMG from "./assets/language.jpeg";
 import resultsIMG from "./assets/results.jpeg";
 import docsIMG from "./assets/foundation.jpeg";
-import ilaIMG from "./assets/hero-languages-act.png";
+import ilaIMG from "./assets/ila.png";
 import revitalizeIMG from "./assets/efforts.png";
 import publicServiceIMG from "./assets/what.png";
 import checkIMG from "./assets/check.png";
