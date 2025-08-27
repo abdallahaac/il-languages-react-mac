@@ -180,6 +180,7 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 							}}
 						>
 							<img
+								loading="lazy"
 								src={logo}
 								alt={
 									isFR

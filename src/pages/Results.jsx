@@ -10,6 +10,7 @@ const Results = ({ onNavigate }) => {
 			{/* Hero */}
 			<header className="hero" role="banner">
 				<img
+					loading="lazy"
 					src={image}
 					alt="Decorative image with floral elements"
 					className="hero-img"

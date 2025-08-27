@@ -9,6 +9,7 @@ const Resources = ({ onNavigate }) => {
 		<div className="intro-wrapper resources-page">
 			<header className="hero" role="banner">
 				<img
+					loading="lazy"
 					src={image}
 					alt="Decorative image with floral elements"
 					className="hero-img"

@@ -123,6 +123,7 @@ const IndigenousLanguagesAct = ({ onNavigate }) => {
 		<div className="intro-wrapper ila-page">
 			<header className="hero" role="banner">
 				<img
+					loading="lazy"
 					src={image}
 					alt="Decorative image related to the Indigenous Languages Act"
 					className="hero-img"

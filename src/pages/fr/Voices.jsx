@@ -257,7 +257,7 @@ const AudioInteractionSVG = ({
 					</tspan>
 					<tspan x="195.08" y="0">
 						e
-				</tspan>
+					</tspan>
 					<tspan x="210.08" y="0">
 						s
 					</tspan>
@@ -485,7 +485,13 @@ const Voices = ({ onNavigate }) => {
 		<div className="intro-wrapper">
 			{/* ███ hero ███ */}
 			<header className="hero" role="banner">
-				<img src={image} alt="" className="hero-img" aria-hidden="true" />
+				<img
+					loading="lazy"
+					src={image}
+					alt=""
+					className="hero-img"
+					aria-hidden="true"
+				/>
 				<h1 className="hero-title">Voix autochtones</h1>
 			</header>
 

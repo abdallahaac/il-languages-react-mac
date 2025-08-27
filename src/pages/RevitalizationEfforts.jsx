@@ -27,7 +27,13 @@ const RevitalizationEfforts = ({ onNavigate }) => {
 	return (
 		<div className="intro-wrapper revitalization-efforts-page">
 			<header className="hero" role="banner">
-				<img src={image} alt="" className="hero-img" aria-hidden="true" />
+				<img
+					loading="lazy"
+					src={image}
+					alt=""
+					className="hero-img"
+					aria-hidden="true"
+				/>
 				<h1 className="hero-title">
 					Efforts to Revitalize Indigenous Languages
 				</h1>
@@ -139,7 +145,7 @@ const RevitalizationEfforts = ({ onNavigate }) => {
 								(e.key === "Enter" || e.key === " ") && handleToggle("inuit")
 							}
 						>
-							<img src={inuk} alt="inuk symbol" />
+							<img loading="lazy" src={inuk} alt="inuk symbol" />
 						</div>
 						<div
 							className={`info-panel ${
@@ -149,7 +155,7 @@ const RevitalizationEfforts = ({ onNavigate }) => {
 							<h4>
 								Inuit
 								<span>
-									<img src={inuk} alt="inuk symbol" />
+									<img loading="lazy" src={inuk} alt="inuk symbol" />
 								</span>
 							</h4>
 							<p>

@@ -485,7 +485,13 @@ const Languages = ({ onNavigate }) => {
 		<div className="intro-wrapper">
 			{/* ███ hero ███ */}
 			<header className="hero" role="banner">
-				<img src={image} alt="" className="hero-img" aria-hidden="true" />
+				<img
+					loading="lazy"
+					src={image}
+					alt=""
+					className="hero-img"
+					aria-hidden="true"
+				/>
 				<h1 className="hero-title">Les langues autochtones au Canada</h1>
 			</header>
 
@@ -542,6 +548,7 @@ const Languages = ({ onNavigate }) => {
 						</p>
 					</div>
 					<img
+						loading="lazy"
 						className="gina"
 						src="https://www.canada.ca/content/dam/pch/images/government/diversity-inclusion-public-service/knowledge-circle/gina-wilson1-bil.png"
 						alt="Portrait de Gina Wilson"
