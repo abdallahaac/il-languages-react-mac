@@ -44,6 +44,7 @@ const content = {
 		resources: "Ressources",
 	},
 };
+//
 
 const Hero = ({ onNavigate, lang: langProp }) => {
 	const lang = (langProp || useLanguage()).toLowerCase();
