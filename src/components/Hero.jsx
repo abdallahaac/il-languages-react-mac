@@ -25,7 +25,7 @@ const useLanguage = () => {
 const content = {
 	en: {
 		heroTitle:
-			"Revitalizing Voices<wbr> Navigating the <br> <em>Indigenous Languages Act</em>",
+			"Revitalizing Voices: <wbr> Navigating the  <em>Indigenous Languages Act</em>",
 		introCardTitle: "Introduction and overview",
 		introCardAria: "Navigate to Introduction and overview",
 		introCardText:
@@ -35,7 +35,7 @@ const content = {
 	},
 	fr: {
 		heroTitle:
-			"Revitalisation des voix autochtones<wbr> comprendre la <em>Loi sur les langues autochtones</em>",
+			"Revitalisation des voix autochtones : <br> comprendre la <em>Loi sur les langues autochtones</em>",
 		introCardTitle: "Introduction et survol",
 		introCardAria: "Naviguer vers Introduction et survol",
 		introCardText:
