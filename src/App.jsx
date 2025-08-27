@@ -72,9 +72,30 @@ const useLanguage = () => {
 const ScormContext = createContext(null);
 export const useScorm = () => useContext(ScormContext);
 
+// Parse helper: handles "Last, First [Middle]" and "First [Middle] Last"
+function parseScormName(raw = "") {
+	const s = String(raw).trim();
+	if (!s) return { firstName: "", lastName: "" };
+
+	// Common SCORM 1.2 format
+	if (s.includes(",")) {
+		const [last, rest = ""] = s.split(",");
+		const [first = ""] = rest.trim().split(/\s+/);
+		return { firstName: first, lastName: last.trim() };
+	}
+
+	// Fallback "First [Middle] Last"
+	const parts = s.split(/\s+/).filter(Boolean);
+	if (parts.length === 1) return { firstName: parts[0], lastName: "" };
+	return { firstName: parts[0], lastName: parts[parts.length - 1] };
+}
+
 const ScormProvider = ({ children }) => {
 	const [lmsConnected, setLmsConnected] = useState(false);
-	const [learnerName, setLearnerName] = useState("Learner");
+	const [learnerName, setLearnerName] = useState("Learner"); // raw from LMS
+	const [firstName, setFirstName] = useState("");
+	const [lastName, setLastName] = useState("");
+	const [displayName, setDisplayName] = useState("Learner"); // First Last
 	const scormInitialized = useRef(false);
 
 	const scorm = useMemo(
@@ -95,9 +116,32 @@ const ScormProvider = ({ children }) => {
 		setLmsConnected(connected);
 
 		if (connected) {
-			const name = scorm.get("cmi.core.student_name");
-			if (name) setLearnerName(name);
-			scorm.set("cmi.core.lesson_status", "incomplete");
+			// Support 1.2 and 2004
+			const nameKey =
+				scorm.version === "1.2" ? "cmi.core.student_name" : "cmi.learner_name";
+
+			const rawName = scorm.get(nameKey) || "";
+			setLearnerName(rawName);
+
+			const { firstName: f, lastName: l } = parseScormName(rawName);
+			setFirstName(f);
+			setLastName(l);
+			setDisplayName(
+				([f, l].filter(Boolean).join(" ") || rawName || "Learner").trim()
+			);
+
+			// 🔎 console logs
+			console.log(`[SCORM] raw learner name: "${rawName}"`);
+			console.log(`first name: ${f} , last name: ${l}`);
+
+			// Set status using appropriate model
+			if (scorm.version === "1.2") {
+				console.log("[SCORM] Setting cmi.core.lesson_status = incomplete");
+				scorm.set("cmi.core.lesson_status", "incomplete");
+			} else {
+				console.log("[SCORM] Setting cmi.completion_status = incomplete");
+				scorm.set("cmi.completion_status", "incomplete");
+			}
 			scorm.save();
 		}
 
@@ -112,10 +156,13 @@ const ScormProvider = ({ children }) => {
 	const contextValue = useMemo(
 		() => ({
 			lmsConnected,
-			learnerName,
+			learnerName, // raw
+			firstName,
+			lastName,
+			displayName, // First Last
 			scorm,
 		}),
-		[lmsConnected, learnerName, scorm]
+		[lmsConnected, learnerName, firstName, lastName, displayName, scorm]
 	);
 
 	return (
@@ -193,10 +240,17 @@ function App() {
 		scorm.set("cmi.suspend_data", toSave);
 
 		// Completion is per-language (based on current filtered total)
-		scorm.set(
-			"cmi.core.lesson_status",
-			visitedTrackableCount >= totalPages ? "completed" : "incomplete"
-		);
+		if (scorm.version === "1.2") {
+			scorm.set(
+				"cmi.core.lesson_status",
+				visitedTrackableCount >= totalPages ? "completed" : "incomplete"
+			);
+		} else {
+			scorm.set(
+				"cmi.completion_status",
+				visitedTrackableCount >= totalPages ? "completed" : "incomplete"
+			);
+		}
 		scorm.save();
 	}, [visitedPages, visitedTrackableCount, lmsConnected, scorm, totalPages]);
 
@@ -245,16 +299,11 @@ function App() {
 	const Pages = lang === "fr" ? Pages_FR : Pages_EN;
 	const StaticPage = Pages[currentPage];
 
-	// Guided tour steps (EN/FR). Requires:
-	//  - .burger-button  on the header menu button
-	//  - .fullscreen-nav-links inside the open menu
-	//  - .close-menu     on the “X” button
-	//  - .content-navigation-container for the sections grid
+	// Guided tour steps (EN/FR)
 	const steps =
 		lang === "fr"
 			? [
 					{
-						// centered welcome (no target)
 						target: null,
 						title: "Bienvenue",
 						body: "Cette courte visite vous montre comment naviguer: utilisez le menu burger et les contrôles intégrés (pas les boutons du navigateur).",
@@ -266,17 +315,15 @@ function App() {
 						body: "Voici le menu burger. Cliquez pour ouvrir les pages. Nous allons l’ouvrir pour vous à l’étape suivante.",
 					},
 					{
-						// open the menu automatically, then show the list of pages
 						target: ".fullscreen-nav-links",
 						title: "Toutes les pages",
 						body: "Voici la liste des pages accessibles via le menu. Vous pouvez tout parcourir depuis l’interface.",
 						onEnter: () => {
 							document.querySelector(".burger-button")?.click();
 						},
-						recalcDelay: 300, // wait for menu animation
+						recalcDelay: 300,
 					},
 					{
-						// close the menu automatically
 						target: null,
 						title: "Fermer le menu",
 						body: "Le menu se ferme simplement avec le bouton de fermeture (X). Nous allons le fermer maintenant.",

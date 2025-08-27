@@ -349,3 +349,8 @@
 	/* If you prefer a white focus outline on dark header */
 	outline-color: #fff;
 }
+@media (max-width: 1250px) {
+	.welcome-message {
+		display: none !important;
+	}
+}

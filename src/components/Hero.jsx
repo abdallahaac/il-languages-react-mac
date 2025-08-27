@@ -35,7 +35,7 @@ const content = {
 	},
 	fr: {
 		heroTitle:
-			"Revitalisation des voix autochtones<wbr> comprendre la <em>Loi sur les langues autochtones</em>",
+			"Revitalisation des voix autochtones : <br> comprendre la <em>Loi sur les langues autochtones</em>",
 		introCardTitle: "Introduction et survol",
 		introCardAria: "Naviguer vers Introduction et survol",
 		introCardText:

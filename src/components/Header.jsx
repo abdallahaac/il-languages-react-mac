@@ -28,7 +28,20 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 
 	const [scrolled, setScrolled] = useState(false);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const { learnerName } = useScorm();
+
+	// 👇 now provided by context: displayName is "First Last"
+	const { displayName, firstName, lastName, learnerName } = useScorm();
+	const nameToShow =
+		(displayName && displayName.trim()) ||
+		[firstName, lastName].filter(Boolean).join(" ") ||
+		learnerName ||
+		"";
+
+	// Extra log so you can see it from the Header too
+	useEffect(() => {
+		console.log(`first name: ${firstName} , last name: ${lastName}`);
+	}, [firstName, lastName]);
+
 	const firstLinkRef = useRef(null);
 
 	const feedbackUrl =
@@ -186,7 +199,7 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 					{/* ✅ Show welcome only on the home page */}
 					{currentPage === "home" && (
 						<div className="welcome-message" aria-live="polite">
-							{isFR ? `Bienvenue ${learnerName} ` : `Welcome ${learnerName}`}
+							{isFR ? `Bienvenue ${nameToShow}` : `Welcome ${nameToShow}`}
 						</div>
 					)}
 
