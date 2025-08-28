@@ -4,6 +4,7 @@ import BackToTop from "../components/BackToTop";
 import { getHeroURL } from "../prefetchHeroes";
 // ✅ added for preloading/swap
 import { preloadImage, getCachedOrUrl } from "../utils/imagePreloader";
+import { loadHighcharts, ensureModule } from "../utils/highchartsLoader";
 
 const Languages = ({ onNavigate }) => {
 	const url = getHeroURL("en", "languages-en");
