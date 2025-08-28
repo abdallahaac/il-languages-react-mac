@@ -26,8 +26,13 @@ const useLanguage = () => {
 const content = {
 	en: {
 		heroTitle:
+
 			"Revitalizing Voices: <wbr> Navigating the <br> <em>Indigenous Languages Act</em>",
 		introCardTitle: "Introduction and Overview",
+
+// 			"Revitalizing Voices: <wbr> Navigating the  <em>Indigenous Languages Act</em>",
+// 		introCardTitle: "Introduction and overview",
+// >>>>>>> french-version
 		introCardAria: "Navigate to Introduction and overview",
 		introCardText:
 			"Language is the foundation of a culture. For Indigenous oral societies, words hold knowledge amassed for millennia. A language holds the stories, songs, dances, protocols, family histories and...",
@@ -45,6 +50,7 @@ const content = {
 		resources: "Ressources",
 	},
 };
+//
 
 const Hero = ({ onNavigate, lang: langProp }) => {
 	const lang = (langProp || useLanguage()).toLowerCase();
