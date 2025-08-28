@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./Hero.css";
 import heroImage from "../assets/home-img.jpeg";
-
+import { getHeroURL } from "../prefetchHeroes";
+import { useHeroSrc } from "../utils/useHeroSrc";
 /* watch <html lang=""> */
 const useLanguage = () => {
 	const [lang, setLang] = useState(
@@ -49,12 +50,17 @@ const Hero = ({ onNavigate, lang: langProp }) => {
 	const lang = (langProp || useLanguage()).toLowerCase();
 	const t = content[lang] || content.en;
 
+	const url = getHeroURL("en", "home");
+
+	// Use the custom hook for cached/preloaded hero src
+	const src = useHeroSrc(url);
+
 	const go = (id) => onNavigate?.(id);
 
 	return (
 		<div
 			className="hero-container hero-page"
-			style={{ backgroundImage: `url(${heroImage})` }}
+			style={{ backgroundImage: `url(${url})` }}
 		>
 			<div className="hero-content-wrapper">
 				<div className="hero-text">

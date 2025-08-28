@@ -1,13 +1,16 @@
+// src/pages/fr/Languages.jsx
 import React, { useEffect } from "react";
 import "../IntroductionPage.css";
-import image from "../../assets/language.jpeg";
 import BackToTop from "../../components/BackToTop";
 import { loadHighcharts, ensureModule } from "../../utils/highchartsLoader";
-// 🔥 use the same manifest + hook as other hero pages
+
 import { getHeroURL } from "../../prefetchHeroes";
-import { useHeroSrc } from "../../utils/useHeroSrc";
+import { useHeroSrc } from "../../utils/useHeroSrc"; // ✅ use the hook
 
 const Languages = ({ onNavigate }) => {
+	const url = getHeroURL("fr", "languages-fr");
+	const src = useHeroSrc(url);
+
 	/* ───────── données du nuage de mots ───────── */
 	const wordCloudData = [
 		{ category: "Langues cries", weight: 86475, percentage: -6.1 },
@@ -109,10 +112,6 @@ const Languages = ({ onNavigate }) => {
 
 		return () => chart && chart.destroy();
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-	/* ───────── hero URL (manifest + preloader) ───────── */
-	const url = getHeroURL("fr", "languages-fr"); // or "en" / "languages-en" depending on page
-	const src = useHeroSrc(url);
 
 	/* ───────── rendu ───────── */
 	return (

@@ -10,10 +10,10 @@ import clip5 from "../../assets/audio/fr/Innu Fr Pam Dough.wav";
 import clip6 from "../../assets/audio/fr/Inuktitut Fr Lauralee.wav";
 import clip7 from "../../assets/audio/fr/Colleen Fr Plains Cree.wav";
 
-import image from "../../assets/voices.jpg";
 import BackToTop from "../../components/BackToTop";
 
 import { getHeroURL } from "../../prefetchHeroes";
+import { useHeroSrc } from "../../utils/useHeroSrc";
 
 //
 // This component renders the SVG and now indicates which clips have been visited.
@@ -309,6 +309,10 @@ const Voices = ({ onNavigate }) => {
 	const [transcriptOpen, setTranscriptOpen] = useState({});
 	const [visitedClips, setVisitedClips] = useState(new Set());
 
+	// ✅ image-only changes start
+	const url = getHeroURL("en", "voices-en");
+	const src = useHeroSrc(url);
+
 	/* ───────── données audio ───────── */
 	const clips = [
 		{
@@ -374,7 +378,18 @@ const Voices = ({ onNavigate }) => {
 		<div className="intro-wrapper">
 			{/* ███ hero ███ */}
 			<header className="hero" role="banner">
-				<img src={image} alt="" className="hero-img" aria-hidden="true" />
+				<img
+					src={src} // ✅ swapped to preloaded/cached src
+					alt=""
+					className="hero-img"
+					aria-hidden="true"
+					loading="eager" // ✅ eager load
+					fetchpriority="high" // ✅ correct attribute spelling
+					decoding="sync" // ✅ decode ASAP
+					onError={() => {
+						if (src !== url) setSrc(url); // ✅ fallback to original if blob fails
+					}}
+				/>
 				<h1 className="hero-title">Voix autochtones</h1>
 			</header>
 

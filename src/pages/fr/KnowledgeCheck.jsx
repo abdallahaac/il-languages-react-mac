@@ -1,12 +1,15 @@
 import React, { useState, useMemo } from "react";
 import "../KnowledgeCheck.css"; // Using the same stylesheet as the English version
-import image from "../../assets/check.png";
 import BackToTop from "../../components/BackToTop";
 
 import { getHeroURL } from "../../prefetchHeroes";
+import { useHeroSrc } from "../../utils/useHeroSrc";
 
 // Updated to accept visitedPages and lang props
 const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
+	const url = getHeroURL(lang, "knowledge-check");
+	const src = useHeroSrc(url);
+
 	const scorm = useMemo(
 		() => (window.pipwerks ? window.pipwerks.SCORM : null),
 		[]
@@ -247,7 +250,15 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 		return (
 			<div className="intro-wrapper knowledge-check-page">
 				<header className="hero" role="banner">
-					<img src={image} alt="" className="hero-img" aria-hidden="true" />
+					<img
+						src={src}
+						alt=""
+						className="hero-img"
+						aria-hidden="true"
+						loading="eager"
+						fetchpriority="high"
+						decoding="sync"
+					/>
 					<h1 className="hero-title">{currentText.title}</h1>
 				</header>
 				<main className="quiz-container locked-quiz">

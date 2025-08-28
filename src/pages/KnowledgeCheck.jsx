@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from "react";
 import "./KnowledgeCheck.css";
-import image from "../assets/check.png";
 import BackToTop from "../components/BackToTop";
 import { getHeroURL } from "../prefetchHeroes";
 import { useHeroSrc } from "../utils/useHeroSrc";

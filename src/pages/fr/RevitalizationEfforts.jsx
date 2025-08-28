@@ -3,14 +3,17 @@ import "../IntroductionPage.css"; // For shared
 import "../RevitalizationEfforts.css"; // For page-specific styles
 import inuk from "../../assets/inuk.svg";
 
-import image from "../../assets/efforts.png";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFeather, faInfinity } from "@fortawesome/free-solid-svg-icons";
 import BackToTop from "../../components/BackToTop";
+
 import { getHeroURL } from "../../prefetchHeroes";
+import { useHeroSrc } from "../../utils/useHeroSrc";
 
 const RevitalizationEfforts_fr = ({ onNavigate }) => {
+	const url = getHeroURL("en", "revitalization-efforts");
+	const src = useHeroSrc(url); // <-- use the hook
+
 	const [openSections, setOpenSections] = useState(new Set());
 
 	const handleToggle = (sectionId) => {
@@ -28,7 +31,15 @@ const RevitalizationEfforts_fr = ({ onNavigate }) => {
 	return (
 		<div className="intro-wrapper revitalization-efforts-page">
 			<header className="hero" role="banner">
-				<img src={image} alt="" className="hero-img" aria-hidden="true" />
+				<img
+					src={src}
+					alt=""
+					className="hero-img"
+					aria-hidden="true"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
+				/>
 				<h1 className="hero-title">
 					Efforts pour revitaliser <br /> les langues autochtones
 				</h1>

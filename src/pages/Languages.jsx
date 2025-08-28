@@ -1,13 +1,24 @@
 import React, { useState, useEffect } from "react";
 import "./IntroductionPage.css";
-import image from "../assets/language.jpeg";
 import BackToTop from "../components/BackToTop";
-import { loadHighcharts, ensureModule } from "../utils/highchartsLoader";
 import { getHeroURL } from "../prefetchHeroes";
+// ✅ added for preloading/swap
+import { preloadImage, getCachedOrUrl } from "../utils/imagePreloader";
 
 const Languages = ({ onNavigate }) => {
 	const url = getHeroURL("en", "languages-en");
+	const [src, setSrc] = useState(getCachedOrUrl(url));
 
+	useEffect(() => {
+		let cancelled = false;
+		if (!url) return;
+		preloadImage(url).then((objectURL) => {
+			if (!cancelled) setSrc(objectURL || url);
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, [url]);
 	/* ───────── word-cloud data ───────── */
 	const wordCloudData = [
 		{ category: "Cree languages", weight: 86475, percentage: -6.1 },

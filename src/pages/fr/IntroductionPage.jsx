@@ -5,16 +5,40 @@ import image from "../../assets/image.png";
 import BackToTop from "../../components/BackToTop";
 
 import { getHeroURL } from "../../prefetchHeroes";
+// ✅ added for preloading/swap
+import { preloadImage, getCachedOrUrl } from "../../utils/imagePreloader";
 
+//
 const IntroductionPage = ({ onNavigate }) => {
 	/* ───────── état ───────── */
 
+	// ✅ image-only changes start
+	const url = getHeroURL("en", "introduction");
+	const [src, setSrc] = useState(getCachedOrUrl(url));
+
+	useEffect(() => {
+		let cancelled = false;
+		if (!url) return;
+		preloadImage(url).then((objectURL) => {
+			if (!cancelled) setSrc(objectURL || url);
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, [url]);
 	/* ───────── rendu ───────── */
 	return (
 		<div className="intro-wrapper">
 			{/* ███ hero ███ */}
 			<header className="hero" role="banner">
-				<img src={image} alt="" className="hero-img" aria-hidden="true" />
+				<img
+					className="hero-img"
+					src={src}
+					alt="Learning Objectives"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
+				/>
 				<h1 className="hero-title">Introduction et survol</h1>
 			</header>
 

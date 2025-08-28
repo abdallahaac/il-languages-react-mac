@@ -4,16 +4,23 @@ import "../objective.css"; // ✅ Updated stylesheet
 import BackToTop from "../../components/BackToTop";
 import { getHeroURL } from "../../prefetchHeroes";
 
+import { useHeroSrc } from "../../utils/useHeroSrc";
+
 const Results = ({ onNavigate }) => {
+	const url = getHeroURL("en", "results-en");
+	const src = useHeroSrc(url); // <-- use hook for cached/pinned src
 	return (
 		<div className="intro-wrapper objective-page">
 			{/* Hero */}
 			<header className="hero" role="banner">
 				<img
-					src={image}
-					alt="Image décorative avec des éléments floraux"
+					src={src}
+					alt="Decorative image with floral elements"
 					className="hero-img"
 					aria-hidden="true"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
 				/>
 				<h1 className="hero-title">Résultats d’apprentissage</h1>
 			</header>
