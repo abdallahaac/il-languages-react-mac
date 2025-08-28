@@ -1,18 +1,28 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
 import image from "../../assets/objective.jpeg"; // Path unchanged
 import "../objective.css"; // ✅ Updated stylesheet
 import BackToTop from "../../components/BackToTop";
 
+import { getHeroURL } from "../../prefetchHeroes";
+import { useHeroSrc } from "../../utils/useHeroSrc";
+
 const Objective = ({ onNavigate }) => {
+	// ✅ image-only changes start
+	const url = getHeroURL("en", "objective-en");
+	const src = useHeroSrc(url);
+
 	return (
 		<div className="intro-wrapper objective-page">
 			{/* Hero */}
 			<header className="hero" role="banner">
 				<img
-					src={image}
-					alt="Image décorative avec des éléments floraux"
 					className="hero-img"
-					aria-hidden="true"
+					src={src}
+					alt="Learning Objectives"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
 				/>
 				<h1 className="hero-title">Objectifs d’apprentissage</h1>
 			</header>

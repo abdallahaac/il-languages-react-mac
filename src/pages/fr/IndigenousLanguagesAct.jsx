@@ -3,6 +3,9 @@ import "../IndigenousLanguagesAct.css";
 import image from "../../assets/ila.png";
 import BackToTop from "../../components/BackToTop";
 
+import { getHeroURL } from "../../prefetchHeroes";
+import { useHeroSrc } from "../../utils/useHeroSrc";
+
 // Custom hook to get the current language from the <html> tag
 const useLanguage = () => {
 	const [lang, setLang] = useState("en"); // Default to English
@@ -119,14 +122,20 @@ const IndigenousLanguagesAct = ({ onNavigate }) => {
 	const lang = useLanguage();
 	const content = lang === "fr" ? content_fr : content_en;
 
+	const url = getHeroURL(lang, "indigenous-languages-act");
+	const src = useHeroSrc(url);
+
 	return (
 		<div className="intro-wrapper ila-page">
 			<header className="hero" role="banner">
 				<img
-					src={image}
+					src={src}
 					alt="Decorative image related to the Indigenous Languages Act"
 					className="hero-img"
 					aria-hidden="true"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
 				/>
 				<h1 className="hero-title">
 					<em dangerouslySetInnerHTML={{ __html: content.title }} />

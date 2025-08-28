@@ -1,21 +1,30 @@
 // src/pages/Results.jsx
 import React from "react";
-import image from "../assets/results.jpeg"; // EN path
 import "./objective.css"; // EN path
-import BackToTop from "../components/BackToTop"; // EN path
+import BackToTop from "../components/BackToTop";
+
+import { getHeroURL } from "../prefetchHeroes";
+import { useHeroSrc } from "../utils/useHeroSrc"; // <-- add
 
 const Results = ({ onNavigate }) => {
+	// Resolve hero URL from manifest
+	const url = getHeroURL("en", "results-en");
+	const src = useHeroSrc(url); // <-- use hook for cached/pinned src
+
 	return (
 		<div className="intro-wrapper objective-page">
 			{/* Hero */}
 			<header className="hero" role="banner">
 				<img
-					src={image}
+					src={src}
 					alt="Decorative image with floral elements"
 					className="hero-img"
 					aria-hidden="true"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
 				/>
-				<h1 className="hero-title">Learning Results</h1>
+				<h1 className="hero-title">Learning Outcomes</h1>
 			</header>
 
 			{/* Content */}

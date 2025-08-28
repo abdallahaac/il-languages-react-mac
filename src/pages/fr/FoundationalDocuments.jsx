@@ -4,6 +4,9 @@ import "../FoundationalDocuments.css";
 import image from "../../assets/foundation.jpeg";
 import BackToTop from "../../components/BackToTop";
 
+import { getHeroURL } from "../../prefetchHeroes";
+import { useHeroSrc } from "../../utils/useHeroSrc";
+
 // A reusable FlipCard component
 const FlipCard = ({
 	id,
@@ -72,6 +75,8 @@ const FlipCard = ({
 };
 
 const FoundationalDocuments = ({ onNavigate }) => {
+	const url = getHeroURL("en", "foundational-documents");
+	const src = useHeroSrc(url);
 	// State for the first set of cards (Action Plan)
 	const [flippedCards, setFlippedCards] = useState(new Set());
 	const handleFlip = (cardId) => {
@@ -223,7 +228,15 @@ const FoundationalDocuments = ({ onNavigate }) => {
 	return (
 		<div className="intro-wrapper foundational-documents-page">
 			<header className="hero" role="banner">
-				<img src={image} alt="" className="hero-img" aria-hidden="true" />
+				<img
+					src={src}
+					alt=""
+					className="hero-img"
+					aria-hidden="true"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
+				/>
 				<h1 className="hero-title">Documents fondamentaux</h1>
 			</header>
 

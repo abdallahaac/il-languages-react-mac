@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from "react";
 import "./IntroductionPage.css";
-/* ───────── audio imports ───────── */
-import clip1 from "../assets/audio/en/Ojibwe En Tanya King.wav";
-import clip2 from "../assets/audio/en/Inuktitut En Lauralee.wav";
-import clip3 from "../assets/audio/en/Alison En Mitchif.wav";
-import clip4 from "../assets/audio/en/Xaayda Kil.wav"; // Haida
-import clip5 from "../assets/audio/en/Innu En Pam Dough.mp3";
-import clip6 from "../assets/audio/en/Bedford Institute of Oceanography 7.wav"; // Mi’kmaq
-import clip7 from "../assets/audio/en/Colleen En Recording 14.wav"; // Plains Cree
-
-import image from "../assets/language.jpeg";
-
 import BackToTop from "../components/BackToTop";
+import { getHeroURL } from "../prefetchHeroes";
+// ✅ added for preloading/swap
+import { preloadImage, getCachedOrUrl } from "../utils/imagePreloader";
 
-// This new component renders your SVG and handles click events on the hexagons.
-
-// ... The rest of the IntroductionPage component remains unchanged
 const Languages = ({ onNavigate }) => {
-	/* ───────── word‑cloud data (same) ───────── */
+	const url = getHeroURL("en", "languages-en");
+	const [src, setSrc] = useState(getCachedOrUrl(url));
+
+	useEffect(() => {
+		let cancelled = false;
+		if (!url) return;
+		preloadImage(url).then((objectURL) => {
+			if (!cancelled) setSrc(objectURL || url);
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, [url]);
+	/* ───────── word-cloud data ───────── */
 	const wordCloudData = [
 		{ category: "Cree languages", weight: 86475, percentage: -6.1 },
 		{ category: "Inuktitut", weight: 40320, percentage: 1.4 },
@@ -70,14 +72,16 @@ const Languages = ({ onNavigate }) => {
 		{ category: "Tlingit", weight: 120, percentage: -52.9 },
 	];
 
-	/* ───────── Highcharts loader (same) ───────── */
+	/* ───────── Highcharts (singleton) ───────── */
 	useEffect(() => {
 		let chart;
-		const render = () => {
-			if (!window.Highcharts) return;
-			const Highcharts = window.Highcharts;
-			if (!Highcharts.seriesTypes.wordcloud && window.HighchartsWordcloud)
-				window.HighchartsWordcloud(Highcharts);
+
+		(async () => {
+			const Highcharts = await loadHighcharts({ useStock: false });
+			await ensureModule(
+				"https://code.highcharts.com/modules/wordcloud.js",
+				(hc) => !!hc?.seriesTypes?.wordcloud
+			);
 
 			chart = Highcharts.chart("indigenous-wordcloud", {
 				chart: { type: "wordcloud", height: 400 },
@@ -87,7 +91,7 @@ const Languages = ({ onNavigate }) => {
 						type: "wordcloud",
 						name: "Speakers",
 						data: wordCloudData.map((d) => ({
-							name: d.category, // <— here
+							name: d.category,
 							weight: d.weight,
 							percentage: d.percentage,
 						})),
@@ -105,42 +109,22 @@ const Languages = ({ onNavigate }) => {
 							"{index}. {point.name}, {point.weight} speakers, change {point.percentage}%.",
 					},
 				},
+				exporting: { enabled: true },
+				credits: { enabled: false },
 			});
-		};
-
-		const load = (u) =>
-			new Promise((r) => {
-				const s = document.createElement("script");
-				s.src = u;
-				s.onload = r;
-				document.head.appendChild(s);
-			});
-
-		(async () => {
-			if (!window.Highcharts)
-				await load("https://code.highcharts.com/highcharts.js");
-			if (!window.Highcharts?.seriesTypes.wordcloud)
-				await load("https://code.highcharts.com/modules/wordcloud.js");
-			render();
 		})();
 
 		return () => chart && chart.destroy();
-	}, []);
-
-	/* ───────── helpers ───────── */
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	/* ───────── render ───────── */
 	return (
 		<div className="intro-wrapper intro-page">
 			{/* ███ hero ███ */}
 			<header className="hero" role="banner">
-				<img src={image} alt="" className="hero-img" aria-hidden="true" />
+				<img src={url} alt="" className="hero-img" aria-hidden="true" />
 				<h1 className="hero-title">Indigenous Languages in Canada</h1>
 			</header>
-
-			{/* ███ narrative ███ */}
-
-			{/* ███ acknowledgements ███ */}
 
 			{/* ███ extended context ███ */}
 			<section className="context">
@@ -172,8 +156,9 @@ const Languages = ({ onNavigate }) => {
 					disappeared or are disappearing. However, several Indigenous
 					communities are now actively working to revitalize their languages and
 					honour their Elders and Knowledge Keepers for keeping their language
-					alive.{" "}
+					alive.
 				</p>
+
 				<div className="gina-img">
 					<div className="">
 						<a
@@ -184,14 +169,19 @@ const Languages = ({ onNavigate }) => {
 							rel="noopener noreferrer"
 						></a>
 						<h3 className="gina">
-							<a href="" className="link-source" target="_blank">
+							<a
+								href=""
+								className="link-source"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
 								{" "}
 								Indigenous languages: The road ahead
 							</a>
 						</h3>
 						<p>
 							Read Gina Wilson's perspective on the importance of Indigenous
-							languages in Canada
+							languages in Canada.
 						</p>
 					</div>
 					<img
@@ -209,6 +199,7 @@ const Languages = ({ onNavigate }) => {
 						href="https://www12.statcan.gc.ca/census-recensement/2021/as-sa/98-200-X/2021012/98-200-X2021012-eng.cfm"
 						target="_blank"
 						className="link-source"
+						rel="noopener noreferrer"
 					>
 						70 unique Indigenous languages spoken by First Nations, Inuit and
 						Métis in Canada
@@ -222,6 +213,7 @@ const Languages = ({ onNavigate }) => {
 						href="https://www12.statcan.gc.ca/census-recensement/2021/ref/dict/az/Definition-eng.cfm?ID=pop054"
 						className="link-source"
 						target="_blank"
+						rel="noopener noreferrer"
 					>
 						speak an Indigenous language well enough to conduct a conversation
 					</a>
@@ -263,8 +255,8 @@ const Languages = ({ onNavigate }) => {
 					</li>
 					<li>
 						<strong>View language details:</strong> A tooltip will appear
-						showing the number of speakers and the percentage change from 2016
-						to 2021.
+						showing the number of speakers and the percentage change from 2016
+						to 2021.
 					</li>
 					<li>
 						<strong>Download data:</strong> Use the export menu to download the
@@ -277,15 +269,15 @@ const Languages = ({ onNavigate }) => {
 				</ol>
 			</section>
 
-			{/* ███ word‑cloud ███ */}
+			{/* ███ word-cloud ███ */}
 			<figure
 				className="wordcloud"
-				aria-label="Word‑cloud of Indigenous languages"
+				aria-label="Word-cloud of Indigenous languages"
 			>
 				<div id="indigenous-wordcloud" />
 				<figcaption>
-					Number of Indigenous people able to speak an Indigenous language
-					in 2021 and percentage change from 2016.
+					Number of Indigenous people able to speak an Indigenous language in
+					2021 and percentage change from 2016.
 				</figcaption>
 			</figure>
 

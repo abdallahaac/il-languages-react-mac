@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import "./IntroductionPage.css"; // For shared styles
 import "./PublicService.css"; // For page-specific styles
-import image from "../assets/what.png";
 import BackToTop from "../components/BackToTop";
+
+import { getHeroURL } from "../prefetchHeroes";
+import { useHeroSrc } from "../utils/useHeroSrc"; // <-- add
 
 const PublicService = ({ onNavigate }) => {
 	// State for the sign language accordion
@@ -10,16 +12,27 @@ const PublicService = ({ onNavigate }) => {
 	// State for the video transcript
 	const [showTranscript, setShowTranscript] = useState(false);
 
-	// Handler for the sign language accordion
 	const handleSignLanguageToggle = (sectionId) => {
 		setOpenSignLanguage((prev) => (prev === sectionId ? null : sectionId));
 	};
 
+	// Resolve hero URL from manifest, then use cached/pinned blob via hook
+	const url = getHeroURL("en", "public-service");
+	const src = useHeroSrc(url); // <-- use the hook
+
 	return (
 		<div className="intro-wrapper public-service-page">
 			<header className="hero" role="banner">
-				<img src={image} alt="" className="hero-img" aria-hidden="true" />
-				<h1 className="hero-title">What this means for the public service</h1>
+				<img
+					src={src}
+					alt=""
+					className="hero-img"
+					aria-hidden="true"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
+				/>
+				<h1 className="hero-title">What This Means for the Public Service</h1>
 			</header>
 
 			<section className="acknowledge">

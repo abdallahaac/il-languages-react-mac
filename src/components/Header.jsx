@@ -1,3 +1,4 @@
+// src/components/Header.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useScorm } from "../App";
 import "./Header.css";
@@ -22,13 +23,42 @@ const useLanguage = () => {
 	return lang;
 };
 
-const Header = ({ onNavigate, currentPage, lang: langProp }) => {
+const Header = ({ onNavigate, currentPage, lang: langProp, onPrefetch }) => {
 	const lang = (langProp || useLanguage()).toLowerCase();
 	const isFR = lang === "fr";
 
 	const [scrolled, setScrolled] = useState(false);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const { learnerName } = useScorm();
+
+	// ✅ Pull parsed values and connection state from SCORM context
+	const { lmsConnected, firstName, lastName } = useScorm();
+
+	// 🔎 Console logs (with clear fallback when not connected)
+	useEffect(() => {
+		if (lmsConnected) {
+			console.log(
+				`first name: ${firstName || "(empty)"} , last name: ${
+					lastName || "(empty)"
+				}`
+			);
+		} else {
+			console.log("[SCORM] Not connected — using placeholder name.");
+		}
+	}, [lmsConnected, firstName, lastName]);
+
+	// Greeting with placeholder when not connected or empty name
+	const hasName = Boolean(
+		(firstName && firstName.trim()) || (lastName && lastName.trim())
+	);
+	const greetingName = hasName
+		? `${firstName ?? ""} ${lastName ?? ""}`.trim()
+		: isFR
+		? "apprenant·e"
+		: "learner";
+	const greetingText = isFR
+		? `Bienvenue ${greetingName}`
+		: `Welcome ${greetingName}`;
+
 	const firstLinkRef = useRef(null);
 
 	const feedbackUrl =
@@ -47,7 +77,7 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 			id: "revitalization-efforts",
 		},
 		{ label: "What This Means for the Public Service", id: "public-service" },
-		{ label: "Learning Results", id: "results-en" },
+		{ label: "Learning Outcomes", id: "results-en" },
 		{ label: "Knowledge Check", id: "knowledge-check" },
 		{ label: "Resources", id: "resources" },
 		{ label: "Feedback", id: "feedback", url: feedbackUrl, isExternal: true },
@@ -183,10 +213,10 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 						</a>
 					</div>
 
-					{/* ✅ Show welcome only on the home page */}
+					{/* ✅ Welcome on home; placeholder when SCORM name missing */}
 					{currentPage === "home" && (
 						<div className="welcome-message" aria-live="polite">
-							{isFR ? `Bienvenue ${learnerName} ` : `Welcome ${learnerName}`}
+							{greetingText}
 						</div>
 					)}
 
@@ -270,6 +300,8 @@ const Header = ({ onNavigate, currentPage, lang: langProp }) => {
 									ref={idx === 0 ? firstLinkRef : undefined}
 									onClick={(e) => handleNavClick(id, e)}
 									className={currentPage === id ? "active" : ""}
+									onMouseEnter={() => onPrefetch?.(id)} // ⭐ warm hero on hover
+									onFocus={() => onPrefetch?.(id)} // ⭐ warm hero on keyboard focus
 									dangerouslySetInnerHTML={{ __html: label }}
 								/>
 							);

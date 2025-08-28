@@ -2,8 +2,12 @@ import React from "react";
 import image from "../../assets/resource.png"; // Note the path change ../../
 import "../resources.css";
 import BackToTop from "../../components/BackToTop";
+import { getHeroURL } from "../../prefetchHeroes";
+import { useHeroSrc } from "../../utils/useHeroSrc";
 
 const Resources = ({ onNavigate }) => {
+	const url = getHeroURL("en", "resources");
+	const src = useHeroSrc(url);
 	return (
 		<div className="intro-wrapper resources-page">
 			<header className="hero" role="banner">

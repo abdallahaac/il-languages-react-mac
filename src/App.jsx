@@ -5,6 +5,7 @@ import React, {
 	useContext,
 	useMemo,
 	useRef,
+	useCallback,
 } from "react";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -14,7 +15,7 @@ import Footer from "./components/Footer";
 import sections from "./pages/sectionData";
 import "./App.css";
 import "./typography.css";
-
+import HeadPreloads from "./meta/HeadPreloads";
 // --- English & French Page Imports ---
 import IntroductionPage_EN from "./pages/IntroductionPage";
 import FoundationalDocuments_EN from "./pages/FoundationalDocuments";
@@ -39,9 +40,14 @@ import Objective_FR from "./pages/fr/Objective.jsx";
 import Voices_FR from "./pages/fr/Voices.jsx";
 import Languages_FR from "./pages/fr/languages.jsx";
 import Results_FR from "./pages/fr/Results.jsx";
+import { preloadAll } from "./utils/imagePreloader";
 
 import KnowledgeActions from "./components/KnowledgeActions";
 import TourModal from "./components/TourModal"; // <- guided tour
+
+// 🔥 Preloader helpers
+import { preloadImagesInBatches, preloadImage } from "./utils/imagePreloader";
+import { HERO_IMAGES } from "./heroManifest";
 
 // --- useLanguage Hook ---
 const useLanguage = () => {
@@ -72,9 +78,30 @@ const useLanguage = () => {
 const ScormContext = createContext(null);
 export const useScorm = () => useContext(ScormContext);
 
+// Parse helper: handles "Last, First [Middle]" and "First [Middle] Last"
+function parseScormName(raw = "") {
+	const s = String(raw).trim();
+	if (!s) return { firstName: "", lastName: "" };
+
+	// Common SCORM 1.2 format "Last, First Middle"
+	if (s.includes(",")) {
+		const [last, rest = ""] = s.split(",");
+		const [first = ""] = rest.trim().split(/\s+/);
+		return { firstName: first, lastName: last.trim() };
+	}
+
+	// Fallback "First [Middle] Last"
+	const parts = s.split(/\s+/).filter(Boolean);
+	if (parts.length === 1) return { firstName: parts[0], lastName: "" };
+	return { firstName: parts[0], lastName: parts[parts.length - 1] };
+}
+
 const ScormProvider = ({ children }) => {
 	const [lmsConnected, setLmsConnected] = useState(false);
-	const [learnerName, setLearnerName] = useState("Learner");
+	const [learnerName, setLearnerName] = useState("Learner"); // raw from LMS
+	const [firstName, setFirstName] = useState("");
+	const [lastName, setLastName] = useState("");
+	const [displayName, setDisplayName] = useState("Learner"); // First Last
 	const scormInitialized = useRef(false);
 
 	const scorm = useMemo(
@@ -95,9 +122,32 @@ const ScormProvider = ({ children }) => {
 		setLmsConnected(connected);
 
 		if (connected) {
-			const name = scorm.get("cmi.core.student_name");
-			if (name) setLearnerName(name);
-			scorm.set("cmi.core.lesson_status", "incomplete");
+			// Support 1.2 and 2004
+			const nameKey =
+				scorm.version === "1.2" ? "cmi.core.student_name" : "cmi.learner_name";
+
+			const rawName = scorm.get(nameKey) || "";
+			setLearnerName(rawName);
+
+			const { firstName: f, lastName: l } = parseScormName(rawName);
+			setFirstName(f);
+			setLastName(l);
+			setDisplayName(
+				([f, l].filter(Boolean).join(" ") || rawName || "Learner").trim()
+			);
+
+			// 🔎 console logs
+			console.log(`[SCORM] raw learner name: "${rawName}"`);
+			console.log(`first name: ${f} , last name: ${l}`);
+
+			// Set status using appropriate model
+			if (scorm.version === "1.2") {
+				console.log("[SCORM] Setting cmi.core.lesson_status = incomplete");
+				scorm.set("cmi.core.lesson_status", "incomplete");
+			} else {
+				console.log("[SCORM] Setting cmi.completion_status = incomplete");
+				scorm.set("cmi.completion_status", "incomplete");
+			}
 			scorm.save();
 		}
 
@@ -112,10 +162,13 @@ const ScormProvider = ({ children }) => {
 	const contextValue = useMemo(
 		() => ({
 			lmsConnected,
-			learnerName,
+			learnerName, // raw
+			firstName,
+			lastName,
+			displayName, // First Last
 			scorm,
 		}),
-		[lmsConnected, learnerName, scorm]
+		[lmsConnected, learnerName, firstName, lastName, displayName, scorm]
 	);
 
 	return (
@@ -162,6 +215,38 @@ function App() {
 		}
 	}, [lmsConnected, scorm]);
 
+	// 🔥 Gather hero URLs for the current language
+	const heroUrlsToPreload = useMemo(() => {
+		// Prefer sections' own hero field if present
+		const fromSections = sections
+			.filter((s) => (s.lang === "both" || s.lang === lang) && s.hero)
+			.map((s) => s.hero);
+
+		if (fromSections.length) return Array.from(new Set(fromSections));
+
+		// Fallback to manual manifest if no hero fields on sections
+		const map = HERO_IMAGES[lang] || {};
+		return Array.from(new Set(Object.values(map)));
+	}, [lang]);
+	// top
+
+	// fastest: launch at language change
+	useEffect(() => {
+		if (!heroUrlsToPreload.length) return;
+		preloadAll(heroUrlsToPreload);
+	}, [heroUrlsToPreload]);
+
+	// Optional: warm a specific page on hover/focus
+	const preloadPageHero = useCallback(
+		(pageId) => {
+			const sec = sections.find((s) => s.id === pageId);
+			if (sec?.hero) return preloadImage(sec.hero);
+			const src = (HERO_IMAGES[lang] || {})[pageId];
+			if (src) return preloadImage(src);
+		},
+		[lang]
+	);
+
 	// Navigation: always record non-home visits + scroll-to-top
 	const handleNavigate = (id) => {
 		const newPageId = !id || id === "home" ? "home" : id;
@@ -193,10 +278,17 @@ function App() {
 		scorm.set("cmi.suspend_data", toSave);
 
 		// Completion is per-language (based on current filtered total)
-		scorm.set(
-			"cmi.core.lesson_status",
-			visitedTrackableCount >= totalPages ? "completed" : "incomplete"
-		);
+		if (scorm.version === "1.2") {
+			scorm.set(
+				"cmi.core.lesson_status",
+				visitedTrackableCount >= totalPages ? "completed" : "incomplete"
+			);
+		} else {
+			scorm.set(
+				"cmi.completion_status",
+				visitedTrackableCount >= totalPages ? "completed" : "incomplete"
+			);
+		}
 		scorm.save();
 	}, [visitedPages, visitedTrackableCount, lmsConnected, scorm, totalPages]);
 
@@ -254,7 +346,6 @@ function App() {
 		lang === "fr"
 			? [
 					{
-						// centered welcome (no target)
 						target: null,
 						title: "Bienvenue",
 						body: "Cette courte visite vous montre comment naviguer: utilisez le menu burger et les contrôles intégrés (pas les boutons du navigateur).",
@@ -266,7 +357,6 @@ function App() {
 						body: "Voici le menu burger. Cliquez pour ouvrir les pages. Nous allons l’ouvrir pour vous à l’étape suivante.",
 					},
 					{
-						// open the menu automatically, then show the list of pages
 						target: ".fullscreen-nav-links",
 						title: "Toutes les pages",
 						body: "Voici la liste des pages accessibles via le menu. Vous pouvez tout parcourir depuis l’interface.",
@@ -276,7 +366,6 @@ function App() {
 						recalcDelay: 300, // wait for menu animation
 					},
 					{
-						// close the menu automatically
 						target: null,
 						title: "Fermer le menu",
 						body: "Le menu se ferme simplement avec le bouton de fermeture (X). Nous allons le fermer maintenant.",
@@ -335,6 +424,7 @@ function App() {
 				onNavigate={handleNavigate}
 				currentPage={currentPage}
 				lang={lang}
+				onPrefetch={preloadPageHero} // ⭐ prefetch on menu hover/focus
 			/>
 			<main id="main-content" className="main-content">
 				{currentPage === "home" ? (
@@ -343,7 +433,10 @@ function App() {
 							<Hero onNavigate={handleNavigate} />
 						</div>
 						<div className="navigation-section">
-							<ContentNavigation onNavigate={handleNavigate} />
+							<ContentNavigation
+								onNavigate={handleNavigate}
+								onPrefetch={preloadPageHero} // ⭐ optional: prefetch on grid hover/focus
+							/>
 							<KnowledgeActions onNavigate={handleNavigate} />
 						</div>
 					</>

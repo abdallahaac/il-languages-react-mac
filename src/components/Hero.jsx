@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./Hero.css";
 import heroImage from "../assets/home-img.jpeg";
-
+import { getHeroURL } from "../prefetchHeroes";
+import { useHeroSrc } from "../utils/useHeroSrc";
 /* watch <html lang=""> */
 const useLanguage = () => {
 	const [lang, setLang] = useState(
@@ -25,8 +26,13 @@ const useLanguage = () => {
 const content = {
 	en: {
 		heroTitle:
-			"Revitalizing Voices: <wbr> Navigating the  <em>Indigenous Languages Act</em>",
-		introCardTitle: "Introduction and overview",
+
+			"Revitalizing Voices: <wbr> Navigating the <br> <em>Indigenous Languages Act</em>",
+		introCardTitle: "Introduction and Overview",
+
+// 			"Revitalizing Voices: <wbr> Navigating the  <em>Indigenous Languages Act</em>",
+// 		introCardTitle: "Introduction and overview",
+// >>>>>>> french-version
 		introCardAria: "Navigate to Introduction and overview",
 		introCardText:
 			"Language is the foundation of a culture. For Indigenous oral societies, words hold knowledge amassed for millennia. A language holds the stories, songs, dances, protocols, family histories and...",
@@ -50,12 +56,17 @@ const Hero = ({ onNavigate, lang: langProp }) => {
 	const lang = (langProp || useLanguage()).toLowerCase();
 	const t = content[lang] || content.en;
 
+	const url = getHeroURL("en", "home");
+
+	// Use the custom hook for cached/preloaded hero src
+	const src = useHeroSrc(url);
+
 	const go = (id) => onNavigate?.(id);
 
 	return (
 		<div
 			className="hero-container hero-page"
-			style={{ backgroundImage: `url(${heroImage})` }}
+			style={{ backgroundImage: `url(${url})` }}
 		>
 			<div className="hero-content-wrapper">
 				<div className="hero-text">

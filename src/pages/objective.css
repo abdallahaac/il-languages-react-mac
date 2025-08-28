@@ -43,7 +43,7 @@
 
 /* Optional: ensure hero title matches scheme on this page only */
 .objective-page .hero-title {
-	font-size: var(--fs-hero);
+	font-size: clamp(2.5rem, 5.5vw, 4.5rem) !important;
 	letter-spacing: var(--ls-tight);
 	color: var(--blue-500);
 }

@@ -1,11 +1,14 @@
 // src/main.jsx
 import React from "react";
 import ReactDOM from "react-dom/client";
-import ScormEnabledApp from "./App.jsx"; // Make sure to import the default export
+import { HelmetProvider } from "react-helmet-async";
+import ScormEnabledApp from "./App.jsx";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
 	<React.StrictMode>
-		<ScormEnabledApp />
+		<HelmetProvider>
+			<ScormEnabledApp />
+		</HelmetProvider>
 	</React.StrictMode>
 );

@@ -1,22 +1,27 @@
-import React from "react";
-import image from "../assets/resource.png";
-
 import "./resources.css";
 import BackToTop from "../components/BackToTop";
 
+import { getHeroURL } from "../prefetchHeroes";
+import { useHeroSrc } from "../utils/useHeroSrc";
+
 const Resources = ({ onNavigate }) => {
+	const url = getHeroURL("en", "resources");
+	const src = useHeroSrc(url);
+
 	return (
 		<div className="intro-wrapper resources-page">
 			<header className="hero" role="banner">
 				<img
-					src={image}
+					src={src}
 					alt="Decorative image with floral elements"
 					className="hero-img"
 					aria-hidden="true"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
 				/>
 				<h1 className="hero-title">Resources</h1>
 			</header>
-
 			<section className="resources-content">
 				<ul className="res">
 					<li>
@@ -155,9 +160,24 @@ const Resources = ({ onNavigate }) => {
 				</ul>
 			</section>
 			<BackToTop />
-			<nav className="breadcrumb" aria-label="Page navigation">
-				<button onClick={() => onNavigate?.("knowledge-check")}>
+			{/* Breadcrumb / Navigation */}
+			<nav className="breadcrumb" aria-label="Navigation ">
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("knowledge-check");
+					}}
+				>
 					&laquo;&nbsp;Back
+				</button>
+
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("home");
+					}}
+				>
+					Home&nbsp;&raquo;
 				</button>
 			</nav>
 		</div>

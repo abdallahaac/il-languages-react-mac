@@ -3,8 +3,12 @@ import "../IntroductionPage.css"; // For shared styles
 import "../PublicService.css"; // For page-specific styles
 import image from "../../assets/what.png";
 import BackToTop from "../../components/BackToTop";
+import { getHeroURL } from "../../prefetchHeroes";
+import { useHeroSrc } from "../../utils/useHeroSrc";
 
 const PublicService_fr = ({ onNavigate }) => {
+	const url = getHeroURL("en", "public-service");
+	const src = useHeroSrc(url); // <-- use the hook
 	// State for the sign language accordion
 	const [openSignLanguage, setOpenSignLanguage] = useState(null);
 	// State for the video transcript
@@ -18,7 +22,15 @@ const PublicService_fr = ({ onNavigate }) => {
 	return (
 		<div className="intro-wrapper public-service-page">
 			<header className="hero" role="banner">
-				<img src={image} alt="" className="hero-img" aria-hidden="true" />
+				<img
+					src={src}
+					alt=""
+					className="hero-img"
+					aria-hidden="true"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
+				/>
 				<h1 className="hero-title">
 					Ce que signifie la Loi pour les fonctionnaires
 				</h1>
