@@ -251,6 +251,9 @@
 		padding: 0.7rem 0.8rem;
 		font-size: 0.98rem;
 	}
+	.welcome-message {
+		display: none !important;
+	}
 }
 @media (max-width: 950px) {
 	.welcome-message {
@@ -349,4 +352,3 @@
 	/* If you prefer a white focus outline on dark header */
 	outline-color: #fff;
 }
-

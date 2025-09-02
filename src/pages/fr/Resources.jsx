@@ -1,23 +1,103 @@
-import React from "react";
-import image from "../../assets/resource.png"; // Note the path change ../../
+// src/pages/fr/Resources.jsx
+import React, { useMemo, useState, useEffect } from "react";
 import "../resources.css";
 import BackToTop from "../../components/BackToTop";
 import { getHeroURL } from "../../prefetchHeroes";
 import { useHeroSrc } from "../../utils/useHeroSrc";
 
 const Resources = ({ onNavigate }) => {
-	const url = getHeroURL("en", "resources");
+	const url = getHeroURL("fr", "resources");
 	const src = useHeroSrc(url);
+
+	// SCORM handle (safe if not present)
+	const scorm = useMemo(
+		() => (window.pipwerks ? window.pipwerks.SCORM : null),
+		[]
+	);
+
+	const t = {
+		pageTitle: "Ressources",
+		back: "Retour",
+		home: "Page d’accueil",
+		modalTitle: "Cours terminé",
+		modalMsg:
+			"Vous avez terminé le cours. Vous pouvez maintenant fermer cette fenêtre ou retourner à la page d’accueil.",
+		exit: "Fermer la fenêtre",
+		goHome: "Aller à l’accueil",
+		cancel: "Annuler",
+	};
+
+	const [showExitModal, setShowExitModal] = useState(false);
+	const [hasAttemptedQuiz, setHasAttemptedQuiz] = useState(false);
+
+	// Détecter la tentative via SCORM lesson_status
+	useEffect(() => {
+		try {
+			if (scorm && scorm.API?.isFound?.()) {
+				const rawStatus = scorm.get("cmi.core.lesson_status") || "";
+				const status = String(rawStatus).trim().toLowerCase();
+				const attemptedStatuses = new Set(["passed", "failed", "completed"]);
+				setHasAttemptedQuiz(attemptedStatuses.has(status));
+			} else {
+				setHasAttemptedQuiz(false);
+			}
+		} catch {
+			setHasAttemptedQuiz(false);
+		}
+	}, [scorm]);
+
+	// Bloquer le scroll arrière-plan + Échap pour fermer quand ouvert
+	useEffect(() => {
+		if (!showExitModal) return;
+		const prevOverflow = document.body.style.overflow;
+		document.body.style.overflow = "hidden";
+		document.getElementById("exit-modal-primary")?.focus();
+		const onKeyDown = (e) => {
+			if (e.key === "Escape") setShowExitModal(false);
+		};
+		document.addEventListener("keydown", onKeyDown);
+		return () => {
+			document.body.style.overflow = prevOverflow;
+			document.removeEventListener("keydown", onKeyDown);
+		};
+	}, [showExitModal]);
+
+	const handleHomeClick = () => {
+		// ✅ Afficher le modal seulement si le questionnaire a été tenté
+		if (hasAttemptedQuiz) setShowExitModal(true);
+		else onNavigate?.("home");
+	};
+
+	const handleExitWindow = () => {
+		try {
+			if (scorm && scorm.API?.isFound?.()) {
+				// Facultatif : marquer comme complété ici si désiré
+				// scorm.set("cmi.core.lesson_status", "completed");
+				scorm.save();
+			}
+		} catch {}
+		window.close(); // peut être bloqué
+		onNavigate?.("home");
+	};
+
+	const handleGoHome = () => {
+		setShowExitModal(false);
+		onNavigate?.("home");
+	};
+
 	return (
 		<div className="intro-wrapper resources-page">
 			<header className="hero" role="banner">
 				<img
-					src={image}
-					alt="Image décorative avec des éléments floraux"
+					src={src}
+					alt=""
 					className="hero-img"
 					aria-hidden="true"
+					loading="eager"
+					fetchpriority="high"
+					decoding="sync"
 				/>
-				<h1 className="hero-title">Ressources</h1>
+				<h1 className="hero-title">{t.pageTitle}</h1>
 			</header>
 
 			<section className="resources-content">
@@ -133,7 +213,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Comment l'IA et la technologie immersive sont utilisées pour
+							Comment l’IA et la technologie immersive sont utilisées pour
 							revitaliser les langues autochtones | Radio-Canada
 						</a>
 					</li>
@@ -158,9 +238,10 @@ const Resources = ({ onNavigate }) => {
 					</li>
 				</ul>
 			</section>
+
 			<BackToTop />
 
-			{/* Breadcrumb / Navigation */}
+			{/* Fil d’Ariane / Navigation */}
 			<nav className="breadcrumb" aria-label="Navigation de la page">
 				<button
 					onClick={() => {
@@ -168,18 +249,58 @@ const Resources = ({ onNavigate }) => {
 						onNavigate?.("knowledge-check");
 					}}
 				>
-					&laquo;&nbsp;Retour
+					&laquo;&nbsp;{t.back}
 				</button>
 
 				<button
 					onClick={() => {
 						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-						onNavigate?.("home");
+						handleHomeClick();
 					}}
 				>
-					Page d'acceuil&nbsp;&raquo;
+					{t.home}&nbsp;&raquo;
 				</button>
 			</nav>
+
+			{/* Modal de fin de cours */}
+			{showExitModal && (
+				<div className="modal-overlay" role="presentation">
+					<div
+						className="modal"
+						role="dialog"
+						aria-modal="true"
+						aria-labelledby="exit-modal-title"
+						aria-describedby="exit-modal-desc"
+					>
+						<h2 id="exit-modal-title" className="modal-title">
+							{t.modalTitle}
+						</h2>
+						<p id="exit-modal-desc" className="modal-desc">
+							{t.modalMsg}
+						</p>
+
+						<div className="modal-actions">
+							<button
+								id="exit-modal-primary"
+								className="submit-button"
+								onClick={handleExitWindow}
+							>
+								{t.exit}
+							</button>
+							<button className="btn-ghost" onClick={handleGoHome}>
+								{t.goHome}
+							</button>
+							<button
+								className="btn-small"
+								onClick={() => setShowExitModal(false)}
+								aria-label={t.cancel}
+							>
+								{t.cancel}
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };

@@ -1,8 +1,12 @@
-// src/pages/fr/Languages.jsx
-import React, { useEffect } from "react";
+// src/pages/fr/Languages.jsx  (FR)
+import React, { useEffect, useMemo, useState } from "react";
 import "../IntroductionPage.css";
 import BackToTop from "../../components/BackToTop";
-import { loadHighcharts, ensureModule } from "../../utils/highchartsLoader";
+import {
+	loadHighcharts,
+	ensureModule,
+	HC_URLS,
+} from "../../utils/highchartsLoader";
 
 import { getHeroURL } from "../../prefetchHeroes";
 import { useHeroSrc } from "../../utils/useHeroSrc"; // ✅ use the hook
@@ -10,74 +14,97 @@ import { useHeroSrc } from "../../utils/useHeroSrc"; // ✅ use the hook
 const Languages = ({ onNavigate }) => {
 	const url = getHeroURL("fr", "languages-fr");
 	const src = useHeroSrc(url);
+	const [open, setOpen] = useState(false);
 
-	/* ───────── données du nuage de mots ───────── */
-	const wordCloudData = [
-		{ category: "Langues cries", weight: 86475, percentage: -6.1 },
-		{ category: "Inuktitut", weight: 40320, percentage: 1.4 },
-		{ category: "Langues ojibwées", weight: 25440, percentage: -5.4 },
-		{ category: "Oji-cri", weight: 15210, percentage: -1.1 },
-		{ category: "Innu-aimun", weight: 11605, percentage: -0.4 },
-		{ category: "Déné", weight: 11375, percentage: -10.9 },
-		{ category: "Mi’kmaq", weight: 9000, percentage: 8.0 },
-		{ category: "Atikamekw", weight: 6740, percentage: 2.2 },
-		{
-			category: "Siksiká’powahsin (Pied-noir)",
-			weight: 6585,
-			percentage: 19.1,
-		},
-		{ category: "Langues esclaves-lièvres", weight: 2215, percentage: -20.3 },
-		{ category: "Tlicho", weight: 2115, percentage: -10.0 },
-		{ category: "Anicinabemowin", weight: 1925, percentage: -21.1 },
-		{ category: "Michif", weight: 1845, percentage: 57.7 },
-		{ category: "Dakelh", weight: 1530, percentage: -25.9 },
-		{ category: "Dakota", weight: 1505, percentage: 0.7 },
-		{ category: "Kanien’kéha", weight: 1435, percentage: 11.7 },
-		{ category: "Halkomelem", weight: 1335, percentage: 29.6 },
-		{ category: "Gitxsan", weight: 1110, percentage: -14.0 },
-		{ category: "Nisga’a", weight: 1080, percentage: 4.3 },
-		{ category: "Secwepemctsin", weight: 1050, percentage: -12.9 },
-		{ category: "Stoney", weight: 915, percentage: 14.4 },
-		{ category: "Tsilhqot’in", weight: 855, percentage: -15.3 },
-		{ category: "Wolastoqewi", weight: 790, percentage: 6.8 },
-		{ category: "Kwak’wala", weight: 760, percentage: 29.9 },
-		{ category: "Inuinnaqtun", weight: 750, percentage: -43.2 },
-		{ category: "Syilx", weight: 665, percentage: -18.4 },
-		{ category: "Nuu-chah-nulth", weight: 665, percentage: 25.5 },
-		{ category: "St’at’imcets", weight: 580, percentage: -24.7 },
-		{ category: "Ntlakapamux", weight: 470, percentage: 11.9 },
-		{ category: "Tsimshian", weight: 445, percentage: 7.2 },
-		{ category: "Inuvialuktun", weight: 350, percentage: -45.3 },
-		{ category: "Assiniboine", weight: 350, percentage: 0.0 },
-		{ category: "Sḵwx̱wú7mesh", weight: 345, percentage: 23.2 },
-		{ category: "Heiltsuk", weight: 325, percentage: 160.0 },
-		{ category: "Haisla", weight: 285, percentage: 62.9 },
-		{ category: "Straits", weight: 280, percentage: -21.1 },
-		{ category: "Gwich’in", weight: 275, percentage: -22.5 },
-		{ category: "Dane-zaa", weight: 270, percentage: -18.2 },
-		{ category: "Langues tutchones", weight: 255, percentage: -36.3 },
-		{ category: "Wetsuwet’en-Babine", weight: 240, percentage: 17.1 },
-		{ category: "Tahltan", weight: 235, percentage: -9.6 },
-		{ category: "Kaska", weight: 225, percentage: -36.6 },
-		{ category: "Xaayda Kil", weight: 220, percentage: -51.1 },
-		{ category: "Gayogo̱hó", weight: 220, percentage: 76.0 },
-		{ category: "Ktunaxa", weight: 210, percentage: 23.5 },
-		{ category: "Oneida", weight: 200, percentage: 14.3 },
-		{ category: "Tsuu T’ina", weight: 175, percentage: 66.7 },
-		{ category: "Tse’khene", weight: 135, percentage: -25.0 },
-		{ category: "Tlingit", weight: 120, percentage: -52.9 },
-	];
+	/* ───────── données du nuage de mots (inchangées) ───────── */
+	const wordCloudData = useMemo(
+		() => [
+			{ category: "Langues cries", weight: 86475, percentage: -6.1 },
+			{ category: "Inuktitut", weight: 40320, percentage: 1.4 },
+			{ category: "Langues ojibwées", weight: 25440, percentage: -5.4 },
+			{ category: "Oji-cri", weight: 15210, percentage: -1.1 },
+			{ category: "Innu-aimun", weight: 11605, percentage: -0.4 },
+			{ category: "Déné", weight: 11375, percentage: -10.9 },
+			{ category: "Mi’kmaq", weight: 9000, percentage: 8.0 },
+			{ category: "Atikamekw", weight: 6740, percentage: 2.2 },
+			{
+				category: "Siksiká’powahsin (Pied-noir)",
+				weight: 6585,
+				percentage: 19.1,
+			},
+			{ category: "Langues esclaves-lièvres", weight: 2215, percentage: -20.3 },
+			{ category: "Tlicho", weight: 2115, percentage: -10.0 },
+			{ category: "Anicinabemowin", weight: 1925, percentage: -21.1 },
+			{ category: "Michif", weight: 1845, percentage: 57.7 },
+			{ category: "Dakelh", weight: 1530, percentage: -25.9 },
+			{ category: "Dakota", weight: 1505, percentage: 0.7 },
+			{ category: "Kanien’kéha", weight: 1435, percentage: 11.7 },
+			{ category: "Halkomelem", weight: 1335, percentage: 29.6 },
+			{ category: "Gitxsan", weight: 1110, percentage: -14.0 },
+			{ category: "Nisga’a", weight: 1080, percentage: 4.3 },
+			{ category: "Secwepemctsin", weight: 1050, percentage: -12.9 },
+			{ category: "Stoney", weight: 915, percentage: 14.4 },
+			{ category: "Tsilhqot’in", weight: 855, percentage: -15.3 },
+			{ category: "Wolastoqewi", weight: 790, percentage: 6.8 },
+			{ category: "Kwak’wala", weight: 760, percentage: 29.9 },
+			{ category: "Inuinnaqtun", weight: 750, percentage: -43.2 },
+			{ category: "Syilx", weight: 665, percentage: -18.4 },
+			{ category: "Nuu-chah-nulth", weight: 665, percentage: 25.5 },
+			{ category: "St’at’imcets", weight: 580, percentage: -24.7 },
+			{ category: "Ntlakapamux", weight: 470, percentage: 11.9 },
+			{ category: "Tsimshian", weight: 445, percentage: 7.2 },
+			{ category: "Inuvialuktun", weight: 350, percentage: -45.3 },
+			{ category: "Assiniboine", weight: 350, percentage: 0.0 },
+			{ category: "Sḵwx̱wú7mesh", weight: 345, percentage: 23.2 },
+			{ category: "Heiltsuk", weight: 325, percentage: 160.0 },
+			{ category: "Haisla", weight: 285, percentage: 62.9 },
+			{ category: "Straits", weight: 280, percentage: -21.1 },
+			{ category: "Gwich’in", weight: 275, percentage: -22.5 },
+			{ category: "Dane-zaa", weight: 270, percentage: -18.2 },
+			{ category: "Langues tutchones", weight: 255, percentage: -36.3 },
+			{ category: "Wetsuwet’en-Babine", weight: 240, percentage: 17.1 },
+			{ category: "Tahltan", weight: 235, percentage: -9.6 },
+			{ category: "Kaska", weight: 225, percentage: -36.6 },
+			{ category: "Xaayda Kil", weight: 220, percentage: -51.1 },
+			{ category: "Gayogo̱hó", weight: 220, percentage: 76.0 },
+			{ category: "Ktunaxa", weight: 210, percentage: 23.5 },
+			{ category: "Oneida", weight: 200, percentage: 14.3 },
+			{ category: "Tsuu T’ina", weight: 175, percentage: 66.7 },
+			{ category: "Tse’khene", weight: 135, percentage: -25.0 },
+			{ category: "Tlingit", weight: 120, percentage: -52.9 },
+		],
+		[]
+	);
 
-	/* ───────── Highcharts (singleton) ───────── */
+	/* ───────── Highcharts (keeps your behavior; adds modules for a11y) ───────── */
 	useEffect(() => {
 		let chart;
 
 		(async () => {
 			const Highcharts = await loadHighcharts({ useStock: false });
+
+			// Modules recommandés : exporting → export-data → accessibility
+			await ensureModule(HC_URLS.exporting, (hc) => !!hc?.Exporting);
+			await ensureModule(
+				HC_URLS.exportData,
+				(hc) => !!hc.Chart?.prototype.getTable
+			);
+			await ensureModule(HC_URLS.accessibility, (hc) => !!hc?.Accessibility);
+
+			// Module wordcloud
 			await ensureModule(
 				"https://code.highcharts.com/modules/wordcloud.js",
 				(hc) => !!hc?.seriesTypes?.wordcloud
 			);
+
+			// (Optionnel) libellés FR pour le menu d’exportation
+			Highcharts.setOptions({
+				lang: {
+					viewData: "Voir le tableau des données",
+					downloadCSV: "Télécharger CSV",
+					downloadXLS: "Télécharger Excel",
+				},
+			});
 
 			chart = Highcharts.chart("indigenous-wordcloud", {
 				chart: { type: "wordcloud", height: 400 },
@@ -111,9 +138,15 @@ const Languages = ({ onNavigate }) => {
 		})();
 
 		return () => chart && chart.destroy();
-	}, []); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [wordCloudData]); // eslint-disable-line react-hooks/exhaustive-deps
 
-	/* ───────── rendu ───────── */
+	/* ───────── données triées pour le tableau accordéon ───────── */
+	const sorted = useMemo(
+		() => [...wordCloudData].sort((a, b) => b.weight - a.weight),
+		[wordCloudData]
+	);
+
+	/* ───────── rendu (contenu inchangé + accordéon ajouté) ───────── */
 	return (
 		<div className="intro-wrapper">
 			{/* ███ hero ███ */}
@@ -283,6 +316,61 @@ const Languages = ({ onNavigate }) => {
 				</figcaption>
 			</figure>
 
+			{/* Accordéon accessible pour le tableau des données (ajouté) */}
+			<section className="chart-accordion" aria-labelledby="wc-acc-title-fr">
+				<h3 id="wc-acc-title-fr" className="visually-hidden">
+					Tableau des données
+				</h3>
+				<button
+					className="acc-button"
+					aria-expanded={open}
+					aria-controls="wc-data-table-fr"
+					onClick={() => setOpen((v) => !v)}
+				>
+					{open
+						? "Masquer le tableau des données"
+						: "Voir le tableau des données"}
+					<span className="acc-icon" aria-hidden="true">
+						{open ? "−" : "+"}
+					</span>
+				</button>
+
+				<div
+					id="wc-data-table-fr"
+					className="acc-panel"
+					hidden={!open}
+					role="region"
+					aria-label="Tableau des données pour le nuage de mots des langues autochtones"
+				>
+					<table className="wc-table" lang="fr">
+						<caption className="sr-only">
+							Langues autochtones (triées par locuteurs, 2021) et changement
+							depuis 2016
+						</caption>
+						<thead>
+							<tr>
+								<th scope="col">Langue / Groupe</th>
+								<th scope="col">Locuteurs (2021)</th>
+								<th scope="col">Changement (2016–2021)</th>
+							</tr>
+						</thead>
+						<tbody>
+							{sorted.map((d) => (
+								<tr key={d.category}>
+									<th scope="row">{d.category}</th>
+									<td data-type="number">{d.weight.toLocaleString("fr-CA")}</td>
+									<td data-type="number">
+										{d.percentage > 0
+											? `+${d.percentage}%`
+											: `${d.percentage}%`}
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+			</section>
+
 			<BackToTop />
 
 			{/* ███ fil d'Ariane ███ */}
@@ -305,6 +393,59 @@ const Languages = ({ onNavigate }) => {
 					Suivant&nbsp;&raquo;
 				</button>
 			</nav>
+
+			{/* Couleurs WCAG-AA pour l’accordéon & le tableau (styles locaux) */}
+			<style>{`
+        .visually-hidden, .sr-only {
+          position: absolute !important; height:1px; width:1px; overflow:hidden;
+          clip: rect(1px,1px,1px,1px); white-space: nowrap; border:0; padding:0; margin:-1px;
+        }
+        .chart-accordion { margin: 1.25rem 0 2rem; }
+        .acc-button {
+          width: 100%;
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 0.9rem 1rem;
+          border-radius: 12px;
+          border: 2px solid #0F172A;        /* contraste élevé */
+          background: #FFFFFF;              /* blanc */
+          color: #0B1220;                   /* texte sombre */
+          font-weight: 700;
+          cursor: pointer;
+        }
+        .acc-button:hover { background: #F1F5F9; }     /* slate-100 */
+        .acc-button:focus-visible {
+          outline: 3px solid #2563EB;                 /* bleu-600 */
+          outline-offset: 2px;
+        }
+        .acc-icon { font-size: 1.25rem; line-height: 1; }
+        .acc-panel { padding: 0.75rem 0.25rem; }
+
+        .wc-table {
+          width: 100%;
+          border-collapse: collapse;
+          background: #FFFFFF;
+          border: 1.5px solid #0F172A;                /* bordure contrastée */
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+        }
+        .wc-table thead th {
+          background: #111827;                        /* gris-900 */
+          color: #FFFFFF;                             /* texte blanc */
+          font-weight: 800;
+          padding: 0.7rem 0.8rem;
+          text-align: left;
+        }
+        .wc-table th[scope="row"], .wc-table td {
+          padding: 0.65rem 0.8rem;
+          border-bottom: 1px solid #CBD5E1;           /* slate-300 */
+        }
+        .wc-table tbody tr:nth-child(odd) td,
+        .wc-table tbody tr:nth-child(odd) th[scope="row"] {
+          background: #F8FAFC;                        /* slate-50 */
+        }
+        .wc-table td[data-type="number"] { text-align: right; }
+      `}</style>
 		</div>
 	);
 };

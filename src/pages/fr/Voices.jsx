@@ -3,12 +3,12 @@ import "../IntroductionPage.css";
 
 /* ───────── Importations des fichiers audio (français) ───────── */
 import clip1 from "../../assets/audio/fr/Ojibwe Fr Tanya King.mp3";
-import clip2 from "../../assets/audio/fr/Inuktitut Fr Lauralee.wav";
-import clip3 from "../../assets/audio/fr/Alison Fr Mitchif.wav";
-import clip4 from "../../assets/audio/fr/Xaayda Fr Audio 2_01.wav";
-import clip5 from "../../assets/audio/fr/Innu Fr Pam Dough.wav";
-import clip6 from "../../assets/audio/fr/Inuktitut Fr Lauralee.wav";
-import clip7 from "../../assets/audio/fr/Colleen Fr Plains Cree.wav";
+import clip2 from "../../assets/audio/fr/Inuktitut Fr Lauralee.mp3";
+import clip3 from "../../assets/audio/fr/Alison Fr Mitchif.mp3";
+import clip4 from "../../assets/audio/fr/Xaayda Fr Audio 2_01.mp3";
+import clip5 from "../../assets/audio/fr/Innu Fr Pam Dough.mp3";
+import clip6 from "../../assets/audio/fr/Inuktitut Fr Lauralee.mp3";
+import clip7 from "../../assets/audio/fr/Colleen Fr Plains Cree.mp3";
 
 import BackToTop from "../../components/BackToTop";
 
