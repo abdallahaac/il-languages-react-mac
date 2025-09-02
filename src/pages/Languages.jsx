@@ -1,18 +1,24 @@
-import React, { useState, useEffect } from "react";
+// src/pages/Languages.jsx  (EN)
+import React, { useState, useEffect, useMemo } from "react";
 import "./IntroductionPage.css";
 import BackToTop from "../components/BackToTop";
 import { getHeroURL } from "../prefetchHeroes";
-// ✅ added for preloading/swap
+// If you already use these, keep them; otherwise you can simplify to just getHeroURL:
 import { preloadImage, getCachedOrUrl } from "../utils/imagePreloader";
-import { loadHighcharts, ensureModule } from "../utils/highchartsLoader";
+import {
+	loadHighcharts,
+	ensureModule,
+	HC_URLS,
+} from "../utils/highchartsLoader";
 
 const Languages = ({ onNavigate }) => {
 	const url = getHeroURL("en", "languages-en");
-	const [src, setSrc] = useState(getCachedOrUrl(url));
+	const [src, setSrc] = useState(getCachedOrUrl ? getCachedOrUrl(url) : url);
+	const [open, setOpen] = useState(false);
 
 	useEffect(() => {
 		let cancelled = false;
-		if (!url) return;
+		if (!url || !preloadImage) return;
 		preloadImage(url).then((objectURL) => {
 			if (!cancelled) setSrc(objectURL || url);
 		});
@@ -20,69 +26,94 @@ const Languages = ({ onNavigate }) => {
 			cancelled = true;
 		};
 	}, [url]);
-	/* ───────── word-cloud data ───────── */
-	const wordCloudData = [
-		{ category: "Cree languages", weight: 86475, percentage: -6.1 },
-		{ category: "Inuktitut", weight: 40320, percentage: 1.4 },
-		{ category: "Ojibwe languages", weight: 25440, percentage: -5.4 },
-		{ category: "Oji-Cree", weight: 15210, percentage: -1.1 },
-		{ category: "Innu Aimun", weight: 11605, percentage: -0.4 },
-		{ category: "Dene", weight: 11375, percentage: -10.9 },
-		{ category: "Mi’kmaq", weight: 9000, percentage: 8.0 },
-		{ category: "Atikamekw", weight: 6740, percentage: 2.2 },
-		{ category: "Siksiká’powahsin", weight: 6585, percentage: 19.1 },
-		{ category: "Slavey-Hare languages", weight: 2215, percentage: -20.3 },
-		{ category: "Tlicho ", weight: 2115, percentage: -10.0 },
-		{ category: "Anicinabemowin ", weight: 1925, percentage: -21.1 },
-		{ category: "Michif", weight: 1845, percentage: 57.7 },
-		{ category: "Dakelh ", weight: 1530, percentage: -25.9 },
-		{ category: "Dakota", weight: 1505, percentage: 0.7 },
-		{ category: "Kanien’kéha", weight: 1435, percentage: 11.7 },
-		{ category: "Halkomelem", weight: 1335, percentage: 29.6 },
-		{ category: "Gitxsan ", weight: 1110, percentage: -14.0 },
-		{ category: "Nisga’a", weight: 1080, percentage: 4.3 },
-		{ category: "Secwepemctsin ", weight: 1050, percentage: -12.9 },
-		{ category: "Stoney", weight: 915, percentage: 14.4 },
-		{ category: "Tsilhqot’in ", weight: 855, percentage: -15.3 },
-		{ category: "Wolastoqewi ", weight: 790, percentage: 6.8 },
-		{ category: "Kwak’wala ", weight: 760, percentage: 29.9 },
-		{ category: "Inuinnaqtun", weight: 750, percentage: -43.2 },
-		{ category: "Syilx ", weight: 665, percentage: -18.4 },
-		{ category: "Nuu-chah-nulth ", weight: 665, percentage: 25.5 },
-		{ category: "St’at’imcets", weight: 580, percentage: -24.7 },
-		{ category: "Ntlakapamux ", weight: 470, percentage: 11.9 },
-		{ category: "Tsimshian", weight: 445, percentage: 7.2 },
-		{ category: "Inuvialuktun", weight: 350, percentage: -45.3 },
-		{ category: "Assiniboine", weight: 350, percentage: 0.0 },
-		{ category: "Sḵwx̱wú7mesh", weight: 345, percentage: 23.2 },
-		{ category: "Heiltsuk", weight: 325, percentage: 160.0 },
-		{ category: "Haisla", weight: 285, percentage: 62.9 },
-		{ category: "Straits", weight: 280, percentage: -21.1 },
-		{ category: "Gwich’in", weight: 275, percentage: -22.5 },
-		{ category: "Dane-zaa ", weight: 270, percentage: -18.2 },
-		{ category: "Tutchone languages", weight: 255, percentage: -36.3 },
-		{ category: "Wetsuwet’en-Babine", weight: 240, percentage: 17.1 },
-		{ category: "Tahltan", weight: 235, percentage: -9.6 },
-		{ category: "Kaska ", weight: 225, percentage: -36.6 },
-		{ category: "Xaayda Kil", weight: 220, percentage: -51.1 },
-		{ category: "Gayogo̱hó", weight: 220, percentage: 76.0 },
-		{ category: "Ktunaxa ", weight: 210, percentage: 23.5 },
-		{ category: "Oneida", weight: 200, percentage: 14.3 },
-		{ category: "Tsuu T’ina ", weight: 175, percentage: 66.7 },
-		{ category: "Tse’khene ", weight: 135, percentage: -25.0 },
-		{ category: "Tlingit", weight: 120, percentage: -52.9 },
-	];
 
-	/* ───────── Highcharts (singleton) ───────── */
+	/* ───────── word-cloud data (unchanged) ───────── */
+	const wordCloudData = useMemo(
+		() => [
+			{ category: "Cree languages", weight: 86475, percentage: -6.1 },
+			{ category: "Inuktitut", weight: 40320, percentage: 1.4 },
+			{ category: "Ojibwe languages", weight: 25440, percentage: -5.4 },
+			{ category: "Oji-Cree", weight: 15210, percentage: -1.1 },
+			{ category: "Innu Aimun", weight: 11605, percentage: -0.4 },
+			{ category: "Dene", weight: 11375, percentage: -10.9 },
+			{ category: "Mi’kmaq", weight: 9000, percentage: 8.0 },
+			{ category: "Atikamekw", weight: 6740, percentage: 2.2 },
+			{ category: "Siksiká’powahsin", weight: 6585, percentage: 19.1 },
+			{ category: "Slavey-Hare languages", weight: 2215, percentage: -20.3 },
+			{ category: "Tlicho ", weight: 2115, percentage: -10.0 },
+			{ category: "Anicinabemowin ", weight: 1925, percentage: -21.1 },
+			{ category: "Michif", weight: 1845, percentage: 57.7 },
+			{ category: "Dakelh ", weight: 1530, percentage: -25.9 },
+			{ category: "Dakota", weight: 1505, percentage: 0.7 },
+			{ category: "Kanien’kéha", weight: 1435, percentage: 11.7 },
+			{ category: "Halkomelem", weight: 1335, percentage: 29.6 },
+			{ category: "Gitxsan ", weight: 1110, percentage: -14.0 },
+			{ category: "Nisga’a", weight: 1080, percentage: 4.3 },
+			{ category: "Secwepemctsin ", weight: 1050, percentage: -12.9 },
+			{ category: "Stoney", weight: 915, percentage: 14.4 },
+			{ category: "Tsilhqot’in ", weight: 855, percentage: -15.3 },
+			{ category: "Wolastoqewi ", weight: 790, percentage: 6.8 },
+			{ category: "Kwak’wala ", weight: 760, percentage: 29.9 },
+			{ category: "Inuinnaqtun", weight: 750, percentage: -43.2 },
+			{ category: "Syilx ", weight: 665, percentage: -18.4 },
+			{ category: "Nuu-chah-nulth ", weight: 665, percentage: 25.5 },
+			{ category: "St’at’imcets", weight: 580, percentage: -24.7 },
+			{ category: "Ntlakapamux ", weight: 470, percentage: 11.9 },
+			{ category: "Tsimshian", weight: 445, percentage: 7.2 },
+			{ category: "Inuvialuktun", weight: 350, percentage: -45.3 },
+			{ category: "Assiniboine", weight: 350, percentage: 0.0 },
+			{ category: "Sḵwx̱wú7mesh", weight: 345, percentage: 23.2 },
+			{ category: "Heiltsuk", weight: 325, percentage: 160.0 },
+			{ category: "Haisla", weight: 285, percentage: 62.9 },
+			{ category: "Straits", weight: 280, percentage: -21.1 },
+			{ category: "Gwich’in", weight: 275, percentage: -22.5 },
+			{ category: "Dane-zaa ", weight: 270, percentage: -18.2 },
+			{ category: "Tutchone languages", weight: 255, percentage: -36.3 },
+			{ category: "Wetsuwet’en-Babine", weight: 240, percentage: 17.1 },
+			{ category: "Tahltan", weight: 235, percentage: -9.6 },
+			{ category: "Kaska ", weight: 225, percentage: -36.6 },
+			{ category: "Xaayda Kil", weight: 220, percentage: -51.1 },
+			{ category: "Gayogo̱hó", weight: 220, percentage: 76.0 },
+			{ category: "Ktunaxa ", weight: 210, percentage: 23.5 },
+			{ category: "Oneida", weight: 200, percentage: 14.3 },
+			{ category: "Tsuu T’ina ", weight: 175, percentage: 66.7 },
+			{ category: "Tse’khene ", weight: 135, percentage: -25.0 },
+			{ category: "Tlingit", weight: 120, percentage: -52.9 },
+		],
+		[]
+	);
+
+	/* ───────── Highcharts (modules + no unstyled table) ───────── */
 	useEffect(() => {
 		let chart;
 
 		(async () => {
 			const Highcharts = await loadHighcharts({ useStock: false });
+
+			// Recommended modules: exporting → export-data → accessibility
+			await ensureModule(HC_URLS.exporting, (hc) => !!hc?.Exporting);
+			await ensureModule(
+				HC_URLS.exportData,
+				(hc) => !!hc.Chart?.prototype.getTable
+			);
+			await ensureModule(HC_URLS.accessibility, (hc) => !!hc?.Accessibility);
+
+			// Feature module: wordcloud
 			await ensureModule(
 				"https://code.highcharts.com/modules/wordcloud.js",
 				(hc) => !!hc?.seriesTypes?.wordcloud
 			);
+
+			// Localized export menu labels (EN)
+			Highcharts.setOptions({
+				lang: {
+					viewData: "View data table",
+					downloadCSV: "Download CSV",
+					downloadXLS: "Download Excel",
+					printChart: "Print chart",
+					contextButtonTitle: "Chart menu",
+				},
+			});
 
 			chart = Highcharts.chart("indigenous-wordcloud", {
 				chart: { type: "wordcloud", height: 400 },
@@ -104,26 +135,36 @@ const Languages = ({ onNavigate }) => {
 					pointFormat:
 						"<b>{point.name}</b><br/>Speakers: {point.weight}<br/>Change: {point.percentage}%",
 				},
+				exporting: {
+					enabled: true,
+					showTable: false, // ❌ remove Highcharts' unstyled table
+				},
 				accessibility: {
 					point: {
 						valueDescriptionFormat:
 							"{index}. {point.name}, {point.weight} speakers, change {point.percentage}%.",
 					},
+					keyboardNavigation: { order: ["series", "chartMenu"] },
 				},
-				exporting: { enabled: true },
 				credits: { enabled: false },
 			});
 		})();
 
 		return () => chart && chart.destroy();
-	}, []); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [wordCloudData]);
 
-	/* ───────── render ───────── */
+	/* ───────── derived table data for accordion ───────── */
+	const sorted = useMemo(
+		() => [...wordCloudData].sort((a, b) => b.weight - a.weight),
+		[wordCloudData]
+	);
+
+	/* ───────── render (same structure as FR) ───────── */
 	return (
 		<div className="intro-wrapper intro-page">
 			{/* ███ hero ███ */}
 			<header className="hero" role="banner">
-				<img src={url} alt="" className="hero-img" aria-hidden="true" />
+				<img src={src} alt="" className="hero-img" aria-hidden="true" />
 				<h1 className="hero-title">Indigenous Languages in Canada</h1>
 			</header>
 
@@ -176,7 +217,6 @@ const Languages = ({ onNavigate }) => {
 								target="_blank"
 								rel="noopener noreferrer"
 							>
-								{" "}
 								Indigenous languages: The road ahead
 							</a>
 						</h3>
@@ -242,11 +282,12 @@ const Languages = ({ onNavigate }) => {
 					families and suppressing the use of Indigenous languages through
 					punishment and shaming.
 				</p>
+
 				<h3>Diversity of Indigenous Languages</h3>
 				<p>
 					The following chart provides information on the number of Indigenous
 					people who could speak an Indigenous language in 2021, including the
-					percentage change from 201
+					percentage change from 2016.
 				</p>
 
 				<ol className="graph-ol">
@@ -264,13 +305,13 @@ const Languages = ({ onNavigate }) => {
 						statistics as CSV or Excel.
 					</li>
 					<li>
-						<strong>View data table:</strong> Click “View Data” in the export
-						menu to see the full table.
+						<strong>View data table:</strong> Use the button below to open a
+						styled table of all languages and statistics.
 					</li>
 				</ol>
 			</section>
 
-			{/* ███ word-cloud ███ */}
+			{/* ███ word-cloud + caption (match FR) ███ */}
 			<figure
 				className="wordcloud"
 				aria-label="Word-cloud of Indigenous languages"
@@ -282,6 +323,59 @@ const Languages = ({ onNavigate }) => {
 				</figcaption>
 			</figure>
 
+			{/* Accessible accordion for data table (styled, like FR) */}
+			<section className="chart-accordion" aria-labelledby="wc-acc-title-en">
+				<h3 id="wc-acc-title-en" className="visually-hidden">
+					Data table
+				</h3>
+				<button
+					className="acc-button"
+					aria-expanded={open}
+					aria-controls="wc-data-table-en"
+					onClick={() => setOpen((v) => !v)}
+				>
+					{open ? "Hide data table" : "View data table"}
+					<span className="acc-icon" aria-hidden="true">
+						{open ? "−" : "+"}
+					</span>
+				</button>
+
+				<div
+					id="wc-data-table-en"
+					className="acc-panel"
+					hidden={!open}
+					role="region"
+					aria-label="Data table for Indigenous languages word-cloud"
+				>
+					<table className="wc-table">
+						<caption className="sr-only">
+							Indigenous languages (sorted by speakers, 2021) with percentage
+							change from 2016
+						</caption>
+						<thead>
+							<tr>
+								<th scope="col">Language / Group</th>
+								<th scope="col">Speakers (2021)</th>
+								<th scope="col">Change (2016–2021)</th>
+							</tr>
+						</thead>
+						<tbody>
+							{sorted.map((d) => (
+								<tr key={d.category}>
+									<th scope="row">{d.category}</th>
+									<td data-type="number">{d.weight.toLocaleString("en-CA")}</td>
+									<td data-type="number">
+										{d.percentage > 0
+											? `+${d.percentage}%`
+											: `${d.percentage}%`}
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+			</section>
+
 			<BackToTop />
 
 			{/* ███ breadcrumbs ███ */}
@@ -291,6 +385,59 @@ const Languages = ({ onNavigate }) => {
 					Next&nbsp;&raquo;
 				</button>
 			</nav>
+
+			{/* WCAG-AA accessible colors for accordion & table */}
+			<style>{`
+        .visually-hidden, .sr-only {
+          position: absolute !important; height:1px; width:1px; overflow:hidden;
+          clip: rect(1px,1px,1px,1px); white-space: nowrap; border:0; padding:0; margin:-1px;
+        }
+        .chart-accordion { margin: 1.25rem 0 2rem; }
+        .acc-button {
+          width: 100%;
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 0.9rem 1rem;
+          border-radius: 12px;
+          border: 2px solid #0F172A;        /* high contrast */
+          background: #FFFFFF;
+          color: #0B1220;                   /* near-black */
+          font-weight: 700;
+          cursor: pointer;
+        }
+        .acc-button:hover { background: #F1F5F9; }
+        .acc-button:focus-visible {
+          outline: 3px solid #2563EB;
+          outline-offset: 2px;
+        }
+        .acc-icon { font-size: 1.25rem; line-height: 1; }
+        .acc-panel { padding: 0.75rem 0.25rem; }
+
+        .wc-table {
+          width: 100%;
+          border-collapse: collapse;
+          background: #FFFFFF;
+          border: 1.5px solid #0F172A;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+        }
+        .wc-table thead th {
+          background: #111827;  /* dark header */
+          color: #FFFFFF;
+          font-weight: 800;
+          padding: 0.7rem 0.8rem;
+          text-align: left;
+        }
+        .wc-table th[scope="row"], .wc-table td {
+          padding: 0.65rem 0.8rem;
+          border-bottom: 1px solid #CBD5E1;
+        }
+        .wc-table tbody tr:nth-child(odd) td,
+        .wc-table tbody tr:nth-child(odd) th[scope="row"] {
+          background: #F8FAFC;
+        }
+        .wc-table td[data-type="number"] { text-align: right; }
+      `}</style>
 		</div>
 	);
 };

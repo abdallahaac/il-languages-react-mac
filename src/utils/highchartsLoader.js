@@ -1,11 +1,21 @@
 // src/utils/highchartsLoader.js
-// Loads Highcharts (or Highstock) exactly once across your SPA.
-// Also exposes a helper to load a specific Highcharts module once.
+// Loads Highcharts (or Highstock) exactly once across your SPA,
+// and provides helpers to load specific Highcharts modules once.
+
+export const HC_URLS = {
+	core: "https://code.highcharts.com/highcharts.js",
+	stock: "https://code.highcharts.com/stock/highstock.js",
+	exporting: "https://code.highcharts.com/modules/exporting.js",
+	exportData: "https://code.highcharts.com/modules/export-data.js",
+	accessibility: "https://code.highcharts.com/modules/accessibility.js",
+	// Optional: keeps exports client-side (no server): uncomment to use
+	// offlineExporting: "https://code.highcharts.com/modules/offline-exporting.js",
+};
 
 export function loadHighcharts({ useStock = false } = {}) {
 	if (typeof window === "undefined") return Promise.resolve(null);
 
-	// If already available, return it
+	// Already available?
 	if (window.Highcharts && (!useStock || window.Highcharts.StockChart)) {
 		return Promise.resolve(window.Highcharts);
 	}
@@ -16,7 +26,6 @@ export function loadHighcharts({ useStock = false } = {}) {
 	window.__hcPromise = new Promise((resolve, reject) => {
 		const add = (src) =>
 			new Promise((res, rej) => {
-				// Don’t add a duplicate <script>
 				if ([...document.scripts].some((s) => s.src === src)) return res();
 				const el = document.createElement("script");
 				el.src = src;
@@ -26,9 +35,7 @@ export function loadHighcharts({ useStock = false } = {}) {
 				document.head.appendChild(el);
 			});
 
-		const core = useStock
-			? "https://code.highcharts.com/stock/highstock.js"
-			: "https://code.highcharts.com/highcharts.js";
+		const core = useStock ? HC_URLS.stock : HC_URLS.core;
 
 		(async () => {
 			if (!window.Highcharts) await add(core);

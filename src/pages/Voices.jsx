@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./IntroductionPage.css";
 /* ───────── audio imports ───────── */
-import clip1 from "../assets/audio/en/Ojibwe En Tanya King.wav";
-import clip2 from "../assets/audio/en/Inuktitut En Lauralee.wav";
-import clip3 from "../assets/audio/en/Alison En Mitchif.wav";
-import clip4 from "../assets/audio/en/Xaayda Kil.wav"; // Haida
+import clip1 from "../assets/audio/en/Ojibwe En Tanya King.mp3";
+import clip2 from "../assets/audio/en/Inuktitut En Lauralee.mp3";
+import clip3 from "../assets/audio/en/Alison En Mitchif.mp3";
+import clip4 from "../assets/audio/en/Xaayda Kil.mp3"; // Haida
 import clip5 from "../assets/audio/en/Innu En Pam Dough.mp3";
-import clip6 from "../assets/audio/en/Bedford Institute of Oceanography 7.wav"; // Mi’kmaq
-import clip7 from "../assets/audio/en/Colleen En Recording 14.wav"; // Plains Cree
+import clip6 from "../assets/audio/en/Bedford Institute of Oceanography 7.mp3"; // Mi’kmaq
+import clip7 from "../assets/audio/en/Colleen En Recording 14.mp3"; // Plains Cree
 
 // ❌ removed: import image from "../assets/voices.jpg";
 import BackToTop from "../components/BackToTop";

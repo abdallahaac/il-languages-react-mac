@@ -60,3 +60,155 @@
 .breadcrumb button:hover {
 	background: var(--blue-100);
 }
+/* ===== Completion Modal (accessible) ===== */
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(
+		15,
+		23,
+		42,
+		0.55
+	); /* slate-900 @ ~55% — good backdrop contrast */
+	display: grid;
+	place-items: center;
+	z-index: 1000;
+	animation: overlayIn 180ms ease-out forwards;
+}
+.modal-overlay[data-state="closing"] {
+	animation: overlayOut 160ms ease-in forwards;
+}
+
+.modal {
+	width: min(560px, 92vw);
+	background: #ffffff;
+	color: #111827; /* gray-900 text (WCAG AA on white) */
+	border-radius: 14px;
+	box-shadow: 0 18px 48px rgba(2, 6, 23, 0.28);
+	padding: 1.5rem 1.5rem 1.1rem;
+	transform: translateY(8px) scale(0.985);
+	opacity: 0;
+	animation: modalIn 220ms cubic-bezier(0.2, 0.9, 0.2, 1) 30ms forwards;
+	outline: none;
+}
+.modal[data-state="closing"] {
+	animation: modalOut 180ms ease-in forwards;
+}
+
+.modal-title {
+	margin: 0 0 0.5rem 0;
+	font-size: 1.35rem;
+	letter-spacing: 0.2px;
+	color: #0f172a; /* slate-900 */
+}
+
+.modal-desc {
+	margin: 0 0 1.1rem 0;
+	color: #1f2937; /* gray-800 */
+	line-height: 1.55;
+}
+
+.modal-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	justify-content: flex-end;
+}
+
+/* Reuse your buttons, but ensure contrast & focus are solid */
+.submit-button {
+	background: #0b5cab; /* accessible blue (~#0b5cab on white) */
+	color: #fff;
+	border: none;
+	padding: 0.9rem 1.4rem;
+	border-radius: 999px;
+	font-weight: 600;
+	transition: transform 0.15s ease, background-color 0.15s ease,
+		box-shadow 0.15s ease;
+}
+.submit-button:hover {
+	background: #084b8a;
+}
+.submit-button:active {
+	transform: translateY(1px);
+}
+
+.btn-ghost {
+	background: #e5eef9; /* light, but still distinct on white */
+	color: #0f172a;
+	border: 1px solid #cfe0f5;
+	padding: 0.85rem 1.2rem;
+	border-radius: 999px;
+	font-weight: 600;
+	transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.btn-ghost:hover {
+	background: #d7e6f8;
+	border-color: #bcd4f3;
+}
+
+.btn-small {
+	background: #f3f4f6; /* gray-100 */
+	color: #111827; /* gray-900 text (AA) */
+	border: 1px solid #e5e7eb; /* gray-200 */
+	padding: 0.6rem 1rem;
+	border-radius: 999px;
+	font-weight: 600;
+	transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.btn-small:hover {
+	background: #e5e7eb;
+	border-color: #d1d5db;
+}
+
+/* Focus styles (keyboard visible) */
+.submit-button:focus-visible,
+.btn-ghost:focus-visible,
+.btn-small:focus-visible,
+.modal:focus-visible {
+	outline: 3px solid #1d4ed8; /* blue-700 focus ring */
+	outline-offset: 3px;
+}
+
+/* Animations */
+@keyframes overlayIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+@keyframes overlayOut {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+}
+@keyframes modalIn {
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+@keyframes modalOut {
+	to {
+		opacity: 0;
+		transform: translateY(6px) scale(0.985);
+	}
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+	.modal-overlay,
+	.modal {
+		animation: none !important;
+	}
+	.submit-button,
+	.btn-ghost,
+	.btn-small {
+		transition: none !important;
+	}
+}

@@ -1,6 +1,7 @@
+// src/pages/en/Resources.jsx
+import React, { useMemo, useState, useEffect } from "react";
 import "./resources.css";
 import BackToTop from "../components/BackToTop";
-
 import { getHeroURL } from "../prefetchHeroes";
 import { useHeroSrc } from "../utils/useHeroSrc";
 
@@ -8,20 +9,97 @@ const Resources = ({ onNavigate }) => {
 	const url = getHeroURL("en", "resources");
 	const src = useHeroSrc(url);
 
+	// SCORM handle (safe if not present)
+	const scorm = useMemo(
+		() => (window.pipwerks ? window.pipwerks.SCORM : null),
+		[]
+	);
+
+	const t = {
+		pageTitle: "Resources",
+		back: "Back",
+		home: "Home",
+		modalTitle: "Course Complete",
+		modalMsg:
+			"You have completed the course. You may now exit this window, or continue to the home page.",
+		exit: "Exit window",
+		goHome: "Continue",
+		cancel: "Cancel",
+	};
+
+	const [showExitModal, setShowExitModal] = useState(false);
+	const [hasAttemptedQuiz, setHasAttemptedQuiz] = useState(false);
+
+	// Detect quiz attempt via SCORM lesson_status
+	useEffect(() => {
+		try {
+			if (scorm && scorm.API?.isFound?.()) {
+				const rawStatus = scorm.get("cmi.core.lesson_status") || "";
+				const status = String(rawStatus).trim().toLowerCase();
+				const attemptedStatuses = new Set(["passed", "failed", "completed"]);
+				setHasAttemptedQuiz(attemptedStatuses.has(status));
+			} else {
+				setHasAttemptedQuiz(false);
+			}
+		} catch {
+			setHasAttemptedQuiz(false);
+		}
+	}, [scorm]);
+
+	// Prevent background scroll + allow ESC to close when modal open
+	useEffect(() => {
+		if (!showExitModal) return;
+		const prevOverflow = document.body.style.overflow;
+		document.body.style.overflow = "hidden";
+		document.getElementById("exit-modal-primary")?.focus();
+		const onKeyDown = (e) => {
+			if (e.key === "Escape") setShowExitModal(false);
+		};
+		document.addEventListener("keydown", onKeyDown);
+		return () => {
+			document.body.style.overflow = prevOverflow;
+			document.removeEventListener("keydown", onKeyDown);
+		};
+	}, [showExitModal]);
+
+	const handleHomeClick = () => {
+		// ✅ Show modal only if quiz was actually attempted
+		if (hasAttemptedQuiz) setShowExitModal(true);
+		else onNavigate?.("home");
+	};
+
+	const handleExitWindow = () => {
+		try {
+			if (scorm && scorm.API?.isFound?.()) {
+				// Optional: mark completion here if desired
+				// scorm.set("cmi.core.lesson_status", "completed");
+				scorm.save();
+			}
+		} catch {}
+		window.close(); // may be blocked
+		onNavigate?.("home");
+	};
+
+	const handleGoHome = () => {
+		setShowExitModal(false);
+		onNavigate?.("home");
+	};
+
 	return (
 		<div className="intro-wrapper resources-page">
 			<header className="hero" role="banner">
 				<img
 					src={src}
-					alt="Decorative image with floral elements"
+					alt=""
 					className="hero-img"
 					aria-hidden="true"
 					loading="eager"
 					fetchpriority="high"
 					decoding="sync"
 				/>
-				<h1 className="hero-title">Resources</h1>
+				<h1 className="hero-title">{t.pageTitle}</h1>
 			</header>
+
 			<section className="resources-content">
 				<ul className="res">
 					<li>
@@ -159,27 +237,69 @@ const Resources = ({ onNavigate }) => {
 					</li>
 				</ul>
 			</section>
+
 			<BackToTop />
+
 			{/* Breadcrumb / Navigation */}
-			<nav className="breadcrumb" aria-label="Navigation ">
+			<nav className="breadcrumb" aria-label="Navigation">
 				<button
 					onClick={() => {
 						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
 						onNavigate?.("knowledge-check");
 					}}
 				>
-					&laquo;&nbsp;Back
+					&laquo;&nbsp;{t.back}
 				</button>
 
 				<button
 					onClick={() => {
 						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-						onNavigate?.("home");
+						handleHomeClick();
 					}}
 				>
-					Home&nbsp;&raquo;
+					{t.home}&nbsp;&raquo;
 				</button>
 			</nav>
+
+			{/* Completion Modal */}
+			{showExitModal && (
+				<div className="modal-overlay" role="presentation">
+					<div
+						className="modal"
+						role="dialog"
+						aria-modal="true"
+						aria-labelledby="exit-modal-title"
+						aria-describedby="exit-modal-desc"
+					>
+						<h2 id="exit-modal-title" className="modal-title">
+							{t.modalTitle}
+						</h2>
+						<p id="exit-modal-desc" className="modal-desc">
+							{t.modalMsg}
+						</p>
+
+						<div className="modal-actions">
+							<button
+								id="exit-modal-primary"
+								className="submit-button"
+								onClick={handleExitWindow}
+							>
+								{t.exit}
+							</button>
+							<button className="btn-ghost" onClick={handleGoHome}>
+								{t.goHome}
+							</button>
+							<button
+								className="btn-small"
+								onClick={() => setShowExitModal(false)}
+								aria-label={t.cancel}
+							>
+								{t.cancel}
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };

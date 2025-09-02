@@ -1,8 +1,22 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import "./KnowledgeCheck.css";
 import BackToTop from "../components/BackToTop";
 import { getHeroURL } from "../prefetchHeroes";
 import { useHeroSrc } from "../utils/useHeroSrc";
+
+/* ===== SINGLE SOURCE OF TRUTH (module-scope) ===== */
+const STORAGE_KEY = (lang) => `knowledge-check-v1:${lang}`;
+const SPINNER_H = 220;
+
+// Longer aesthetic grading delay: ~320ms/question, clamped 1100–2500ms
+const MIN_GRADE_DELAY = 1100;
+const MAX_GRADE_DELAY = 2500;
+const getGradeDelayMs = (count) => {
+	const perQuestion = 320;
+	const est = perQuestion * count;
+	return Math.max(MIN_GRADE_DELAY, Math.min(MAX_GRADE_DELAY, est));
+};
+/* ================================================ */
 
 const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 	const url = getHeroURL(lang, "knowledge-check");
@@ -13,6 +27,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 		[]
 	);
 
+	// Define the pages required to unlock the quiz
 	const requiredPages = useMemo(
 		() => [
 			"introduction",
@@ -25,9 +40,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 	);
 
 	const canAccessQuiz = useMemo(() => {
-		if (!visitedPages || typeof visitedPages.has !== "function") {
-			return false;
-		}
+		if (!visitedPages || typeof visitedPages.has !== "function") return false;
 		return requiredPages.every((id) => visitedPages.has(id));
 	}, [visitedPages, requiredPages]);
 
@@ -37,15 +50,36 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 			message:
 				"Please review all the material before attempting the knowledge check.",
 			button: "Back to Content",
+			remaining: (n) =>
+				n === 1 ? "1 question remaining." : `${n} questions remaining.`,
+			allAnswered: "All questions are answered. You can submit now.",
+			correct: "Correct",
+			calculating: "Calculating grade…",
+			completedTitle: "Section complete",
+			completedMsg:
+				"You’ve passed and completed this section. You can proceed to the next section.",
+			viewResults: "View past results",
+			hideResults: "Hide results",
 		},
 		fr: {
 			title: "Questionnaire Verrouillé",
 			message:
 				"Veuillez consulter tout le matériel des cinq premières sections avant de répondre au questionnaire.",
 			button: "Retour au Contenu",
+			remaining: (n) =>
+				n === 1 ? "1 question restante." : `${n} questions restantes.`,
+			allAnswered:
+				"Toutes les questions sont répondues. Vous pouvez soumettre.",
+			correct: "Correct",
+			calculating: "Calcul du score…",
+			completedTitle: "Section terminée",
+			completedMsg:
+				"Vous avez réussi et terminé cette section. Vous pouvez passer à la section suivante.",
+			viewResults: "Afficher les résultats",
+			hideResults: "Masquer les résultats",
 		},
 	};
-	const currentText = lockedText[lang] || lockedText.en;
+	const t = lockedText[lang] || lockedText.en;
 
 	const questions = useMemo(
 		() => [
@@ -66,7 +100,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 					{ text: "a) residential schools", value: "a" },
 					{ text: "b) the <em>Indian Act</em>", value: "b" },
 					{ text: "c) the 60s scoop", value: "c" },
-					{ text: "d) All the above", value: "d", correct: true },
+					{ text: "d) All of the above", value: "d", correct: true },
 				],
 				feedback:
 					"All of the above contribute to the risk faced by Indigenous languages.",
@@ -128,7 +162,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 						text: "c) Establish an Office of the Commissioner of Indigenous Languages",
 						value: "c",
 					},
-					{ text: "d) All are correct", value: "d", correct: true },
+					{ text: "d) All of the above", value: "d", correct: true },
 				],
 				feedback:
 					"All options listed are correct mechanisms in the <em>Indigenous Languages Act</em>.",
@@ -180,21 +214,81 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 		[]
 	);
 
+	/* ---- State ---- */
 	const [answers, setAnswers] = useState({});
 	const [showFeedback, setShowFeedback] = useState(false);
 	const [score, setScore] = useState(0);
 	const [feedback, setFeedback] = useState({});
+	const [remainingCount, setRemainingCount] = useState(questions.length);
+	const [isGrading, setIsGrading] = useState(false);
+	const [viewResults, setViewResults] = useState(false); // used when 100%
+	const [hydrated, setHydrated] = useState(false); // <— gate initial render
+
+	const containerRef = useRef(null);
+	const questionRefs = useRef({});
+
+	/* ---- Hydrate from localStorage once ---- */
+	useEffect(() => {
+		try {
+			const raw = localStorage.getItem(STORAGE_KEY(lang));
+			if (raw) {
+				const parsed = JSON.parse(raw);
+				if (parsed && typeof parsed === "object") {
+					setAnswers(parsed.answers || {});
+					setFeedback(parsed.feedback || {});
+					setShowFeedback(!!parsed.showFeedback);
+					setScore(Number(parsed.score || 0));
+					setViewResults(!!parsed.viewResults);
+				}
+			}
+		} catch {}
+		// clear any leftover inline height styles from a previous visit
+		requestAnimationFrame(() => {
+			if (containerRef.current) {
+				containerRef.current.style.height = "";
+				containerRef.current.style.overflow = "";
+			}
+		});
+		setHydrated(true);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	/* ---- Persist whenever things change ---- */
+	useEffect(() => {
+		if (!hydrated) return; // avoid saving default empty state before hydration
+		const state = {
+			answers,
+			feedback,
+			showFeedback,
+			score,
+			viewResults,
+			savedAt: Date.now(),
+		};
+		try {
+			localStorage.setItem(STORAGE_KEY(lang), JSON.stringify(state));
+		} catch {}
+	}, [answers, feedback, showFeedback, score, viewResults, lang, hydrated]);
+
+	/* ---- Derived ---- */
+	useEffect(() => {
+		const unanswered = questions.filter((q) => !answers[q.id]).length;
+		setRemainingCount(unanswered);
+	}, [answers, questions]);
+
+	const allAnswered = remainingCount === 0;
+	const canSubmitInitially = allAnswered && !showFeedback && !isGrading;
 
 	const handleAnswerChange = (questionId, value) => {
-		setAnswers({ ...answers, [questionId]: value });
+		if (showFeedback && feedback[questionId] === "correct") return;
+		setAnswers((prev) => ({ ...prev, [questionId]: value }));
 	};
 
-	const handleSubmit = () => {
+	const grade = () => {
 		let correctAnswers = 0;
 		const newFeedback = {};
 		questions.forEach((q) => {
 			const correctOption = q.options.find((opt) => opt.correct);
-			if (answers[q.id] === correctOption.value) {
+			if (answers[q.id] === correctOption?.value) {
 				correctAnswers++;
 				newFeedback[q.id] = "correct";
 			} else {
@@ -205,141 +299,353 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 		setScore(finalScore);
 		setFeedback(newFeedback);
 		setShowFeedback(true);
-		if (scorm && scorm.API.isFound()) {
+
+		if (finalScore === 100) setViewResults(false);
+
+		if (scorm && scorm.API?.isFound?.()) {
 			scorm.set("cmi.core.score.raw", finalScore.toFixed(0));
 			scorm.set("cmi.core.score.min", "0");
 			scorm.set("cmi.core.score.max", "100");
 			scorm.set(
 				"cmi.core.lesson_status",
-				finalScore === 100 ? "passed" : "failed"
+				finalScore >= 80 ? "passed" : "failed"
 			);
 			scorm.save();
 		}
+
+		const firstIncorrect = questions.find(
+			(q) => newFeedback[q.id] === "incorrect"
+		);
+		if (firstIncorrect && questionRefs.current[firstIncorrect.id]) {
+			setTimeout(() => {
+				questionRefs.current[firstIncorrect.id].focus();
+			}, 0);
+		}
 	};
 
-	const handleTryAgain = () => {
-		setAnswers({});
-		setShowFeedback(false);
-		setScore(0);
-		setFeedback({});
+	const animateContainerHeight = (toPx) => {
+		const el = containerRef.current;
+		if (!el) return;
+		const startH = el.offsetHeight;
+		el.style.height = `${startH}px`;
+		el.style.overflow = "hidden";
+		// force reflow
+		// eslint-disable-next-line no-unused-expressions
+		el.offsetHeight;
+		el.style.transition = "height 260ms ease";
+		el.style.height = `${toPx}px`;
+
+		const onEnd = (e) => {
+			if (e.propertyName !== "height") return;
+			el.style.transition = "";
+			el.removeEventListener("transitionend", onEnd);
+		};
+		el.addEventListener("transitionend", onEnd);
 	};
+
+	const expandToContent = () => {
+		const el = containerRef.current;
+		if (!el) return;
+		requestAnimationFrame(() => {
+			const target = el.scrollHeight;
+			el.style.transition = "height 260ms ease";
+			el.style.height = `${target}px`;
+			const onEnd = (e) => {
+				if (e.propertyName !== "height") return;
+				el.style.transition = "";
+				el.style.height = ""; // back to auto
+				el.style.overflow = "";
+				el.removeEventListener("transitionend", onEnd);
+			};
+			el.addEventListener("transitionend", onEnd);
+		});
+	};
+
+	const handleSubmit = () => {
+		if (!allAnswered) {
+			const firstUnanswered = questions.find((q) => !answers[q.id]);
+			if (firstUnanswered && questionRefs.current[firstUnanswered.id]) {
+				questionRefs.current[firstUnanswered.id].focus();
+			}
+			return;
+		}
+
+		containerRef.current?.scrollIntoView({
+			behavior: "smooth",
+			block: "start",
+		});
+
+		setIsGrading(true);
+		animateContainerHeight(SPINNER_H);
+
+		const delay = getGradeDelayMs(questions.length);
+		setTimeout(() => {
+			grade();
+			setIsGrading(false);
+			expandToContent();
+		}, delay);
+	};
+
+	const visibleQuestions = useMemo(() => {
+		if (!showFeedback) return questions;
+		if (score === 100 && viewResults) return questions;
+		if (score === 100 && !viewResults) return [];
+		return questions.filter((q) => feedback[q.id] !== "correct");
+	}, [questions, showFeedback, feedback, score, viewResults]);
+
+	const isLockedCorrect = (qid) => showFeedback && feedback[qid] === "correct";
+
+	if (!hydrated) {
+		// Simple hydrated gate so we don't flash an empty quiz before loading saved state
+		return (
+			<div className="intro-wrapper knowledge-check-page">
+				<header className="hero" role="banner">
+					<img src={src} alt="" className="hero-img" aria-hidden="true" />
+					<h1 className="hero-title">Knowledge Check</h1>
+				</header>
+				<main ref={containerRef} className="quiz-container">
+					<div className="grade-inline" role="status" aria-live="polite">
+						<div className="spinner" aria-hidden="true"></div>
+						<div className="spinner-text">Loading…</div>
+					</div>
+				</main>
+			</div>
+		);
+	}
 
 	if (!canAccessQuiz) {
 		return (
 			<div className="intro-wrapper knowledge-check-page">
 				<header className="hero" role="banner">
-					<img
-						src={src}
-						alt=""
-						className="hero-img"
-						aria-hidden="true"
-						loading="eager"
-						fetchpriority="high"
-						decoding="sync"
-					/>
-					<h1 className="hero-title">{currentText.title}</h1>
+					<img src={src} alt="" className="hero-img" aria-hidden="true" />
+					<h1 className="hero-title">{t.title}</h1>
 				</header>
 
 				<main className="quiz-container locked-quiz">
-					<p>{currentText.message}</p>
+					<p>{t.message}</p>
 					<button
 						className="back-button"
 						onClick={() => onNavigate?.("introduction")}
 					>
-						&laquo;&nbsp;{currentText.button}
+						&laquo;&nbsp;{t.button}
 					</button>
 				</main>
 			</div>
 		);
 	}
 
+	const showCompletedPanel = showFeedback && score === 100 && !viewResults;
+
 	return (
 		<div className="intro-wrapper knowledge-check-page">
 			<header className="hero" role="banner">
-				<img src={image} alt="" className="hero-img" aria-hidden="true" />
+				<img src={src} alt="" className="hero-img" aria-hidden="true" />
 				<h1 className="hero-title">Knowledge Check</h1>
 			</header>
-			<main className="quiz-container">
-				<form id="quiz-form" onSubmit={(e) => e.preventDefault()}>
-					{questions.map((q) => (
-						<fieldset key={q.id} className="quiz-question">
-							<legend
-								className="question-text"
-								dangerouslySetInnerHTML={{ __html: q.text }}
-							/>
-							<div className="options">
-								{q.options.map((opt) => (
-									<label key={opt.value} htmlFor={`${q.id}-${opt.value}`}>
-										<input
-											type="radio"
-											id={`${q.id}-${opt.value}`}
-											name={q.id}
-											value={opt.value}
-											checked={answers[q.id] === opt.value}
-											onChange={() => handleAnswerChange(q.id, opt.value)}
-											disabled={showFeedback}
-										/>
-										<span className="custom-radio"></span>
-										<span dangerouslySetInnerHTML={{ __html: opt.text }} />
-									</label>
-								))}
+
+			<main
+				ref={containerRef}
+				className="quiz-container"
+				aria-busy={isGrading ? "true" : "false"}
+			>
+				{/* QUIZ CONTENT — fades out while grading */}
+				<div
+					className={`quiz-content ${isGrading ? "fade-out" : "fade-in"}`}
+					aria-hidden={isGrading ? "true" : "false"}
+				>
+					{/* Completed view (replaces quiz at 100%) */}
+					{showCompletedPanel && (
+						<div className="completed-panel">
+							<h2>{t.completedTitle}</h2>
+							<p>{t.completedMsg}</p>
+							<div className="completed-actions">
+								<button
+									type="button"
+									className="submit-button"
+									onClick={() => setViewResults(true)}
+								>
+									{t.viewResults}
+								</button>
 							</div>
-							{showFeedback && (
-								<div className={`feedback ${feedback[q.id]}`}>
-									{feedback[q.id] === "correct" ? (
-										<p>
-											<strong>Correct!</strong>{" "}
-											<span dangerouslySetInnerHTML={{ __html: q.feedback }} />
-										</p>
-									) : (
-										<p>
-											<strong>Incorrect.</strong> The correct answer is:{" "}
-											<span
-												dangerouslySetInnerHTML={{
-													__html: q.options.find((o) => o.correct).text,
-												}}
-											/>
-										</p>
+						</div>
+					)}
+
+					{/* Quiz form (hidden when 100% complete unless viewing results) */}
+					{!showCompletedPanel && (
+						<form id="quiz-form" onSubmit={(e) => e.preventDefault()}>
+							{visibleQuestions.map((q) => (
+								<fieldset
+									key={q.id}
+									className={`quiz-question ${
+										!answers[q.id] && !showFeedback ? "unanswered" : ""
+									} ${isLockedCorrect(q.id) ? "locked-correct" : ""}`}
+									ref={(el) => (questionRefs.current[q.id] = el)}
+									tabIndex={-1}
+									aria-describedby={
+										isLockedCorrect(q.id) ? `${q.id}-locked-note` : undefined
+									}
+								>
+									<legend
+										className="question-text"
+										dangerouslySetInnerHTML={{ __html: q.text }}
+									/>
+									<div className="options">
+										{q.options.map((opt) => {
+											const inputId = `${q.id}-${opt.value}`;
+											const isQuestionLocked = isLockedCorrect(q.id);
+											const isSelected = answers[q.id] === opt.value;
+											const lockThisLabel = isQuestionLocked && isSelected;
+
+											return (
+												<label
+													key={opt.value}
+													htmlFor={inputId}
+													className={lockThisLabel ? "option-locked" : ""}
+													aria-disabled={lockThisLabel ? "true" : undefined}
+													title={
+														lockThisLabel ? `${t.correct} — locked` : undefined
+													}
+												>
+													<input
+														type="radio"
+														id={inputId}
+														name={q.id}
+														value={opt.value}
+														checked={isSelected}
+														onChange={() => handleAnswerChange(q.id, opt.value)}
+														required
+													/>
+													<span className="custom-radio"></span>
+													<span
+														dangerouslySetInnerHTML={{ __html: opt.text }}
+													/>
+												</label>
+											);
+										})}
+									</div>
+
+									{isLockedCorrect(q.id) && (
+										<div id={`${q.id}-locked-note`} className="locked-note">
+											✓ {t.correct} — this answer is locked.
+										</div>
 									)}
-								</div>
+
+									{showFeedback && (
+										<div className={`feedback ${feedback[q.id]}`}>
+											{feedback[q.id] === "correct" ? (
+												<p>
+													<strong>Correct!</strong>{" "}
+													<span
+														dangerouslySetInnerHTML={{ __html: q.feedback }}
+													/>
+												</p>
+											) : (
+												<p>
+													<strong>Incorrect.</strong> The correct answer is:{" "}
+													<span
+														dangerouslySetInnerHTML={{
+															__html: q.options.find((o) => o.correct).text,
+														}}
+													/>
+												</p>
+											)}
+										</div>
+									)}
+								</fieldset>
+							))}
+
+							{/* Controls */}
+							<div className="quiz-controls">
+								{!showFeedback ? (
+									<>
+										<div
+											className="submit-helper"
+											role="status"
+											aria-live="polite"
+											style={{ marginTop: "0.5rem" }}
+										>
+											{allAnswered
+												? t.allAnswered
+												: t.remaining(remainingCount)}
+										</div>
+										<button
+											type="button"
+											className="submit-button"
+											onClick={handleSubmit}
+											disabled={!canSubmitInitially}
+											aria-disabled={!canSubmitInitially}
+											title={
+												!canSubmitInitially
+													? t.remaining(remainingCount)
+													: undefined
+											}
+										>
+											Submit Answers
+										</button>
+									</>
+								) : (
+									<>
+										{score < 100 && (
+											<button
+												type="button"
+												className="submit-button"
+												onClick={handleSubmit}
+												disabled={isGrading}
+												title="Re-grade your updated answers"
+											>
+												{isGrading ? t.calculating : "Resubmit"}
+											</button>
+										)}
+										{score === 100 && viewResults && (
+											<button
+												type="button"
+												className="submit-button"
+												onClick={() => setViewResults(false)}
+											>
+												{t.hideResults}
+											</button>
+										)}
+									</>
+								)}
+							</div>
+						</form>
+					)}
+
+					{/* Results panel */}
+					{showFeedback && score >= 0 && !showCompletedPanel && (
+						<div
+							id="quiz-results"
+							className={score >= 80 ? "passed" : "failed"}
+						>
+							<h2>Your Final Score: {score.toFixed(0)}%</h2>
+							{score >= 80 ? (
+								score === 100 ? (
+									<p>You may proceed to the next section.</p>
+								) : (
+									<p>
+										You may proceed to the next section. Optionally, you can
+										retry the quiz if you’d like to aim for a perfect score.
+									</p>
+								)
+							) : (
+								<p>
+									Please review the incorrect answers and resubmit until you
+									reach at least 80% to proceed.
+								</p>
 							)}
-						</fieldset>
-					))}
-					<div className="quiz-controls">
-						{!showFeedback ? (
-							<button
-								type="button"
-								className="submit-button"
-								onClick={handleSubmit}
-							>
-								Submit Answers
-							</button>
-						) : (
-							<button
-								type="button"
-								id="try-again-btn"
-								onClick={handleTryAgain}
-								disabled={score === 100}
-							>
-								Try Again
-							</button>
-						)}
-					</div>
-				</form>
-				{showFeedback && (
-					<div
-						id="quiz-results"
-						className={score === 100 ? "passed" : "failed"}
-					>
-						<h2>Your Final Score: {score.toFixed(0)}%</h2>
-						<p>
-							{score === 100
-								? "Congratulations, you passed!"
-								: "Please review your answers and try again."}
-						</p>
+						</div>
+					)}
+				</div>
+
+				{/* INLINE SPINNER — replaces content while grading (no overlay) */}
+				{isGrading && (
+					<div className="grade-inline" role="status" aria-live="polite">
+						<div className="spinner" aria-hidden="true"></div>
+						<div className="spinner-text">{t.calculating}</div>
 					</div>
 				)}
 			</main>
+
 			<BackToTop />
 			<nav className="breadcrumb" aria-label="Page navigation">
 				<button onClick={() => onNavigate?.("public-service")}>
