@@ -224,15 +224,15 @@ const RevitalizationEfforts = ({ onNavigate }) => {
 							}`}
 						>
 							<h4>
-								Métis Nation{" "}
+								Métis{" "}
 								<span>
 									<FontAwesomeIcon icon={faInfinity} />
 								</span>
 							</h4>
 							<p>
-								In addition to English and French, some Métis Nation citizens
-								speak a number of First Nations languages as well as their own
-								unique national language, Michif.
+								In addition to English and French, some Métis citizens speak a
+								number of First Nations languages as well as their own unique
+								national language, Michif.
 							</p>
 							<p>
 								The Métis National Council (MNC) advocates for the advancements
