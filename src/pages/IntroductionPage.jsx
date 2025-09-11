@@ -29,12 +29,14 @@ const IntroductionPage = ({ onNavigate }) => {
 			{/* ███ narrative ███ */}
 			<article className="narrative">
 				<p>
-					<span className="dropcap">L</span>anguage is the foundation of a
-					culture. For Indigenous oral societies, words hold knowledge amassed
-					for millennia. A language holds the stories, songs, dances, protocols,
-					family histories and connections. Languages also often hold the
-					community’s customary laws that were eroded by the policies of the
-					Indian Act.
+					<span className="dropcap" lang="en">
+						L
+					</span>
+					anguage is the foundation of a culture. For Indigenous oral societies,
+					words hold knowledge amassed for millennia. A language holds the
+					stories, songs, dances, protocols, family histories and connections.
+					Languages also often hold the community’s customary laws that were
+					eroded by the policies of the Indian Act.
 				</p>
 				<p>
 					As many communities move towards a return to self-government, this

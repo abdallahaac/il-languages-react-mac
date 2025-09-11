@@ -88,15 +88,96 @@ body {
 .narrative p {
 	margin-bottom: 1.3rem;
 }
+/* ===== Drop cap stays as-is ===== */
 .dropcap {
 	float: left;
-	font-size: 3rem;
+	font-size: 3rem !important;
 	line-height: 1;
 	margin: 0 0.4rem 0.1rem 0;
 	color: var(--brand-blue);
+	font-family: "Playfair Display", serif;
 	font-weight: 700;
 	border-bottom: #1a5fa1 2px solid;
+	position: relative; /* enables ::before */
 }
+
+/* ===== Opening mark injected BEFORE the dropcap, by language ===== */
+.narrative[lang="fr"] .dropcap::before {
+	content: "«\202F"; /* « + narrow no-break space */
+	font: inherit;
+	color: var(--brand-blue);
+	font-size: 0.6em; /* ~1.8rem next to 3rem L */
+	position: relative;
+	top: 0.05em;
+	margin-right: 0.05rem;
+	border: 0;
+}
+
+.narrative[lang="en"] .dropcap::before {
+	content: "\201C"; /* “ */
+	font: inherit;
+	color: var(--brand-blue);
+	font-size: 0.6em;
+	position: relative;
+	top: 0.05em;
+	margin-right: 0.05rem;
+	border: 0;
+}
+
+/* ===== Closing mark where .qend sits, by language ===== */
+.narrative[lang="fr"] .qend::after {
+	content: "\202F»"; /* narrow no-break space + » */
+}
+
+.narrative[lang="en"] .qend::after {
+	content: "\201D"; /* ” */
+}
+
+/* Optional: match weight/colour for visual harmony */
+.narrative .qend::after {
+	font-family: "Playfair Display", serif;
+	font-weight: 700;
+	color: var(--brand-blue);
+	line-height: 1;
+	position: relative;
+	top: 0.02em;
+}
+/* Dropcap styling */
+.dropcap {
+	float: left;
+	font-size: 3rem !important;
+	line-height: 1;
+	margin: 0 0.4rem 0.1rem 0;
+	color: var(--brand-blue);
+	font-family: "Playfair Display", serif;
+	font-weight: 700;
+	border-bottom: #1a5fa1 2px solid;
+	position: relative;
+}
+
+/* Opening guillemet / quote mark */
+.narrative[lang="fr"] .dropcap::before {
+	content: "«";
+	font-family: "Playfair Display", serif;
+	font-weight: 700;
+	font-size: 1.4rem; /* smaller than dropcap */
+	color: var(--brand-blue);
+	position: absolute;
+	left: -1.2rem; /* nudge left to visually precede L */
+	top: 0.4rem; /* centers vertically with the L */
+}
+
+.narrative[lang="en"] .dropcap::before {
+	content: "“";
+	font-family: "Playfair Display", serif;
+	font-weight: 700;
+	font-size: 1.4rem;
+	color: var(--brand-blue);
+	position: absolute;
+	left: -1rem;
+	top: 0.4rem;
+}
+
 .gina {
 	font-size: 27px;
 }
