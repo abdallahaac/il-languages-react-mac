@@ -450,7 +450,7 @@ const PublicService = ({ onNavigate }) => {
 				<button onClick={() => onNavigate?.("revitalization-efforts")}>
 					&laquo;&nbsp;Back
 				</button>
-				<button onClick={() => onNavigate?.("knowledge-check")}>
+				<button onClick={() => onNavigate?.("results-en")}>
 					Next&nbsp;&raquo;
 				</button>
 			</nav>

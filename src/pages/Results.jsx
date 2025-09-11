@@ -1,15 +1,14 @@
 // src/pages/Results.jsx
 import React from "react";
-import "./objective.css"; // EN path
+import "./objective.css";
 import BackToTop from "../components/BackToTop";
 
 import { getHeroURL } from "../prefetchHeroes";
-import { useHeroSrc } from "../utils/useHeroSrc"; // <-- add
+import { useHeroSrc } from "../utils/useHeroSrc";
 
 const Results = ({ onNavigate }) => {
-	// Resolve hero URL from manifest
 	const url = getHeroURL("en", "results-en");
-	const src = useHeroSrc(url); // <-- use hook for cached/pinned src
+	const src = useHeroSrc(url);
 
 	return (
 		<div className="intro-wrapper objective-page">
@@ -29,46 +28,45 @@ const Results = ({ onNavigate }) => {
 
 			{/* Content */}
 			<section className="objective-content" aria-label="Course content">
-				{/* Learning Outcomes */}
 				<article
 					className="objective-card"
 					id="learning-outcomes"
 					aria-labelledby="learning-outcomes-title"
 				>
 					<h2 id="learning-outcomes-title">Learning Outcomes</h2>
-					<p>By the end of this course, learners will be able to:</p>
+					<p>After completing this course, you are now able to:</p>
 					<ul className="obj-list">
 						<li>
-							summarize how Indigenous languages are tied to cultural identity,
-							governance and intergenerational knowledge
+							Summarize the intrinsic links between Indigenous languages,
+							cultural identity, governance, and intergenerational knowledge;
 						</li>
 						<li>
-							identify and describe the core components of the Indigenous
-							Languages Act, including its connection to reconciliation
-							frameworks such as the United Nations Declaration on the Rights of
-							Indigenous Peoples and the Truth and Reconciliation Commission’s
-							Calls to Action
+							Recognize and define the key elements of the Indigenous Languages
+							Act and connect them with other reconciliation frameworks, such as
+							the United Nations Declaration on the Rights of Indigenous Peoples
+							and the Calls to Action of the Truth and Reconciliation Commission
+							of Canada;
 						</li>
 						<li>
-							compare the language revitalization goals and critiques expressed
-							by First Nations, Inuit and Métis organizations
+							Compare the objectives of language revitalization with the
+							critiques expressed by First Nations, Inuit, and Métis
+							organizations;
 						</li>
 						<li>
-							list key responsibilities of the Department of Canadian Heritage,
-							the Office of the Commissioner of Indigenous Languages and other
-							federal institutions under the Act
+							List the main responsibilities of the Department of Canadian
+							Heritage, the Office of the Commissioner of Indigenous Languages,
+							and other federal institutions as set out in the Indigenous
+							Languages Act;
 						</li>
 						<li>
-							propose at least two actions they can take in their role to
-							support Indigenous language revitalization in a respectful and
-							culturally competent way
+							Propose at least two respectful and culturally appropriate ways to
+							support the revitalization of Indigenous languages.
 						</li>
 					</ul>
 				</article>
 
 				<BackToTop />
 
-				{/* Breadcrumb / Navigation */}
 				<nav className="breadcrumb" aria-label="Page navigation">
 					<button
 						onClick={() => {
@@ -78,7 +76,6 @@ const Results = ({ onNavigate }) => {
 					>
 						&laquo;&nbsp;Back
 					</button>
-
 					<button
 						onClick={() => {
 							window.scrollTo({ top: 0, left: 0, behavior: "smooth" });

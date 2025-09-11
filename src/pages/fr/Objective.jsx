@@ -48,13 +48,13 @@ const Objective = ({ onNavigate }) => {
 						compréhension de l’importance des langues autochtones au Canada,
 						ainsi que le rôle qu’elles jouent dans l’identité culturelle, la
 						gouvernance et la réconciliation. On y explique les concepts
-						fondamentaux de la Loi sur les langues autochtones, les perspectives
-						des membres des Premières Nations, des Inuits et des Métis, ainsi
-						que la responsabilité des institutions fédérales de soutenir les
-						efforts de revitalisation des langues lancés par les Autochtones.
-						Grâce à des séances de réflexion et à un guide pratique, les
-						participants seront mieux outillés pour promouvoir les langues
-						autochtones dans leur travail à la fonction publique.
+						fondamentaux de la<em> Loi sur les langues autochtones</em>, les
+						perspectives des membres des Premières Nations, des Inuits et des
+						Métis, ainsi que la responsabilité des institutions fédérales de
+						soutenir les efforts de revitalisation des langues lancés par les
+						Autochtones. Grâce à des séances de réflexion et à un guide
+						pratique, les participants seront mieux outillés pour promouvoir les
+						langues autochtones dans leur travail à la fonction publique.
 					</p>
 				</article>
 

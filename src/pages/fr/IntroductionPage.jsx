@@ -60,7 +60,7 @@ const IntroductionPage = ({ onNavigate }) => {
 					lois passées. Quand une langue meurt, les liens au passé culturel et
 					historique meurent aussi. Sans ce lien crucial à leur histoire
 					linguistique et culturelle, les gens perdent leur identité et leur
-					sentiment d’appartenance.” [Traduction]
+					sentiment d’appartenance. [Traduction]
 				</p>
 				<footer className="source">
 					Source: Why Is It Important to Protect and Revitalize Indigenous

@@ -1,21 +1,23 @@
+// src/pages/Results.jsx
 import React from "react";
-import image from "../../assets/results.jpeg"; // Path unchanged
-import "../objective.css"; // ✅ Updated stylesheet
+import "../../assets/results.jpeg"; // path unchanged if needed
+import "../objective.css";
 import BackToTop from "../../components/BackToTop";
-import { getHeroURL } from "../../prefetchHeroes";
 
+import { getHeroURL } from "../../prefetchHeroes";
 import { useHeroSrc } from "../../utils/useHeroSrc";
 
 const Results = ({ onNavigate }) => {
-	const url = getHeroURL("en", "results-en");
-	const src = useHeroSrc(url); // <-- use hook for cached/pinned src
+	const url = getHeroURL("fr", "results-fr");
+	const src = useHeroSrc(url);
+
 	return (
 		<div className="intro-wrapper objective-page">
 			{/* Hero */}
 			<header className="hero" role="banner">
 				<img
 					src={src}
-					alt="Decorative image with floral elements"
+					alt="Image décorative avec des éléments floraux"
 					className="hero-img"
 					aria-hidden="true"
 					loading="eager"
@@ -27,13 +29,13 @@ const Results = ({ onNavigate }) => {
 
 			{/* Content */}
 			<section className="objective-content" aria-label="Contenu du cours">
-				{/* Résultats d’apprentissage */}
 				<article
 					className="objective-card"
 					id="resultats-apprentissage"
 					aria-labelledby="res-appr-title"
 				>
 					<h2 id="res-appr-title">Résultats d’apprentissage</h2>
+					<p>Après avoir suivi ce cours, vous pouvez maintenant&nbsp;:</p>
 					<ul className="obj-list">
 						<li>
 							résumer les liens intrinsèques qui rattachent les langues
@@ -42,33 +44,30 @@ const Results = ({ onNavigate }) => {
 						</li>
 						<li>
 							reconnaître et définir les éléments clés de la Loi sur les langues
-							autochtones et d’établir des liens avec les autres cadres de
-							réconciliation comme la Déclaration des Nations Unies sur les
-							droits de peuples autochtones et les appels à l’action de la
+							autochtones et établir des liens avec d’autres cadres de
+							réconciliation, comme la Déclaration des Nations Unies sur les
+							droits des peuples autochtones et les appels à l’action de la
 							Commission de vérité et réconciliation du Canada;
 						</li>
 						<li>
 							comparer les objectifs de revitalisation des langues aux critiques
-							exprimées par les organisations des Premières Nations, des Inuits
-							et des Métis;
+							des organisations des Premières Nations, des Inuits et des Métis;
 						</li>
 						<li>
-							lister les principales responsabilités du ministère du Patrimoine
-							canadien, du Bureau du commissaire aux langues autochtones et des
-							autres institutions fédérales aux termes de la Loi sur les langues
-							autochtones;
+							énumérer les principales responsabilités du ministère du
+							Patrimoine canadien, du Bureau du commissaire aux langues
+							autochtones et des autres institutions fédérales prévues par la
+							<em>Loi sur les langues autochtones</em>;
 						</li>
 						<li>
-							proposer au moins deux moyens respectueux et adaptés
-							culturellement qui visent à encourager la revitalisation des
-							langues autochtones.
+							proposer au moins deux moyens respectueux et culturellement
+							adaptés pour encourager la revitalisation des langues autochtones.
 						</li>
 					</ul>
 				</article>
 
 				<BackToTop />
 
-				{/* Breadcrumb / Navigation */}
 				<nav className="breadcrumb" aria-label="Navigation de la page">
 					<button
 						onClick={() => {
@@ -78,7 +77,6 @@ const Results = ({ onNavigate }) => {
 					>
 						&laquo;&nbsp;Retour
 					</button>
-
 					<button
 						onClick={() => {
 							window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
