@@ -15,9 +15,9 @@ const FlipCard = ({
 	backContent,
 	isFlipped,
 	onFlip,
-	customHeight,
+	customHeight, // keep prop for compatibility (not used because height is uniform via CSS)
 }) => {
-	// Apply custom height if provided
+	// Apply custom height if provided (kept for compatibility; uniform height is handled in CSS)
 	const style = customHeight ? { minHeight: customHeight } : {};
 
 	return (
@@ -91,6 +91,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 			return newFlipped;
 		});
 	};
+
 	const cardData = [
 		{
 			id: 1,
@@ -131,6 +132,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 			return newFlipped;
 		});
 	};
+
 	const trcCardData = [
 		{
 			id: 1,
@@ -142,7 +144,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 			id: 2,
 			cardId: "trc-14",
 			front: "Call to Action 14",
-			back: `<p>We call upon the federal government to enact an Aboriginal Languages Act that incorporates the following principles:</p><ul><li>Aboriginal languages are a fundamental and valued element of Canadian culture and society, and there is an urgency to preserve them.</li><li>Aboriginal language rights are reinforced by the Treaties.</li><li>The federal government has a responsibility to provide sufficient funds for Aboriginal-language revitalization and preservation.</li><li>The preservation, revitalization, and strengthening of Aboriginal languages and cultures are best managed by Aboriginal people and communities.</li><li>Funding for Aboriginal language initiatives must reflect the diversity of Aboriginal languages.</li></ul>`,
+			back: `<p>We call upon the federal government to enact an Aboriginal Languages Act that incorporates the following principles:</p><ul><li style="font-size:18px">Aboriginal languages are a fundamental and valued element of Canadian culture and society, and there is an urgency to preserve them.</li><li style="font-size:18px">Aboriginal language rights are reinforced by the Treaties.</li><li style="font-size:18px">The federal government has a responsibility to provide sufficient funds for Aboriginal-language revitalization and preservation.</li><li style="font-size:18px">The preservation, revitalization, and strengthening of Aboriginal languages and cultures are best managed by Aboriginal people and communities.</li><li style="font-size:18px">Funding for Aboriginal language initiatives must reflect the diversity of Aboriginal languages.</li></ul>`,
 			height: "420px",
 		},
 		{
@@ -166,6 +168,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 			return newFlipped;
 		});
 	};
+
 	const cfjCardData = [
 		{
 			id: 1,
@@ -179,7 +182,10 @@ const FoundationalDocuments = ({ onNavigate }) => {
 			front: "Call for Justice 2.2",
 			back: `
 We call upon all governments to recognize Indigenous languages as official languages, with the same status, recognition, and protection provided to French and English. This includes the directives that:
-<ol style="font-size:18px"><li>Federal, provincial, and territorial governments must legislate Indigenous languages in the respective territory as official languages</li><li>All governments must make funds available to Indigenous Peoples to support the work required to revitalize and restore Indigenous cultures and languages. </li></ol>
+<ol style="font-size:18px">
+<li style="font-size:18px">Federal, provincial, and territorial governments must legislate Indigenous languages in the respective territory as official languages</li>
+<li style="font-size:18px">All governments must make funds available to Indigenous Peoples to support the work required to revitalize and restore Indigenous cultures and languages. </li>
+</ol>
 </div>
             `,
 		},
@@ -205,7 +211,7 @@ We call upon all governments to recognize Indigenous languages as official langu
 			return newFlipped;
 		});
 	};
-	// Corrected the data for the Inuit-specific Call for Justice
+
 	const cfjICardData = [
 		{
 			id: 1,
@@ -215,7 +221,6 @@ We call upon all governments to recognize Indigenous languages as official langu
 		},
 	];
 	// END: Added for Inuit-specific Calls for Justice
-	// 🔥 Resolve bundled hero URL, then preload+pin with hook
 
 	return (
 		<div className="intro-wrapper foundational-documents-page">
@@ -231,8 +236,6 @@ We call upon all governments to recognize Indigenous languages as official langu
 				/>
 				<h1 className="hero-title">Foundational Documents</h1>
 			</header>
-
-			{/* ... (previous sections remain the same) ... */}
 
 			<section className="acknowledge">
 				<h2>International Decade of Indigenous Languages</h2>
@@ -287,7 +290,7 @@ We call upon all governments to recognize Indigenous languages as official langu
 					</li>
 					<li>
 						<a
-							href="https://en.ccunesco.ca/blog/2023/08/ocil-and-ccunesco-forge-partnership-to-advance-indigenous-languages"
+							href="https://en.ccunesco.ca/about-ccunesco/press/2024/07/ocil-ccunesco-partnership-to-advance-indigenous-languages"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
@@ -297,6 +300,7 @@ We call upon all governments to recognize Indigenous languages as official langu
 					</li>
 				</ul>
 			</section>
+
 			<section className="acknowledge">
 				<h2>
 					The United Nations Declaration on the Rights of Indigenous Peoples and
@@ -315,7 +319,7 @@ We call upon all governments to recognize Indigenous languages as official langu
 						target="_blank"
 						rel="noopener noreferrer"
 					>
-						&#160;full text of the declaration
+						&nbsp;full text of the declaration
 					</a>
 					.
 				</p>
@@ -381,7 +385,7 @@ We call upon all governments to recognize Indigenous languages as official langu
 					the Act, and advancing access to federal services in Indigenous
 					languages.
 				</p>
-				<p className="select-instruction">Select each item to learn more.</p>
+				<p className="select-instruction">Select the item to learn more. </p>
 			</section>
 
 			<section className="card-grid">
@@ -411,7 +415,7 @@ We call upon all governments to recognize Indigenous languages as official langu
 					Action 13 to 15, which relate specifically to language and culture,
 					read as follows:
 				</p>
-				<p className="select-instruction">Select each item to learn more.</p>
+				<p className="select-instruction">Select the item to learn more. </p>
 			</section>
 
 			{/* --- TRC Calls to Action --- */}
@@ -441,16 +445,18 @@ We call upon all governments to recognize Indigenous languages as official langu
 				/>
 
 				{/* bottom full-width: TRC 14 */}
-				<FlipCard
-					key={trcCardData[1].id}
-					id={trcCardData[1].id}
-					cardId={trcCardData[1].cardId}
-					frontContent={trcCardData[1].front}
-					backContent={trcCardData[1].back}
-					isFlipped={flippedTrcCards.has(trcCardData[1].id)}
-					onFlip={handleTrcFlip}
-					customHeight={trcCardData[1].height}
-				/>
+				<div className="grid-span-2">
+					<FlipCard
+						key={trcCardData[1].id}
+						id={trcCardData[1].id}
+						cardId={trcCardData[1].cardId}
+						frontContent={trcCardData[1].front}
+						backContent={trcCardData[1].back}
+						isFlipped={flippedTrcCards.has(trcCardData[1].id)}
+						onFlip={handleTrcFlip}
+						customHeight={trcCardData[1].height}
+					/>
+				</div>
 			</section>
 
 			<p style={{ width: "100%", display: "block" }}>
@@ -487,7 +493,7 @@ We call upon all governments to recognize Indigenous languages as official langu
 					formally presented its Final Report to federal government officials at
 					a closing ceremony.
 				</p>
-				<p>The following Calls for Justice reference Indigenous languages:</p>
+				<p>The following Call for Justice references Indigenous languages:</p>
 			</section>
 
 			<section className="card-grid cfj-card-grid">
@@ -536,8 +542,7 @@ We call upon all governments to recognize Indigenous languages as official langu
 					women, girls, and 2SLGBTQIA+ people that require distinct
 					recommendations.
 				</p>
-				<p>The following Calls for Justice reference Indigenous languages:</p>
-				<p className="select-instruction">Select each item to learn more.</p>
+				<p className="select-instruction">Select the item to learn more. </p>
 			</section>
 
 			{/* START: Corrected render section for Inuit Calls for Justice */}
@@ -556,6 +561,7 @@ We call upon all governments to recognize Indigenous languages as official langu
 				))}
 			</section>
 			{/* END: Corrected render section */}
+
 			<BackToTop />
 			<nav className="breadcrumb" aria-label="Page navigation">
 				<button onClick={() => onNavigate?.("introduction")}>

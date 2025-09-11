@@ -15,14 +15,13 @@ const FlipCard = ({
 	backContent,
 	isFlipped,
 	onFlip,
-	customHeight,
+	customHeight, // kept for compatibility; uniform height handled in CSS
 }) => {
-	// Apply custom height if provided
 	const style = customHeight ? { minHeight: customHeight } : {};
 
 	return (
 		<div
-			id={cardId} // Use the new prop as the HTML id
+			id={cardId}
 			className="flip-card"
 			style={style}
 			role="button"
@@ -77,6 +76,7 @@ const FlipCard = ({
 const FoundationalDocuments = ({ onNavigate }) => {
 	const url = getHeroURL("en", "foundational-documents");
 	const src = useHeroSrc(url);
+
 	// State for the first set of cards (Action Plan)
 	const [flippedCards, setFlippedCards] = useState(new Set());
 	const handleFlip = (cardId) => {
@@ -90,30 +90,31 @@ const FoundationalDocuments = ({ onNavigate }) => {
 			return newFlipped;
 		});
 	};
+
 	const cardData = [
 		{
 			id: 1,
 			cardId: "action-plan-91",
 			front: "Plan d'action 91",
-			back: "Travailler avec les gouvernements autochtones, d’autres organes directeurs autochtones et diverses organisations autochtones pour examiner et étudier les modifications proposées pour renforcer la Loi sur les langues autochtones dans le cadre du processus d’examen indépendant. (Patrimoine canadien).",
+			back: "Travailler avec les gouvernements autochtones, d’autres organes directeurs autochtones et diverses organisations autochtones pour examiner et étudier les modifications proposées pour renforcer la<em> Loi sur les langues autochtones</em> dans le cadre du processus d’examen indépendant. (Patrimoine canadien).",
 		},
 		{
 			id: 2,
 			cardId: "action-plan-92",
 			front: "Plan d'action 92",
-			back: "Continuer à mettre en place des mesures visant à faciliter la fourniture d’un financement adéquat, durable et à long terme pour la récupération, la revitalisation, le maintien et le renforcement des langues autochtones grâce à la mise en œuvre continue de la Loi sur les langues autochtones. (Patrimoine canadien).",
+			back: "Continuer à mettre en place des mesures visant à faciliter la fourniture d’un financement adéquat, durable et à long terme pour la récupération, la revitalisation, le maintien et le renforcement des langues autochtones grâce à la mise en œuvre continue de la<em> Loi sur les langues autochtones</em>. (Patrimoine canadien).",
 		},
 		{
 			id: 3,
 			cardId: "action-plan-93",
 			front: "Action Plan item 93",
-			back: "Advance access to federal services in Indigenous languages; including translation of key departmental documentation. (Canadian Heritage).",
+			back: "Favoriser l’accès aux services fédéraux dans les langues autochtones, y compris la traduction de la documentation ministérielle essentielle. (Patrimoine canadien).",
 		},
 		{
 			id: 4,
 			cardId: "action-plan-11",
-			front: "Action Plan item 93",
-			back: "Favoriser l’accès aux services fédéraux dans les langues autochtones, y compris la traduction de la documentation ministérielle essentielle. (Patrimoine canadien).",
+			front: "Action Plan item 11",
+			back: "Poursuivre l’élaboration conjointe de règlements avec les organisations inuites en vertu de la <em><em>Loi sur les langues autochtones</em></em>, qui prévoient la prestation de services fédéraux en langue inuktut dans l’Inuit Nunangat, en commençant par le Nunavut. (Patrimoine canadien). ",
 		},
 	];
 
@@ -130,12 +131,13 @@ const FoundationalDocuments = ({ onNavigate }) => {
 			return newFlipped;
 		});
 	};
+
 	const trcCardData = [
 		{
 			id: 1,
 			cardId: "trc-13",
 			front: "Appel à l'action 13",
-			back: "Collaborer avec les gouvernements autochtones, d’autres organes autochtones de gouvernance et divers organismes autochtones pour examiner et envisager des amendements visant à renforcer la Loi sur les langues autochtones conformément au processus d'examen indépendant. (Patrimoine canadien).",
+			back: "Collaborer avec les gouvernements autochtones, d’autres organes autochtones de gouvernance et divers organismes autochtones pour examiner et envisager des amendements visant à renforcer la<em> Loi sur les langues autochtones</em> conformément au processus d'examen indépendant. (Patrimoine canadien).",
 		},
 		{
 			id: 2,
@@ -143,13 +145,13 @@ const FoundationalDocuments = ({ onNavigate }) => {
 			front: "Appel à l'action 14",
 			back: `
 					<div class="trc14-content">
-					<p>Nous demandons au gouvernement fédéral d’adopter une <em>Loi sur les langues autochtones</em> qui incorpore les principes suivants&nbsp;:</p>
-					<ol>
-						<li>Les langues autochtones représentent une composante fondamentale et valorisée de la culture et de la société canadiennes, et il y a urgence de les préserver.</li>
-						<li>Les droits linguistiques autochtones sont renforcés par les traités.</li>
-						<li>Le gouvernement fédéral a la responsabilité de fournir des fonds suffisants pour la revitalisation et la préservation des langues autochtones.</li>
-						<li>Ce sont les peuples et les collectivités autochtones qui sont les mieux à même de gérer la préservation, la revitalisation et le renforcement des langues et des cultures autochtones.</li>
-						<li>Le financement accordé pour les besoins des initiatives liées aux langues autochtones doit refléter la diversité de ces langues.</li>
+					<p style="font-size:18px">Nous demandons au gouvernement fédéral d’adopter une <em>Loi sur les langues autochtones</em> qui incorpore les principes suivants&nbsp;:</p>
+					<ol style="color:rgb(98, 28, 100)">
+						<li style="font-size:18px">Les langues autochtones représentent une composante fondamentale et valorisée de la culture et de la société canadiennes, et il y a urgence de les préserver.</li>
+						<li style="font-size:18px">Les droits linguistiques autochtones sont renforcés par les traités.</li>
+						<li style="font-size:18px">Le gouvernement fédéral a la responsabilité de fournir des fonds suffisants pour la revitalisation et la préservation des langues autochtones.</li>
+						<li style="font-size:18px">Ce sont les peuples et les collectivités autochtones qui sont les mieux à même de gérer la préservation, la revitalisation et le renforcement des langues et des cultures autochtones.</li>
+						<li style="font-size:18px">Le financement accordé pour les besoins des initiatives liées aux langues autochtones doit refléter la diversité de ces langues.</li>
 					</ol>
 					</div>
 				`,
@@ -177,6 +179,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 			return newFlipped;
 		});
 	};
+
 	const cfjCardData = [
 		{
 			id: 1,
@@ -191,7 +194,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 			back: `
 
 <span style:"padding:10px; margin-top:10px">Nous demandons à tous les gouvernements de reconnaître les langues autochtones comme langues officielles, avec le même statut, la même reconnaissance et la même protection que le français et l'anglais. Cela inclut les directives suivantes :</span>
-<ol style="font-size:18px"><li>Les gouvernements fédéraux, provinciaux et territoriaux doivent légiférer pour que les langues autochtones soient reconnues comme langues officielles dans leurs territoires respectifs.</li><li>Tous les gouvernements doivent fournir des fonds aux peuples autochtones pour soutenir les efforts de revitalisation et de restauration des cultures et langues autochtones.</li></ol>
+<ol style="color:rgb(98, 28, 100)"><li style="font-size:18px">Les gouvernements fédéraux, provinciaux et territoriaux doivent légiférer pour que les langues autochtones soient reconnues comme langues officielles dans leurs territoires respectifs.</li><li style="font-size:18px">Tous les gouvernements doivent fournir des fonds aux peuples autochtones pour soutenir les efforts de revitalisation et de restauration des cultures et langues autochtones.</li></ol>
 </div>
             `,
 		},
@@ -216,6 +219,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 			return newFlipped;
 		});
 	};
+
 	const cfjICardData = [
 		{
 			id: 1,
@@ -286,7 +290,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 					</li>
 					<li>
 						<a
-							href="https://commissionforindigenouslanguages.ca/fr/declaration-conjointe-ccunesco"
+							href="https://fr.ccunesco.ca/a-propos/medias/2024/07/bureau-du-commissaire-aux-langues-autochtones-ccunesco-partenariat"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
@@ -370,11 +374,11 @@ const FoundationalDocuments = ({ onNavigate }) => {
 					</em>{" "}
 					est le fruit de deux années de travail mené en consultation et en
 					collaboration avec des membres des Premières Nations, du peuple inuit
-					et de la Nation métisse de partout au Canada. Il fournit une feuille
-					de route énonçant les mesures que le Canada doit prendre, en
-					partenariat avec les peuples autochtones, pour mettre en œuvre les
-					principes et les droits énoncés dans la Déclaration des Nations Unies
-					et faire progresser de façon concrète la réconciliation.
+					et Métis de partout au Canada. Il fournit une feuille de route
+					énonçant les mesures que le Canada doit prendre, en partenariat avec
+					les peuples autochtones, pour mettre en œuvre les principes et les
+					droits énoncés dans la Déclaration des Nations Unies et faire
+					progresser de façon concrète la réconciliation.
 				</p>
 				<p>
 					Le plan d’action énonce des{" "}
@@ -391,7 +395,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 					fédéraux dans les langues autochtones.
 				</p>
 				<p className="select-instruction">
-					Sélectionnez chaque élément pour en savoir plus.
+					Sélectionnez l’élément pour en savoir plus.
 				</p>
 			</section>
 
@@ -424,7 +428,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 					culture, se lisent comme suit :
 				</p>
 				<p className="select-instruction">
-					Sélectionnez chaque élément pour en savoir plus.
+					Sélectionnez l’élément pour en savoir plus.
 				</p>
 			</section>
 
@@ -455,23 +459,27 @@ const FoundationalDocuments = ({ onNavigate }) => {
 				/>
 
 				{/* bottom full-width: TRC 14 */}
-				<FlipCard
-					key={trcCardData[1].id}
-					id={trcCardData[1].id}
-					cardId={trcCardData[1].cardId}
-					frontContent={trcCardData[1].front}
-					backContent={trcCardData[1].back}
-					isFlipped={flippedTrcCards.has(trcCardData[1].id)}
-					onFlip={handleTrcFlip}
-					customHeight={trcCardData[1].height}
-				/>
+				<div className="grid-span-2">
+					<FlipCard
+						key={trcCardData[1].id}
+						id={trcCardData[1].id}
+						cardId={trcCardData[1].cardId}
+						frontContent={trcCardData[1].front}
+						backContent={trcCardData[1].back}
+						isFlipped={flippedTrcCards.has(trcCardData[1].id)}
+						onFlip={handleTrcFlip}
+						customHeight={trcCardData[1].height}
+					/>
+				</div>
 			</section>
 
 			<p style={{ width: "100%", display: "block" }}>
-				<em>La Loi sur les langues autochtones</em> ayant reçu la sanction
-				royale, le gouvernement a répondu aux appels à l’action 13 et 14. Il a
-				donné suite à l’appel à l’action 15 en créant le Bureau du commissaire
-				aux langues autochtones.
+				<em>
+					la<em> Loi sur les langues autochtones</em>
+				</em>{" "}
+				ayant reçu la sanction royale, le gouvernement a répondu aux appels à
+				l’action 13 et 14. Il a donné suite à l’appel à l’action 15 en créant le
+				Bureau du commissaire aux langues autochtones.
 			</p>
 
 			<section>
@@ -506,8 +514,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 					présenté au gouvernement fédéral lors d’une cérémonie de clôture.
 				</p>
 				<p>
-					Les appels à la justice suivants font référence aux langues
-					autochtones :
+					L’appel à la justice suivant fait référence aux langues autochtones :
 				</p>
 			</section>
 
@@ -563,7 +570,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 					autochtones :
 				</p>
 				<p className="select-instruction">
-					Sélectionnez chaque élément pour en savoir plus.
+					Sélectionnez l’élément pour en savoir plus.
 				</p>
 			</section>
 
@@ -581,6 +588,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 					/>
 				))}
 			</section>
+
 			<BackToTop />
 			{/* ███ fil d'Ariane ███ */}
 			<nav className="breadcrumb" aria-label="Navigation de la page">

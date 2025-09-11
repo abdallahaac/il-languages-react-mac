@@ -10,14 +10,12 @@
     <organization identifier="ORGC256PESLE">
       <!-- <title>Revitalizing Voices: Navigating the Indigenous Languages Ac</title>
       <item identifier="C256PESLE_I01" identifierref="C256PESLE_S01" isvisible="true">
-        <title>	Revitalizing Voices: Navigating the Indigenous Languages Act</title> -->
+      -->
 
-      <title>	Revitalisation des voix autochtones : comprendre la Loi sur les langues
-			autochtones</title>
       <item identifier="C256PESLE_I01" identifierref="C256PESLE_S01" isvisible="true">
-        <title>	Revitalisation des voix autochtones : comprendre la Loi sur les langues
-			autochtones</title>
-
+        <!-- <title>	Revitalisation des voix autochtones : comprendre la Loi sur les langues
+			autochtones</title> -->
+  <title>	Revitalizing Voices: Navigating the Indigenous Languages Act</title> 
 
         <metadata>
           <schema>ADL SCORM</schema>
@@ -33,14 +31,14 @@
   <resources>
   <!--  -->
     <!-- <resource identifier="C256PESLE_S01" type="webcontent" adlcp:scormtype="sco" href="index.html"> -->
-    <resource identifier="C256PESLE_S01" type="webcontent" adlcp:scormtype="sco" href="index_fr.html">
+    <resource identifier="C256PESLE_S01" type="webcontent" adlcp:scormtype="sco" href="index.html">
     <!-- <resource identifier="C256PESLE_S01" type="webcontent" adlcp:scormtype="sco" href="index.html"> -->
       <metadata>
         <schema>ADL SCORM</schema>
         <schemaversion>1.2</schemaversion>
       </metadata>
-      <file href="index_fr.html"/>
-      <!-- <file href="index.html"/> -->
+      <!-- <file href="index_fr.html"/> -->
+      <file href="index.html"/>
     </resource>
   </resources>
 </manifest>

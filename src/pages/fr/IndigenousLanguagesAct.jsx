@@ -80,11 +80,11 @@ const content_en = {
 };
 
 const content_fr = {
-	title: "Loi sur les langues autochtones",
+	title: "<em>Loi sur les langues autochtones</em>",
 	sections: [
 		{
 			type: "main",
-			content: `Le 21 juin 2019, la <a href="https://laws-lois.justice.gc.ca/fra/lois/i-7.85/page-1.html" target="_blank"><em>Loi sur les langues autochtones</em></a> a reçu la sanction royale. Son objectif général est de soutenir les efforts des peuples autochtones pour se réapproprier, revitaliser, maintenir et renforcer les langues autochtones. La Loi répond aux appels à l'action 13, 14 et 15 de la Commission de vérité et réconciliation du Canada et a été élaborée avec les Premières Nations, les Inuits et les Métis à la suite d'un engagement approfondi et d'un travail de développement collaboratif. La Loi sur les langues autochtones reconnaît et soutient toutes les langues autochtones au Canada et ses éléments clés sont :`,
+			content: `Le 21 juin 2019, la <a href="https://laws-lois.justice.gc.ca/fra/lois/i-7.85/page-1.html" target="_blank"><em>Loi sur les langues autochtones</em></a> a reçu la sanction royale. Son objectif général est de soutenir les efforts des peuples autochtones pour se réapproprier, revitaliser, maintenir et renforcer les langues autochtones. La Loi répond aux appels à l'action 13, 14 et 15 de la Commission de vérité et réconciliation du Canada et a été élaborée avec les Premières Nations, les Inuits et les Métis à la suite d'un engagement approfondi et d'un travail de développement collaboratif. la<em> Loi sur les langues autochtones</em> reconnaît et soutient toutes les langues autochtones au Canada et ses éléments clés sont :`,
 			list: [
 				"Soutenir et promouvoir l'utilisation des langues autochtones, y compris les langues des signes autochtones.",
 				"Soutenir les efforts des peuples autochtones pour se réapproprier, revitaliser, maintenir et renforcer les langues autochtones.",
@@ -96,7 +96,8 @@ const content_fr = {
 			],
 		},
 		{
-			heading: "Préambule et objet de la Loi sur les langues autochtones",
+			heading:
+				"Préambule et objet de la<em> Loi sur les langues autochtones</em>",
 			paragraphs: [
 				"Les préambules des lois aident à expliquer les objectifs généraux d'une loi. Dans le cas de la <em>Loi sur les langues autochtones</em>, le préambule mentionne l'objectif important de se réapproprier, de revitaliser, de maintenir et de renforcer les langues autochtones. Cet objectif est lié à la réconciliation entre le gouvernement du Canada et les peuples autochtones, qui comprend la prise en compte des appels à l'action de la CVR et de la Déclaration des Nations Unies.",
 				"Le préambule reconnaît également que l'histoire de la discrimination au Canada a contribué au déclin des langues autochtones et qu'il est urgent de soutenir leur revitalisation. Un aspect clé du préambule mentionne que ce sont les peuples autochtones qui sont les mieux placés pour revitaliser les langues autochtones, tout en soulignant le rôle important joué par le gouvernement du Canada pour soutenir et promouvoir cet objectif et d'autres objectifs de la Loi.",

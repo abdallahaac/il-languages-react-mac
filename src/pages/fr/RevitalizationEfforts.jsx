@@ -63,7 +63,7 @@ const RevitalizationEfforts_fr = ({ onNavigate }) => {
 					<li>
 						<strong>Volet relatif aux langues autochtones :</strong> financement
 						de projets issus des communautés et destinés aux membres des
-						Premières Nations, du peuple inuit et de la Nation métisse.
+						Premières Nations, du peuple inuit et des Métis.
 					</li>
 					<li>
 						<strong>Ententes linguistiques territoriales :</strong> soutien aux
@@ -172,8 +172,8 @@ const RevitalizationEfforts_fr = ({ onNavigate }) => {
 								organisations inuites ont émis des réserves. L’Inuit Tapiriit
 								Kanatami (ITK) a exprimé sa déception concernant le manque de
 								contenu spécifiquement inuit. En réponse, l’organisme a déposé
-								un document au Comité permanent du Patrimoine Canadien de la
-								Chambre des communes décrivant les intérêts inuits dans la loi.
+								un document au Comité permanent du patrimoine canadien de la
+								Chambre des communess décrivant les intérêts inuits dans la loi.
 							</p>
 							<p>
 								L’ITK est composé de quatre organisations régionales, dont la
@@ -235,20 +235,20 @@ const RevitalizationEfforts_fr = ({ onNavigate }) => {
 							}`}
 						>
 							<h4>
-								Nation métisse{" "}
+								Métis{" "}
 								<span>
 									<FontAwesomeIcon icon={faInfinity} />
 								</span>
 							</h4>
 							<p>
-								Outre l’anglais et le français, certains membres de la Nation
-								métisse parlent plusieurs langues des Premières Nations ainsi
+								Outre l’anglais et le français, certains membres des communautés
+								métisses parlent plusieurs langues des Premières Nations ainsi
 								que leur propre langue nationale, le michif.
 							</p>
 							<p>
 								Le Ralliement national des Métis (RNM) défend l’avancement des
-								intérêts de la Nation métisse au niveau national au nom de ses
-								organisations membres.
+								intérêts des communautés métisses au niveau national au nom de
+								ses organisations membres.
 							</p>
 							<p>
 								Le jour de l’annonce du projet de loi à la Chambre des communes
@@ -256,14 +256,14 @@ const RevitalizationEfforts_fr = ({ onNavigate }) => {
 								dit favorable au projet de loi. L’ancienne ministre du
 								Patrimoine, de la Culture et des Familles du RNM, Clara Morin
 								Dal Col, a aussi vu le projet comme un pas de géant du Canada
-								pour soutenir la longue lutte de la Nation métisse pour
+								pour soutenir la longue lutte des communautés métisses pour
 								préserver, revitaliser et promouvoir l’usage de sa langue
 								nationale propre, le michif. En 2021, le RNM a accueilli
 								favorablement la nomination de Georgina Liberty à l’un des
 								postes de directrice du Bureau du commissaire aux langues
 								autochtones nouvellement créé, car il était important qu’il y
 								ait à ce poste une personne ayant une expérience directe du
-								michif et comprenant les besoins culturels de la Nation métisse.
+								michif et comprenant les besoins culturels des Métis.
 							</p>
 						</div>
 					</div>

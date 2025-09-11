@@ -1,3 +1,4 @@
+// src/pages/fr/KnowledgeCheck_fr.jsx
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import "../KnowledgeCheck.css";
 import BackToTop from "../../components/BackToTop";
@@ -44,7 +45,7 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 		return requiredPages.every((id) => visitedPages.has(id));
 	}, [visitedPages, requiredPages]);
 
-	// i18n strings to mirror EN logic/UX
+	// i18n strings
 	const t = {
 		title: "Questionnaire verrouillé",
 		message:
@@ -60,6 +61,17 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 			"Vous avez réussi et terminé cette section. Vous pouvez passer à la section suivante.",
 		viewResults: "Afficher les résultats",
 		hideResults: "Masquer les résultats",
+		reviewAndFix: "Revoir et corriger",
+		resubmit: "Renvoyer",
+		retryHelper: "",
+		retryClearedNote:
+			"Vos réponses erronées ont été réinitialisées. Essayez de nouveau.",
+		finalScoreLabel: "Votre score final",
+		continueMsg:
+			"Vous pouvez passer à la section suivante. Vous pouvez aussi réessayer le questionnaire si vous visez un score parfait.",
+		mustReach80:
+			"Veuillez revoir vos réponses et renvoyer jusqu’à atteindre au moins 80 % pour continuer.",
+		incorrectShort: "Incorrect. Réessayez.",
 	};
 
 	/* ---- Questions ---- */
@@ -134,7 +146,7 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 					{ text: "d) Services aux Autochtones Canada", value: "d" },
 				],
 				feedback:
-					"La bonne réponse est le ou la ministre du Patrimoine canadien.",
+					"Le ou la ministre du Patrimoine canadien est responsable de l’application intégrale.",
 			},
 			{
 				id: "q6",
@@ -154,8 +166,7 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 					},
 					{ text: "d) Toutes ces réponses", value: "d", correct: true },
 				],
-				feedback:
-					"Toutes les options énumérées sont des mécanismes prévus dans la<em> Loi sur les langues autochtones</em>.",
+				feedback: "Toutes les options énumérées sont prévues dans la Loi.",
 			},
 			{
 				id: "q7",
@@ -175,8 +186,7 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 					},
 					{ text: "d) Toutes ces réponses", value: "d", correct: true },
 				],
-				feedback:
-					"Toutes les options énumérées font partie du mandat du Bureau du commissaire aux langues autochtones.",
+				feedback: "Ces éléments font partie du mandat du BCLA.",
 			},
 			{
 				id: "q8",
@@ -204,8 +214,7 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 						correct: true,
 					},
 				],
-				feedback:
-					"Toutes les options énumérées sont des façons dont les fonctionnaires peuvent appuyer les objectifs de la<em> Loi sur les langues autochtones</em>.",
+				feedback: "Toutes ces actions peuvent appuyer les objectifs de la Loi.",
 			},
 		],
 		[]
@@ -220,6 +229,8 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 	const [isGrading, setIsGrading] = useState(false);
 	const [viewResults, setViewResults] = useState(false);
 	const [hydrated, setHydrated] = useState(false);
+	const [attempts, setAttempts] = useState(0);
+	const [retryToast, setRetryToast] = useState("");
 
 	const containerRef = useRef(null);
 	const questionRefs = useRef({});
@@ -236,6 +247,7 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 					setShowFeedback(!!parsed.showFeedback);
 					setScore(Number(parsed.score || 0));
 					setViewResults(!!parsed.viewResults);
+					setAttempts(Number(parsed.attempts || 0));
 				}
 			}
 		} catch {}
@@ -259,12 +271,22 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 			showFeedback,
 			score,
 			viewResults,
+			attempts,
 			savedAt: Date.now(),
 		};
 		try {
 			localStorage.setItem(STORAGE_KEY(lang), JSON.stringify(state));
 		} catch {}
-	}, [answers, feedback, showFeedback, score, viewResults, lang, hydrated]);
+	}, [
+		answers,
+		feedback,
+		showFeedback,
+		score,
+		viewResults,
+		attempts,
+		lang,
+		hydrated,
+	]);
 
 	/* ---- Derived ---- */
 	useEffect(() => {
@@ -298,6 +320,13 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 		setScore(finalScore);
 		setFeedback(newFeedback);
 		setShowFeedback(true);
+		setAttempts((n) => n + 1);
+
+		/* NEW: lightweight flags for non-SCORM detection on the Resources page */
+		try {
+			localStorage.setItem("ilc:quizAttempted", "1");
+			if (finalScore >= 80) localStorage.setItem("ilc:quizPassed", "1");
+		} catch {}
 
 		// If 100%, show the completed panel by default (viewResults=false)
 		if (finalScore === 100) {
@@ -315,7 +344,6 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 			scorm.save();
 		}
 
-		// focus first incorrect after grading
 		const firstIncorrect = questions.find(
 			(q) => newFeedback[q.id] === "incorrect"
 		);
@@ -382,15 +410,30 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 		});
 
 		// fade content + animate height down to spinner height
-		setIsGrading(true); // triggers fade-out of content / fade-in of spinner
+		setIsGrading(true);
 		animateContainerHeight(SPINNER_H);
 
 		const delay = getGradeDelayMs(questions.length);
 		setTimeout(() => {
-			grade(); // updates content (incorrects or completion)
-			setIsGrading(false); // triggers content fade back in
-			expandToContent(); // animate height back up to new content
+			grade();
+			setIsGrading(false);
+			expandToContent();
 		}, delay);
+	};
+
+	// Reset only incorrect answers, keep correct ones locked
+	const resetIncorrect = () => {
+		setAnswers((prev) => {
+			const next = { ...prev };
+			questions.forEach((q) => {
+				if (feedback[q.id] === "incorrect") {
+					delete next[q.id]; // clear selection so learner doit réfléchir à nouveau
+				}
+			});
+			return next;
+		});
+		setRetryToast(t.retryClearedNote);
+		setTimeout(() => setRetryToast(""), 2200);
 	};
 
 	// show only incorrect questions once feedback is visible (unless viewing results at 100%)
@@ -552,13 +595,10 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 													/>
 												</p>
 											) : (
+												// 🔒 Ne plus révéler la bonne réponse ici
 												<p>
-													<strong>Incorrect.</strong> La bonne réponse est :{" "}
-													<span
-														dangerouslySetInnerHTML={{
-															__html: q.options.find((o) => o.correct).text,
-														}}
-													/>
+													<strong>{t.incorrectShort}</strong>{" "}
+													<span className="retry-hint">{t.retryHelper}</span>
 												</p>
 											)}
 										</div>
@@ -598,15 +638,18 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 								) : (
 									<>
 										{score < 100 && (
-											<button
-												type="button"
-												className="submit-button"
-												onClick={handleSubmit}
-												disabled={isGrading}
-												title="Recalculer vos réponses"
-											>
-												{isGrading ? t.calculating : "Renvoyer"}
-											</button>
+											<div className="retry-row">
+												<button
+													type="button"
+													className="submit-button"
+													onClick={handleSubmit}
+													disabled={isGrading}
+													title="Renvoyer vos réponses"
+													style={{ marginLeft: "0.5rem" }}
+												>
+													{isGrading ? t.calculating : t.resubmit}
+												</button>
+											</div>
 										)}
 										{score === 100 && viewResults && (
 											<button
@@ -616,6 +659,11 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 											>
 												{t.hideResults}
 											</button>
+										)}
+										{retryToast && (
+											<div className="toast" role="status" aria-live="polite">
+												{retryToast}
+											</div>
 										)}
 									</>
 								)}
@@ -629,21 +677,17 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 							id="quiz-results"
 							className={score >= 80 ? "passed" : "failed"}
 						>
-							<h2>Votre score final&nbsp;: {score.toFixed(0)}%</h2>
+							<h2>
+								{t.finalScoreLabel}&nbsp;: {score.toFixed(0)}%
+							</h2>
 							{score >= 80 ? (
 								score === 100 ? (
 									<p>Vous pouvez passer à la section suivante.</p>
 								) : (
-									<p>
-										Vous pouvez passer à la section suivante. Vous pouvez aussi
-										réessayer le questionnaire si vous visez un score parfait.
-									</p>
+									<p>{t.continueMsg}</p>
 								)
 							) : (
-								<p>
-									Veuillez revoir les réponses incorrectes et renvoyer jusqu’à
-									atteindre au moins 80&nbsp;% pour continuer.
-								</p>
+								<p>{t.mustReach80}</p>
 							)}
 						</div>
 					)}
@@ -663,7 +707,7 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 				<button
 					onClick={() => {
 						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-						onNavigate?.("public-service");
+						onNavigate?.("results-fr");
 					}}
 				>
 					&laquo;&nbsp;Retour

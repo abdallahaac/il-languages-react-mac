@@ -167,7 +167,7 @@ const Languages = ({ onNavigate }) => {
 				<h2>Les langues autochtones au Canada</h2>
 
 				<p>
-					Son Excellence la très honorable Mary Simon est Inuite, ce qui en fait
+					Son Excellence la très honorable Mary Simon est inuite, ce qui en fait
 					la première gouverneure générale autochtone du Canada. Mary Simon est
 					née à Kangiqsualujjuaq, au Nunavik (Québec). Elle a affirmé
 					publiquement que c’est lorsqu’elle s’exprime en inuktitut, sa langue
@@ -186,33 +186,35 @@ const Languages = ({ onNavigate }) => {
 
 				<p className="dis">
 					Les langues autochtones sont au cœur de l’identité des peuples
-					autochtones : les langues des Premières Nations, du peuple inuit et de
-					la Nation métisse transmettent des visions du monde et inspirent les
-					valeurs, les relations avec le territoire et les systèmes juridiques
-					autochtones. L’histoire de la colonisation au Canada, de même que les
-					lois et les politiques du gouvernement du Canada ont profondément nui
-					aux langues autochtones. En raison des politiques d’assimilation
-					restrictives, plusieurs langues autochtones ont disparu ou sont en
-					voie de disparaître au Canada. Toutefois, plusieurs communautés
-					autochtones travaillent activement à la revitalisation de leur langue
-					et honorent les aîné·es et gardien·nes du savoir pour que leur langue
-					reste vivante.
+					autochtones : les langues des Premières Nations, du peuple inuit et
+					des communautés métisses transmettent des visions du monde et
+					inspirent les valeurs, les relations avec le territoire et les
+					systèmes juridiques autochtones. L’histoire de la colonisation au
+					Canada, de même que les lois et les politiques du gouvernement du
+					Canada ont profondément nui aux langues autochtones. En raison des
+					politiques d’assimilation restrictives, plusieurs langues autochtones
+					ont disparu ou sont en voie de disparaître au Canada. Toutefois,
+					plusieurs communautés autochtones travaillent activement à la
+					revitalisation de leur langue et honorent les aîné·es et gardien·nes
+					du savoir pour que leur langue reste vivante.
 				</p>
 
 				<div className="gina-img">
 					<div className="">
-						<a
-							className="link-source"
-							id="bigger"
-							href="https://www.noslangues-ourlanguages.gc.ca/fr/blogue-blog/tracer-la-voie-the-road-ahead-fra"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							<h3 className="gina">Langues autochtones : tracer la voie</h3>
-						</a>
+						<h3 className="gina">Langues autochtones : tracer la voie</h3>
+
 						<p>
-							Lisez la perspective de Gina Wilson sur l'importance des langues
-							autochtones au Canada.
+							Lisez{" "}
+							<a
+								className="link-source"
+								id="bigger"
+								href="https://www.noslangues-ourlanguages.gc.ca/fr/blogue-blog/tracer-la-voie-the-road-ahead-fra"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								la perspective de Gina Wilson{" "}
+							</a>{" "}
+							sur l'importance des langues autochtones au Canada.
 						</p>
 					</div>
 					<img
@@ -233,10 +235,10 @@ const Languages = ({ onNavigate }) => {
 						rel="noopener noreferrer"
 					>
 						70 langues autochtones distinctes sont parlées actuellement au
-						Canada par les membres des Premières Nations, du peuple inuit et de
-						la Nation métisse
+						Canada par les membres des Premières Nations, du peuple inuit des
+						communautés métisses
 					</a>
-					. On peut regrouper ces langes en 12 familles : les langues
+					. On peut regrouper ces langues en 12 familles : les langues
 					algonquiennes, inuites, athabascanes, sioux, salishennes, tsimshians,
 					wakashanes et iroquoiennes, ainsi que le michif, le tlingit, le
 					kutenai et le haïda. En 2021, environ 237 420 Autochtones au Canada

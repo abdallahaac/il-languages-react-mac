@@ -55,10 +55,10 @@ const PublicService_fr = ({ onNavigate }) => {
 				<h3>Bureau du commissaire aux langues autochtones</h3>
 				<p>
 					Suite à l’adoption de la Loi, le Bureau du commissaire aux langues
-					autochtones a été créée. En juin 2021, Ronald E. Ignace est devenu le
-					premier commissaire aux langues autochtones, aux côtés de deux
-					directrices et d’un directeur : Georgina Liberty, Joan Greyeyes et
-					Robert Watt.
+					autochtones (BCLA) a été créé. En juin 2021, Ronald E. Ignace est
+					devenu le premier commissaire aux langues autochtones, aux côtés de
+					deux directrices et d’un directeur : Georgina Liberty, Joan Greyeyes
+					et Robert Watt.
 				</p>
 
 				<h3>Traduction et interprétation</h3>
@@ -81,8 +81,8 @@ const PublicService_fr = ({ onNavigate }) => {
 					<em>
 						« Nous célébrons ce jour où nous donnons un nouveau souffle à toutes
 						nos langues autochtones pour l’avenir. Nos langues ne seront plus
-						dans l’ombre des autres langues ici, sur notre territoire. Puissions
-						nous toujours rendre hommage à nos langues autochtones. »
+						dans l’ombre des autres langues ici, sur notre territoire.
+						Puissions-nous toujours rendre hommage à nos langues autochtones. »
 					</em>
 					<cite>
 						– Ronald E. Ignace, commissaire aux langues autochtones, locuteur du
@@ -366,13 +366,13 @@ const PublicService_fr = ({ onNavigate }) => {
 							}`}
 						>
 							<p>
-								Le michif est parlé uniquement par les membres de la Nation
-								métisse et se décline en plusieurs dialectes et langues des
-								signes. Toutefois, il existe peu de connaissances sur la langue
-								des signes michif. Cela peut être dû au fait que les langues des
-								signes autochtones font partie des formes de communication les
-								plus en danger de disparition au Canada. Peu de linguistes leur
-								ont donné la même attention qu’aux langues autochtones parlées.
+								Le michif est parlé uniquement par les membres des Métis et se
+								décline en plusieurs dialectes et langues des signes. Toutefois,
+								il existe peu de connaissances sur la langue des signes michif.
+								Cela peut être dû au fait que les langues des signes autochtones
+								font partie des formes de communication les plus en danger de
+								disparition au Canada. Peu de linguistes leur ont donné la même
+								attention qu’aux langues autochtones parlées.
 							</p>
 						</div>
 					</div>

@@ -77,7 +77,7 @@ const ContentNavigation = ({ onNavigate, onPrefetch, lang: langProp }) => {
 				{ number: 3, titleHTML: "Indigenous Voices", id: "voices-en" },
 				{
 					number: 4,
-					titleHTML: "Overview of Indigenous Languages",
+					titleHTML: "Indigenous Languages in Canada",
 					id: "languages-en",
 				},
 				{

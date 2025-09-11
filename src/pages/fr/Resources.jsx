@@ -30,23 +30,44 @@ const Resources = ({ onNavigate }) => {
 	const [showExitModal, setShowExitModal] = useState(false);
 	const [hasAttemptedQuiz, setHasAttemptedQuiz] = useState(false);
 
-	// Détecter la tentative via SCORM lesson_status
+	/* Helper: clear all course-related storage keys */
+	const clearCourseStorage = () => {
+		try {
+			const prefixes = ["knowledge-check-v1:", "ilc:"];
+			for (let i = localStorage.length - 1; i >= 0; i--) {
+				const key = localStorage.key(i);
+				if (key && prefixes.some((p) => key.startsWith(p))) {
+					localStorage.removeItem(key);
+				}
+			}
+		} catch {}
+	};
+
+	/* Detect attempt/passed via SCORM or localStorage flags (kept if you need it elsewhere) */
 	useEffect(() => {
 		try {
+			let attempted = false;
+			let status = "";
 			if (scorm && scorm.API?.isFound?.()) {
 				const rawStatus = scorm.get("cmi.core.lesson_status") || "";
-				const status = String(rawStatus).trim().toLowerCase();
-				const attemptedStatuses = new Set(["passed", "failed", "completed"]);
-				setHasAttemptedQuiz(attemptedStatuses.has(status));
-			} else {
-				setHasAttemptedQuiz(false);
+				status = String(rawStatus).trim().toLowerCase();
+				const attemptedStatuses = new Set([
+					"passed",
+					"failed",
+					"completed",
+					"incomplete",
+				]);
+				attempted = attemptedStatuses.has(status);
 			}
+			const lsAttempted = localStorage.getItem("ilc:quizAttempted") === "1";
+			setHasAttemptedQuiz(attempted || lsAttempted);
 		} catch {
-			setHasAttemptedQuiz(false);
+			const lsAttempted = localStorage.getItem("ilc:quizAttempted") === "1";
+			setHasAttemptedQuiz(lsAttempted);
 		}
 	}, [scorm]);
 
-	// Bloquer le scroll arrière-plan + Échap pour fermer quand ouvert
+	/* Lock background scroll + Escape to close when modal open */
 	useEffect(() => {
 		if (!showExitModal) return;
 		const prevOverflow = document.body.style.overflow;
@@ -62,26 +83,54 @@ const Resources = ({ onNavigate }) => {
 		};
 	}, [showExitModal]);
 
+	/* OPTIONAL: clear storage on real page leave (refresh/close/navigation)
+     Remove this effect if you ONLY want clearing on explicit Exit/Home buttons. */
+	useEffect(() => {
+		const onBeforeUnload = () => {
+			try {
+				if (scorm && scorm.API?.isFound?.()) {
+					scorm.save();
+					scorm.quit?.();
+				}
+			} catch {}
+			clearCourseStorage();
+		};
+		window.addEventListener("beforeunload", onBeforeUnload);
+		return () => window.removeEventListener("beforeunload", onBeforeUnload);
+	}, [scorm]);
+
+	// 👉 Open the modal only when the user clicks the breadcrumb Next
 	const handleHomeClick = () => {
-		// ✅ Afficher le modal seulement si le questionnaire a été tenté
-		if (hasAttemptedQuiz) setShowExitModal(true);
-		else onNavigate?.("home");
+		setShowExitModal(true);
 	};
 
 	const handleExitWindow = () => {
 		try {
 			if (scorm && scorm.API?.isFound?.()) {
-				// Facultatif : marquer comme complété ici si désiré
-				// scorm.set("cmi.core.lesson_status", "completed");
 				scorm.save();
+				scorm.quit?.();
 			}
 		} catch {}
-		window.close(); // peut être bloqué
+		clearCourseStorage();
+
+		// Best-effort close attempts (may be blocked by browser)
+		try {
+			window.top?.close?.();
+		} catch {}
+		try {
+			window.open("", "_self")?.close?.();
+		} catch {}
+		try {
+			window.close();
+		} catch {}
+
+		// Fallback: route home
 		onNavigate?.("home");
 	};
 
 	const handleGoHome = () => {
 		setShowExitModal(false);
+		clearCourseStorage();
 		onNavigate?.("home");
 	};
 
@@ -113,7 +162,7 @@ const Resources = ({ onNavigate }) => {
 					</li>
 					<li>
 						<a
-							href="https://www.canada.ca/fr/patrimoine-canadien/campagnes/celebrer-langues-autochtones/decennie-internationale.html"
+							href="https://www.canada.ca/fr/patrimoine-canadien/campagnes/celebrons-langues-autochtones/decennie-internationale.html"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
@@ -131,11 +180,11 @@ const Resources = ({ onNavigate }) => {
 					</li>
 					<li>
 						<a
-							href="https://parks.canada.ca/culture/autochtones-indigenous/noms-de-lieux-place-names#"
+							href="https://parcs.canada.ca/culture/autochtones-indigenous/noms-de-lieux-place-names"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Toponymes autochtones
+							Noms de lieux en langues autochtones
 						</a>
 					</li>
 					<li>
@@ -149,7 +198,7 @@ const Resources = ({ onNavigate }) => {
 					</li>
 					<li>
 						<a
-							href="https://canadiangeographic.ca/fr/articles/cartographier-les-langues-autochtones-au-canada/"
+							href="https://canadiangeographic.ca/articles/cartographie-des-langues-autochtones-au-canada/"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
@@ -191,7 +240,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Langues autochtones – Organisations et événements
+							Langues autochtones – Organismes et événements
 						</a>
 					</li>
 					<li>
@@ -209,31 +258,20 @@ const Resources = ({ onNavigate }) => {
 				<ul className="res">
 					<li>
 						<a
-							href="https://ici.radio-canada.ca/nouvelle/1858223/langues-autochtones-intelligence-artificielle-revitalisation-culture"
+							href="https://www.lesoleil.com/science/2025/05/20/et-si-lia-contribuait-a-sauver-les-langues-autochtones-IDFW4BM4HJDLDKSUHEJHU3KHF4/"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Comment l’IA et la technologie immersive sont utilisées pour
-							revitaliser les langues autochtones | Radio-Canada
+							Et si l’IA contribuait à sauver les langues autochtones?
 						</a>
 					</li>
 					<li>
 						<a
-							href="https://www.sshrc-crsh.gc.ca/funding-financement/nfrf-fnfr/stories-histoires/2023/inclusive_artificial_intelligence-intelligence_artificielle_inclusive-fra.aspx"
+							href="https://mila.quebec/fr/ia-pour-lhumanite/projets-appliques/initiative-flair"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							L’IA inclusive : comment les systèmes de connaissances autochtones
-							pourraient rendre l’IA plus inclusive
-						</a>
-					</li>
-					<li>
-						<a
-							href="https://mila.quebec/fr/ia-pour-lhumanite/projets-appliques/premieres-langues-ia-realite"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							Premières Langues IA Réalité | Mila
+							Initiative FLAIR | Mila
 						</a>
 					</li>
 				</ul>

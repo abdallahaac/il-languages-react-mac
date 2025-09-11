@@ -21,32 +21,28 @@ const Resources = ({ onNavigate }) => {
 		home: "Home",
 		modalTitle: "Course Complete",
 		modalMsg:
-			"You have completed the course. You may now exit this window, or continue to the home page.",
+			"You have completed the course. You may now close this window or return to the home page.",
 		exit: "Exit window",
-		goHome: "Continue",
+		goHome: "Go to Home",
 		cancel: "Cancel",
 	};
 
 	const [showExitModal, setShowExitModal] = useState(false);
-	const [hasAttemptedQuiz, setHasAttemptedQuiz] = useState(false);
 
-	// Detect quiz attempt via SCORM lesson_status
-	useEffect(() => {
+	/* Helper: clear all course-related storage keys (mirrors FR) */
+	const clearCourseStorage = () => {
 		try {
-			if (scorm && scorm.API?.isFound?.()) {
-				const rawStatus = scorm.get("cmi.core.lesson_status") || "";
-				const status = String(rawStatus).trim().toLowerCase();
-				const attemptedStatuses = new Set(["passed", "failed", "completed"]);
-				setHasAttemptedQuiz(attemptedStatuses.has(status));
-			} else {
-				setHasAttemptedQuiz(false);
+			const prefixes = ["knowledge-check-v1:", "ilc:"];
+			for (let i = localStorage.length - 1; i >= 0; i--) {
+				const key = localStorage.key(i);
+				if (key && prefixes.some((p) => key.startsWith(p))) {
+					localStorage.removeItem(key);
+				}
 			}
-		} catch {
-			setHasAttemptedQuiz(false);
-		}
-	}, [scorm]);
+		} catch {}
+	};
 
-	// Prevent background scroll + allow ESC to close when modal open
+	/* Prevent background scroll + allow ESC to close when modal is open */
 	useEffect(() => {
 		if (!showExitModal) return;
 		const prevOverflow = document.body.style.overflow;
@@ -62,26 +58,38 @@ const Resources = ({ onNavigate }) => {
 		};
 	}, [showExitModal]);
 
+	// 👉 Open the modal only when the user clicks the breadcrumb "Home" (Next)
 	const handleHomeClick = () => {
-		// ✅ Show modal only if quiz was actually attempted
-		if (hasAttemptedQuiz) setShowExitModal(true);
-		else onNavigate?.("home");
+		setShowExitModal(true);
 	};
 
 	const handleExitWindow = () => {
 		try {
 			if (scorm && scorm.API?.isFound?.()) {
-				// Optional: mark completion here if desired
-				// scorm.set("cmi.core.lesson_status", "completed");
 				scorm.save();
+				scorm.quit?.();
 			}
 		} catch {}
-		window.close(); // may be blocked
+		clearCourseStorage();
+
+		// Best-effort close attempts (may be blocked by browser)
+		try {
+			window.top?.close?.();
+		} catch {}
+		try {
+			window.open("", "_self")?.close?.();
+		} catch {}
+		try {
+			window.close();
+		} catch {}
+
+		// Fallback: route home
 		onNavigate?.("home");
 	};
 
 	const handleGoHome = () => {
 		setShowExitModal(false);
+		clearCourseStorage();
 		onNavigate?.("home");
 	};
 
@@ -108,7 +116,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Indigenous Languages Decade (2022-2032) | UNESCO
+							International Decade of Indigenous Languages (2022–2032) | UNESCO
 						</a>
 					</li>
 					<li>
@@ -117,7 +125,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							International Decade of Indigenous Languages
+							International Decade of Indigenous Languages — Canada.ca
 						</a>
 					</li>
 					<li>
@@ -126,16 +134,16 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Indigenous languages across Canada
+							Indigenous languages in Canada — Statistics Canada
 						</a>
 					</li>
 					<li>
 						<a
-							href="https://parks.canada.ca/culture/autochtones-indigenous/noms-de-lieux-place-names#"
+							href="https://parks.canada.ca/culture/autochtones-indigenous/noms-de-lieux-place-names"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Indigenous place names
+							Indigenous place names — Parks Canada
 						</a>
 					</li>
 					<li>
@@ -162,7 +170,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Indigenous languages – Canadian overview
+							Indigenous languages — Canadian overview
 						</a>
 					</li>
 					<li>
@@ -171,7 +179,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Indigenous languages – Glossaries, dictionaries and writing
+							Indigenous languages — Glossaries, dictionaries and writing
 							resources
 						</a>
 					</li>
@@ -181,7 +189,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Indigenous languages – Learning and teaching resources
+							Indigenous languages — Learning and teaching resources
 						</a>
 					</li>
 					<li>
@@ -190,7 +198,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Indigenous languages – Organizations and events
+							Indigenous languages — Organizations and events
 						</a>
 					</li>
 					<li>
@@ -216,23 +224,14 @@ const Resources = ({ onNavigate }) => {
 							Indigenous languages | CBC News
 						</a>
 					</li>
+
 					<li>
 						<a
-							href="https://www.sshrc-crsh.gc.ca/funding-financement/nfrf-fnfr/stories-histoires/2023/inclusive_artificial_intelligence-intelligence_artificielle_inclusive-eng.aspx"
+							href="https://mila.quebec/en/ai4humanity/applied-projects/flair-initiative"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Indigenous-Led AI: How Indigenous Knowledge Systems Could Push AI
-							to be More Inclusive
-						</a>
-					</li>
-					<li>
-						<a
-							href="https://mila.quebec/en/ai4humanity/applied-projects/first-languages-ai-reality"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							First Languages AI Reality | Mila
+							FLAIR Initiative | Mila
 						</a>
 					</li>
 				</ul>

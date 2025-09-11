@@ -1,3 +1,4 @@
+// src/pages/KnowledgeCheck.jsx
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import "./KnowledgeCheck.css";
 import BackToTop from "../components/BackToTop";
@@ -60,23 +61,15 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 				"You’ve passed and completed this section. You can proceed to the next section.",
 			viewResults: "View past results",
 			hideResults: "Hide results",
-		},
-		fr: {
-			title: "Questionnaire Verrouillé",
-			message:
-				"Veuillez consulter tout le matériel des cinq premières sections avant de répondre au questionnaire.",
-			button: "Retour au Contenu",
-			remaining: (n) =>
-				n === 1 ? "1 question restante." : `${n} questions restantes.`,
-			allAnswered:
-				"Toutes les questions sont répondues. Vous pouvez soumettre.",
-			correct: "Correct",
-			calculating: "Calcul du score…",
-			completedTitle: "Section terminée",
-			completedMsg:
-				"Vous avez réussi et terminé cette section. Vous pouvez passer à la section suivante.",
-			viewResults: "Afficher les résultats",
-			hideResults: "Masquer les résultats",
+			resubmit: "Resubmit",
+			finalScoreLabel: "Your Final Score",
+			continueMsg:
+				"You may proceed to the next section. Optionally, you can retry the quiz if you’d like to aim for a perfect score.",
+			mustReach80:
+				"Please review your answers and resubmit until you reach at least 80% to proceed.",
+			incorrectShort: "Incorrect. Try again.",
+			retryHelper: "",
+			retryClearedNote: "Incorrect answers were cleared. Please try again.",
 		},
 	};
 	const t = lockedText[lang] || lockedText.en;
@@ -222,7 +215,9 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 	const [remainingCount, setRemainingCount] = useState(questions.length);
 	const [isGrading, setIsGrading] = useState(false);
 	const [viewResults, setViewResults] = useState(false); // used when 100%
-	const [hydrated, setHydrated] = useState(false); // <— gate initial render
+	const [hydrated, setHydrated] = useState(false); // initial render gate
+	const [attempts, setAttempts] = useState(0);
+	const [retryToast, setRetryToast] = useState("");
 
 	const containerRef = useRef(null);
 	const questionRefs = useRef({});
@@ -239,6 +234,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 					setShowFeedback(!!parsed.showFeedback);
 					setScore(Number(parsed.score || 0));
 					setViewResults(!!parsed.viewResults);
+					setAttempts(Number(parsed.attempts || 0));
 				}
 			}
 		} catch {}
@@ -262,12 +258,22 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 			showFeedback,
 			score,
 			viewResults,
+			attempts,
 			savedAt: Date.now(),
 		};
 		try {
 			localStorage.setItem(STORAGE_KEY(lang), JSON.stringify(state));
 		} catch {}
-	}, [answers, feedback, showFeedback, score, viewResults, lang, hydrated]);
+	}, [
+		answers,
+		feedback,
+		showFeedback,
+		score,
+		viewResults,
+		attempts,
+		lang,
+		hydrated,
+	]);
 
 	/* ---- Derived ---- */
 	useEffect(() => {
@@ -278,7 +284,9 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 	const allAnswered = remainingCount === 0;
 	const canSubmitInitially = allAnswered && !showFeedback && !isGrading;
 
+	/* ---- Handlers ---- */
 	const handleAnswerChange = (questionId, value) => {
+		// Prevent changing correct answers once feedback is shown
 		if (showFeedback && feedback[questionId] === "correct") return;
 		setAnswers((prev) => ({ ...prev, [questionId]: value }));
 	};
@@ -299,6 +307,13 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 		setScore(finalScore);
 		setFeedback(newFeedback);
 		setShowFeedback(true);
+		setAttempts((n) => n + 1);
+
+		/* NEW: lightweight flags for non-SCORM contexts (Resources page) */
+		try {
+			localStorage.setItem("ilc:quizAttempted", "1");
+			if (finalScore >= 80) localStorage.setItem("ilc:quizPassed", "1");
+		} catch {}
 
 		if (finalScore === 100) setViewResults(false);
 
@@ -313,6 +328,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 			scorm.save();
 		}
 
+		// focus first incorrect after grading
 		const firstIncorrect = questions.find(
 			(q) => newFeedback[q.id] === "incorrect"
 		);
@@ -323,6 +339,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 		}
 	};
 
+	// Animate the quiz container height to a specific value
 	const animateContainerHeight = (toPx) => {
 		const el = containerRef.current;
 		if (!el) return;
@@ -343,6 +360,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 		el.addEventListener("transitionend", onEnd);
 	};
 
+	// After grading, expand back to auto height matching new content
 	const expandToContent = () => {
 		const el = containerRef.current;
 		if (!el) return;
@@ -370,11 +388,13 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 			return;
 		}
 
+		// ensure spinner is visible without scrolling by the user
 		containerRef.current?.scrollIntoView({
 			behavior: "smooth",
 			block: "start",
 		});
 
+		// fade content + animate height down to spinner height
 		setIsGrading(true);
 		animateContainerHeight(SPINNER_H);
 
@@ -386,13 +406,30 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 		}, delay);
 	};
 
+	// Optional helper mirroring FR (clear only incorrect)
+	const resetIncorrect = () => {
+		setAnswers((prev) => {
+			const next = { ...prev };
+			questions.forEach((q) => {
+				if (feedback[q.id] === "incorrect") {
+					delete next[q.id];
+				}
+			});
+			return next;
+		});
+		setRetryToast(t.retryClearedNote);
+		setTimeout(() => setRetryToast(""), 2200);
+	};
+
+	// show only incorrect questions once feedback is visible (unless viewing results at 100%)
 	const visibleQuestions = useMemo(() => {
 		if (!showFeedback) return questions;
-		if (score === 100 && viewResults) return questions;
-		if (score === 100 && !viewResults) return [];
+		if (score === 100 && viewResults) return questions; // show all after 100% when user asks
+		if (score === 100 && !viewResults) return []; // hide all when completed and not viewing
 		return questions.filter((q) => feedback[q.id] !== "correct");
 	}, [questions, showFeedback, feedback, score, viewResults]);
 
+	// helper to know if a given question is locked (correct+feedback shown)
 	const isLockedCorrect = (qid) => showFeedback && feedback[qid] === "correct";
 
 	if (!hydrated) {
@@ -540,13 +577,10 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 													/>
 												</p>
 											) : (
+												// 🔒 Do not reveal the correct answer
 												<p>
-													<strong>Incorrect.</strong> The correct answer is:{" "}
-													<span
-														dangerouslySetInnerHTML={{
-															__html: q.options.find((o) => o.correct).text,
-														}}
-													/>
+													<strong>{t.incorrectShort}</strong>{" "}
+													<span className="retry-hint">{t.retryHelper}</span>
 												</p>
 											)}
 										</div>
@@ -586,15 +620,18 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 								) : (
 									<>
 										{score < 100 && (
-											<button
-												type="button"
-												className="submit-button"
-												onClick={handleSubmit}
-												disabled={isGrading}
-												title="Re-grade your updated answers"
-											>
-												{isGrading ? t.calculating : "Resubmit"}
-											</button>
+											<div className="retry-row">
+												<button
+													type="button"
+													className="submit-button"
+													onClick={handleSubmit}
+													disabled={isGrading}
+													title="Re-grade your updated answers"
+													style={{ marginLeft: "0.5rem" }}
+												>
+													{isGrading ? t.calculating : t.resubmit}
+												</button>
+											</div>
 										)}
 										{score === 100 && viewResults && (
 											<button
@@ -604,6 +641,11 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 											>
 												{t.hideResults}
 											</button>
+										)}
+										{retryToast && (
+											<div className="toast" role="status" aria-live="polite">
+												{retryToast}
+											</div>
 										)}
 									</>
 								)}
@@ -617,21 +659,17 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 							id="quiz-results"
 							className={score >= 80 ? "passed" : "failed"}
 						>
-							<h2>Your Final Score: {score.toFixed(0)}%</h2>
+							<h2>
+								{t.finalScoreLabel}: {score.toFixed(0)}%
+							</h2>
 							{score >= 80 ? (
 								score === 100 ? (
 									<p>You may proceed to the next section.</p>
 								) : (
-									<p>
-										You may proceed to the next section. Optionally, you can
-										retry the quiz if you’d like to aim for a perfect score.
-									</p>
+									<p>{t.continueMsg}</p>
 								)
 							) : (
-								<p>
-									Please review the incorrect answers and resubmit until you
-									reach at least 80% to proceed.
-								</p>
+								<p>{t.mustReach80}</p>
 							)}
 						</div>
 					)}
@@ -648,10 +686,20 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 
 			<BackToTop />
 			<nav className="breadcrumb" aria-label="Page navigation">
-				<button onClick={() => onNavigate?.("public-service")}>
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("results-en");
+					}}
+				>
 					&laquo;&nbsp;Back
 				</button>
-				<button onClick={() => onNavigate?.("resources")}>
+				<button
+					onClick={() => {
+						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+						onNavigate?.("resources");
+					}}
+				>
 					Next&nbsp;&raquo;
 				</button>
 			</nav>

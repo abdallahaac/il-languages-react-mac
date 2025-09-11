@@ -54,13 +54,13 @@ const IntroductionPage = ({ onNavigate }) => {
 					par les politiques de la <em>Loi sur les Indiens</em>.
 				</p>
 				<p>
-					Alors que plusieurs communautés font un retour à l’autodétermination,
-					la perte de ces lois et systèmes de gouvernance signifie que certaines
-					communautés n’ont pas les connaissances nécessaires pour rebâtir leurs
-					lois passées. Quand une langue meurt, les liens au passé culturel et
-					historique meurent aussi. Sans ce lien crucial à leur histoire
-					linguistique et culturelle, les gens perdent leur identité et leur
-					sentiment d’appartenance.” [Traduction]
+					« Alors que plusieurs communautés font un retour à
+					l’autodétermination, la perte de ces lois et systèmes de gouvernance
+					signifie que certaines communautés n’ont pas les connaissances
+					nécessaires pour rebâtir leurs lois passées. Quand une langue meurt,
+					les liens au passé culturel et historique meurent aussi. Sans ce lien
+					crucial à leur histoire linguistique et culturelle, les gens perdent
+					leur identité et leur sentiment d’appartenance.» [Traduction]
 				</p>
 				<footer className="source">
 					Source: Why Is It Important to Protect and Revitalize Indigenous
