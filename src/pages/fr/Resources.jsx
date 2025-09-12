@@ -1,13 +1,12 @@
 // src/pages/fr/Resources.jsx
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../resources.css";
 import BackToTop from "../../components/BackToTop";
 import { getHeroURL } from "../../prefetchHeroes";
 import { useHeroSrc } from "../../utils/useHeroSrc";
 import { useScorm } from "../../App";
 
-// Keep this key consistent with App.jsx
-const VISITED_KEY_LOCAL = "ilc:visited";
+const VISITED_KEY_LOCAL = "ilc:visitedPages";
 const clearVisitedLocal = () => {
 	try {
 		localStorage.removeItem(VISITED_KEY_LOCAL);
@@ -22,18 +21,56 @@ const Resources = ({ onNavigate }) => {
 	const t = {
 		pageTitle: "Ressources",
 		back: "Retour",
-		home: "Page d’accueil",
+		home: "Accueil",
 		modalTitle: "Cours terminé",
 		modalMsg:
-			"Vous avez terminé le cours. Vous pouvez maintenant fermer cette fenêtre ou retourner à la page d’accueil.",
+			"Vous avez terminé le cours. Vous pouvez maintenant fermer cette fenêtre ou retourner à l’accueil.",
 		exit: "Fermer la fenêtre",
-		goHome: "Aller à l’accueil",
+		goHome: "Retour à l’accueil",
 		cancel: "Annuler",
+		exitHelp:
+			"Si cet onglet ne s’est pas fermé automatiquement, veuillez fermer cette fenêtre manuellement.",
 	};
 
 	const [showExitModal, setShowExitModal] = useState(false);
+	const [exitFailed, setExitFailed] = useState(false);
+	const [quizPassed, setQuizPassed] = useState(false);
 
-	// Effacer uniquement les clés liées au cours
+	// Vérifie l’état de réussite du quiz (suspend_data / SCORM)
+	useEffect(() => {
+		try {
+			const data = readSuspend?.();
+			const q = data?.quiz || {};
+
+			const passedByFlag =
+				q.passed === true || q.status === "passed" || q.result === "pass";
+			const passedByScore =
+				typeof q.score === "number" &&
+				typeof q.passScore === "number" &&
+				q.score >= q.passScore;
+
+			let passed = passedByFlag || passedByScore;
+
+			if (!passed && scorm?.API?.isFound?.()) {
+				let s = "";
+				if (scorm.version === "1.2") {
+					s = (scorm.get("cmi.core.lesson_status") || "").toLowerCase();
+				} else {
+					const success = (scorm.get("cmi.success_status") || "").toLowerCase();
+					const completion = (
+						scorm.get("cmi.completion_status") || ""
+					).toLowerCase();
+					s = `${success} ${completion}`.trim();
+				}
+				if (s.includes("passed")) passed = true;
+			}
+
+			setQuizPassed(!!passed);
+		} catch {
+			setQuizPassed(false);
+		}
+	}, [readSuspend, scorm]);
+
 	const clearCourseStorage = () => {
 		try {
 			const prefixes = ["knowledge-check-v1:", "ilc:"];
@@ -46,7 +83,7 @@ const Resources = ({ onNavigate }) => {
 		} catch {}
 	};
 
-	// Empêcher le défilement en arrière-plan + Échap pour fermer lorsque le modal est ouvert
+	// Bloque le scroll d’arrière-plan + Esc pour fermer quand la modale est ouverte
 	useEffect(() => {
 		if (!showExitModal) return;
 		const prevOverflow = document.body.style.overflow;
@@ -62,56 +99,58 @@ const Resources = ({ onNavigate }) => {
 		};
 	}, [showExitModal]);
 
-	const handleHomeClick = () => setShowExitModal(true);
+	// Accueil : montre la modale seulement si le quiz est réussi; sinon, retourne à l’accueil
+	const handleHomeClick = () => {
+		setExitFailed(false);
+		if (quizPassed) {
+			setShowExitModal(true);
+		} else {
+			onNavigate?.("home");
+		}
+	};
 
-	const handleExitWindow = () => {
-		try {
-			if (scorm && scorm.API?.isFound?.()) {
-				scorm.save(); // commit final
-				scorm.quit?.(); // terminer la tentative SCORM uniquement sur « Fermer »
-			}
-		} catch {}
-
-		// Nettoyage local
-		clearCourseStorage();
-		clearVisitedLocal();
-
-		// Nettoyer également visited (et quiz) dans le JSON suspend_data
-		try {
-			const data = readSuspend?.();
-			writeSuspend?.({ ...(data || {}), visited: [], quiz: {} });
-		} catch {}
-
-		// Tentatives « best-effort » pour fermer la fenêtre (selon navigateur / politique)
+	// Tentatives de vraie fermeture; si bloqué, message d’aide
+	const tryCloseWindow = () => {
 		try {
 			window.top?.close?.();
+		} catch {}
+		try {
+			window.close();
 		} catch {}
 		try {
 			window.open("", "_self")?.close?.();
 		} catch {}
 		try {
-			window.close();
+			window.parent?.postMessage?.({ type: "ILC_EXIT_REQUEST" }, "*");
 		} catch {}
 
-		// Fallback supplémentaire : se rediriger vers about:blank puis fermer
+		setTimeout(() => setExitFailed(true), 200);
+	};
+
+	const handleExitWindow = () => {
 		try {
-			window.location.replace("about:blank");
-			setTimeout(() => {
-				try {
-					window.close();
-				} catch {}
-			}, 0);
+			if (scorm && scorm.API?.isFound?.()) {
+				scorm.save(); // commit final
+				scorm.quit?.(); // fin de la tentative
+			}
 		} catch {}
 
-		// Dernier recours : revenir à l’accueil dans l’app
-		onNavigate?.("home");
+		clearCourseStorage();
+		clearVisitedLocal();
+
+		try {
+			const data = readSuspend?.();
+			writeSuspend?.({ ...data, visited: [], quiz: {} });
+		} catch {}
+
+		tryCloseWindow();
 	};
 
 	const handleGoHome = () => {
 		setShowExitModal(false);
-		// Commit SCORM (sans quitter ni effacer)
+		setExitFailed(false);
 		try {
-			scorm?.save?.();
+			scorm?.save?.(); // commit, sans quitter
 		} catch {}
 		onNavigate?.("home");
 	};
@@ -139,7 +178,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Décennie des langues autochtones (2022-2032) | UNESCO
+							Décennie des langues autochtones (2022–2032) | UNESCO
 						</a>
 					</li>
 					<li>
@@ -148,7 +187,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Décennie internationale des langues autochtones
+							Décennie internationale des langues autochtones — Canada.ca
 						</a>
 					</li>
 					<li>
@@ -157,7 +196,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Les langues autochtones au Canada
+							Les langues autochtones au Canada — Statistique Canada
 						</a>
 					</li>
 					<li>
@@ -166,7 +205,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Noms de lieux en langues autochtones
+							Noms de lieux en langues autochtones — Parcs Canada
 						</a>
 					</li>
 					<li>
@@ -175,7 +214,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Histoires du territoire : Les noms de lieux autochtones au Canada
+							Histoires du territoire : Noms de lieux autochtones au Canada
 						</a>
 					</li>
 					<li>
@@ -194,7 +233,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Langues autochtones – Aperçu canadien
+							Langues autochtones — Aperçu canadien
 						</a>
 					</li>
 					<li>
@@ -203,7 +242,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Langues autochtones – Glossaires, dictionnaires et ressources
+							Langues autochtones — Glossaires, dictionnaires et ressources
 							rédactionnelles
 						</a>
 					</li>
@@ -213,7 +252,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Langues autochtones – Ressources d’apprentissage et d’enseignement
+							Langues autochtones — Ressources d’apprentissage et d’enseignement
 						</a>
 					</li>
 					<li>
@@ -222,7 +261,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Langues autochtones – Organismes et événements
+							Langues autochtones — Organismes et événements
 						</a>
 					</li>
 					<li>
@@ -244,18 +283,7 @@ const Resources = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							L’intelligence artificielle pilotée par les Autochtones : comment
-							les systèmes de connaissance…
-						</a>
-					</li>
-					<li>
-						<a
-							href="https://www.sshrc-crsh.gc.ca/funding-financement/nfrf-fnfr/stories-histoires/2023/inclusive_artificial_intelligence-intelligence_artificielle_inclusive-fra.aspx"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							Les savoirs autochtones au service de l’IA | La Décennie
-							internationale des langues autochtones
+							IA et technologies immersives au service des langues autochtones
 						</a>
 					</li>
 					<li>
@@ -293,7 +321,7 @@ const Resources = ({ onNavigate }) => {
 				</button>
 			</nav>
 
-			{/* Modal de fin de cours */}
+			{/* Modale de fin (s’affiche seulement si quizPassed === true) */}
 			{showExitModal && (
 				<div className="modal-overlay" role="presentation">
 					<div
@@ -323,12 +351,25 @@ const Resources = ({ onNavigate }) => {
 							</button>
 							<button
 								className="btn-small"
-								onClick={() => setShowExitModal(false)}
+								onClick={() => {
+									setExitFailed(false);
+									setShowExitModal(false);
+								}}
 								aria-label={t.cancel}
 							>
 								{t.cancel}
 							</button>
 						</div>
+
+						{exitFailed && (
+							<div
+								className="exit-fallback"
+								role="status"
+								style={{ marginTop: "0.75rem" }}
+							>
+								<p style={{ margin: 0 }}>{t.exitHelp}</p>
+							</div>
+						)}
 					</div>
 				</div>
 			)}
