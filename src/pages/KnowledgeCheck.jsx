@@ -173,7 +173,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 						text: "c) Facilitate the resolution of disputes and review complaints to the extent provided by the <em>Indigenous Languages Act</em>",
 						value: "c",
 					},
-					{ text: "d) All the above", value: "d", correct: true },
+					{ text: "d) All of the above", value: "d", correct: true },
 				],
 				feedback:
 					"All the options listed are part of the mandate of the Office of the Commissioner of Indigenous Languages.",
