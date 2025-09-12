@@ -1,48 +1,72 @@
+// zip.js
 import fs from "fs";
+import path from "path";
 import archiver from "archiver";
+import { fileURLToPath } from "url";
 
-/**
- * Generates a timestamp string in the format YYYY-MM-DD-HH-MM-SS.
- * @returns {string} The formatted timestamp.
- */
-const getTimestamp = () => {
-	const now = new Date();
-	const year = now.getFullYear();
-	// Pad month, day, hours, minutes, and seconds with a leading zero if they are single-digit.
-	const month = String(now.getMonth() + 1).padStart(2, "0");
-	const day = String(now.getDate()).padStart(2, "0");
-	const hours = String(now.getHours()).padStart(2, "0");
-	const minutes = String(now.getMinutes()).padStart(2, "0");
-	const seconds = String(now.getSeconds()).padStart(2, "0");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-	// Updated to include dashes between all date and time components
-	return `${year}-${month}-${day}-${hours}-${minutes}-${seconds}`;
-};
+// Read lang (default en)
+const BUILD_LANG = (process.env.BUILD_LANG || "en").toLowerCase();
+const isFR = BUILD_LANG === "fr";
 
-// Construct the dynamic filename using the timestamp.
-const timestamp = getTimestamp();
-const fileName = `en-indigenous-languages-act-${timestamp}.zip`;
+// Date -> MM-DD-YY
+const now = new Date();
+const pad = (n) => String(n).padStart(2, "0");
+const mm = pad(now.getMonth() + 1);
+const dd = pad(now.getDate());
+const yy = String(now.getFullYear()).slice(-2);
+const datePart = `${mm}-${dd}-${yy}`;
 
-// Create a write stream with the new dynamic filename.
-const output = fs.createWriteStream(`./${fileName}`);
+// File names requested
+const fileBase = isFR ? "FR-IRA1-110" : "EN-IRA1-110";
+const fileName = `${fileBase}-${datePart}.zip`;
+const outPath = path.join(__dirname, fileName);
+
+// Ensure dist exists
+const distDir = path.join(__dirname, "dist");
+if (!fs.existsSync(distDir)) {
+	console.error("❌ dist/ not found. Did you run the build first?");
+	process.exit(1);
+}
+
+// Clean up old zips (from past days), but keep today's EN + FR
+try {
+	const files = fs.readdirSync(__dirname);
+	files.forEach((f) => {
+		// Match both EN and FR formats, plus legacy names
+		const match =
+			/^EN-IRA1-110-(\d{2}-\d{2}-\d{2})\.zip$/i.exec(f) ||
+			/^FR-IRA1-110-(\d{2}-\d{2}-\d{2})\.zip$/i.exec(f) ||
+			/^en-indigenous-languages-act-.*\.zip$/i.exec(f) ||
+			/^fr-indigenous-languages-act-.*\.zip$/i.exec(f);
+
+		if (match) {
+			const fileDate = match[1]; // capture date if available
+			// If file date is not today, delete it
+			if (fileDate && fileDate !== datePart) {
+				try {
+					fs.unlinkSync(path.join(__dirname, f));
+				} catch {}
+			}
+		}
+	});
+} catch {}
+
+// Create (overwrite) the new zip
+const output = fs.createWriteStream(outPath, { flags: "w" });
 const archive = archiver("zip", { zlib: { level: 9 } });
 
-// Event listener for when the zip file has been created.
 output.on("close", () => {
-	console.log(`Zip file created: ${fileName}`);
+	console.log(`✅ Zip file created: ${fileName}`);
 	console.log(`${archive.pointer()} total bytes`);
 });
-
-// Event listener for any errors during archiving.
 archive.on("error", (err) => {
 	throw err;
 });
 
-// Pipe the archive data to the output file.
 archive.pipe(output);
-
-// Add the contents of the './dist/' directory to the root of the zip file.
-archive.directory("./dist/", false);
-
-// Finalize the archive (this writes the central directory and closes the stream).
+// Put dist/ contents at zip root
+archive.directory(distDir + "/", false);
 archive.finalize();

@@ -6,9 +6,12 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
+		"build:once": "vite build && node set-manifest-default.js && node zip.js",
+		"package:en": "cross-env BUILD_LANG=en npm run build:once",
+		"package:fr": "cross-env BUILD_LANG=fr npm run build:once",
+		"package": "npm run package:en && npm run package:fr",
 		"lint": "eslint .",
-		"preview": "vite preview",
-		"package": "npm run build && node zip.js"
+		"preview": "vite preview"
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-svg-core": "^7.0.0",
@@ -25,6 +28,7 @@
 		"@vitejs/plugin-react": "^4.3.4",
 		"@vitejs/plugin-react-swc": "^3.5.0",
 		"archiver": "^7.0.1",
+		"cross-env": "^10.0.0",
 		"eslint": "^9.15.0",
 		"eslint-plugin-react": "^7.37.2",
 		"eslint-plugin-react-hooks": "^5.0.0",

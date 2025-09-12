@@ -6,19 +6,29 @@
   xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
                       http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd
                       http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd">
-  <organizations default="ORGC256PESLE">
-    <organization identifier="ORGC256PESLE">
-      <title>Revitalizing Voices: Navigating the Indigenous Languages Ac</title>
-      <item identifier="C256PESLE_I01" identifierref="C256PESLE_S01" isvisible="true">
-        <title>	Revitalizing Voices: Navigating the Indigenous Languages Act</title>
 
-      <!-- <title>	Revitalisation des voix autochtones : comprendre la Loi sur les langues
-			autochtones</title>
-      <item identifier="C256PESLE_I01" identifierref="C256PESLE_S01" isvisible="true">
-        <title>	Revitalisation des voix autochtones : comprendre la Loi sur les langues
-			autochtones</title> -->
+  <!-- Change default="ORG_EN" to default="ORG_FR" for the French build -->
+  <organizations default="ORG_EN">
+    <organization identifier="ORG_EN">
+      <title>Revitalizing Voices: Navigating the Indigenous Languages Act</title>
+      <item identifier="C256PESLE_I01_EN" identifierref="C256PESLE_S01" isvisible="true">
+        <title>Revitalizing Voices: Navigating the Indigenous Languages Act</title>
+        <metadata>
+          <schema>ADL SCORM</schema>
+          <schemaversion>1.2</schemaversion>
+        </metadata>
+      </item>
+      <metadata>
+        <schema>ADL SCORM</schema>
+        <schemaversion>1.2</schemaversion>
+      </metadata>
+    </organization>
 
-
+    <!-- French organization (uncommented so you can use it as-is) -->
+    <organization identifier="ORG_FR">
+      <title>Revitalisation des voix autochtones : comprendre la Loi sur les langues autochtones</title>
+      <item identifier="C256PESLE_I01_FR" identifierref="C256PESLE_S01" isvisible="true">
+        <title>Revitalisation des voix autochtones : comprendre la Loi sur les langues autochtones</title>
         <metadata>
           <schema>ADL SCORM</schema>
           <schemaversion>1.2</schemaversion>
@@ -30,16 +40,27 @@
       </metadata>
     </organization>
   </organizations>
+
   <resources>
-    <!-- <resource identifier="C256PESLE_S01" type="webcontent" adlcp:scormtype="sco" href="index.html"> -->
+    <!-- Single SCO used by both orgs -->
     <resource identifier="C256PESLE_S01" type="webcontent" adlcp:scormtype="sco" href="index.html">
-    <!-- <resource identifier="C256PESLE_S01" type="webcontent" adlcp:scormtype="sco" href="index.html"> -->
       <metadata>
         <schema>ADL SCORM</schema>
         <schemaversion>1.2</schemaversion>
       </metadata>
+
+      <!-- Entry page -->
       <file href="index.html"/>
-      <!-- <file href="index.html"/> -->
+
+      <!-- SCORM adapter -->
+      <file href="scorm-wrapper.js"/>
+
+      <!-- Favicons (list the ones you actually ship) -->
+      <file href="favicon/favicon.ico"/>
+      <file href="favicon/favicon-96x96.png"/>
+      <file href="favicon/apple-touch-icon.png"/>
+      <file href="favicon/favicon.svg"/>
+      <file href="favicon/site.webmanifest"/>
     </resource>
   </resources>
 </manifest>
