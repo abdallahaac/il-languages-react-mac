@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, {
 	useState,
 	useEffect,
@@ -43,13 +44,15 @@ import Results_FR from "./pages/fr/Results.jsx";
 import { preloadAll } from "./utils/imagePreloader";
 
 import KnowledgeActions from "./components/KnowledgeActions";
-import TourModal from "./components/TourModal"; // <- guided tour
+// import TourModal from "./components/TourModal"; // <- guided tour (optional)
 
 // 🔥 Preloader helpers
 import { preloadImagesInBatches, preloadImage } from "./utils/imagePreloader";
 import { HERO_IMAGES } from "./heroManifest";
 
-// --- useLanguage Hook ---
+/* ──────────────────────────────────────────────────────────────
+   useLanguage Hook
+   ────────────────────────────────────────────────────────────── */
 const useLanguage = () => {
 	const [lang, setLang] = useState("en");
 
@@ -73,7 +76,7 @@ const useLanguage = () => {
 };
 
 /* ──────────────────────────────────────────────────────────────
-   1.  SCORM context & provider
+   SCORM context & provider (+ suspend_data helpers)
    ────────────────────────────────────────────────────────────── */
 const ScormContext = createContext(null);
 export const useScorm = () => useContext(ScormContext);
@@ -82,18 +85,30 @@ export const useScorm = () => useContext(ScormContext);
 function parseScormName(raw = "") {
 	const s = String(raw).trim();
 	if (!s) return { firstName: "", lastName: "" };
-
-	// Common SCORM 1.2 format "Last, First Middle"
 	if (s.includes(",")) {
 		const [last, rest = ""] = s.split(",");
 		const [first = ""] = rest.trim().split(/\s+/);
 		return { firstName: first, lastName: last.trim() };
 	}
-
-	// Fallback "First [Middle] Last"
 	const parts = s.split(/\s+/).filter(Boolean);
 	if (parts.length === 1) return { firstName: parts[0], lastName: "" };
 	return { firstName: parts[0], lastName: parts[parts.length - 1] };
+}
+
+// safe JSON
+function safeParseJSON(s) {
+	try {
+		return JSON.parse(String(s || "{}"));
+	} catch {
+		return {};
+	}
+}
+function safeStringifyJSON(obj) {
+	try {
+		return JSON.stringify(obj);
+	} catch {
+		return "{}";
+	}
 }
 
 const ScormProvider = ({ children }) => {
@@ -109,6 +124,35 @@ const ScormProvider = ({ children }) => {
 		[]
 	);
 
+	// ── suspend_data helpers exposed via context ─────────────────
+	const readSuspend = useMemo(() => {
+		return () => {
+			if (!scorm || !scorm.API?.isFound?.()) return null;
+			const raw = scorm.get("cmi.suspend_data") || "";
+			const parsed = safeParseJSON(raw);
+			return {
+				visited: Array.isArray(parsed.visited) ? parsed.visited : [],
+				quiz: typeof parsed.quiz === "object" && parsed.quiz ? parsed.quiz : {},
+			};
+		};
+	}, [scorm]);
+
+	const writeSuspend = useMemo(() => {
+		return (patch) => {
+			if (!scorm || !scorm.API?.isFound?.()) return false;
+			const current = readSuspend?.() || { visited: [], quiz: {} };
+			const next = {
+				visited: Array.isArray(patch?.visited)
+					? patch.visited
+					: current.visited,
+				quiz: { ...(current.quiz || {}), ...(patch?.quiz || {}) },
+			};
+			scorm.set("cmi.suspend_data", safeStringifyJSON(next));
+			scorm.save?.();
+			return true;
+		};
+	}, [scorm, readSuspend]);
+
 	useEffect(() => {
 		if (scormInitialized.current || !scorm) return;
 		scormInitialized.current = true;
@@ -122,7 +166,6 @@ const ScormProvider = ({ children }) => {
 		setLmsConnected(connected);
 
 		if (connected) {
-			// Support 1.2 and 2004
 			const nameKey =
 				scorm.version === "1.2" ? "cmi.core.student_name" : "cmi.learner_name";
 
@@ -136,16 +179,10 @@ const ScormProvider = ({ children }) => {
 				([f, l].filter(Boolean).join(" ") || rawName || "Learner").trim()
 			);
 
-			// 🔎 console logs
-			console.log(`[SCORM] raw learner name: "${rawName}"`);
-			console.log(`first name: ${f} , last name: ${l}`);
-
-			// Set status using appropriate model
+			// set incomplete at launch
 			if (scorm.version === "1.2") {
-				console.log("[SCORM] Setting cmi.core.lesson_status = incomplete");
 				scorm.set("cmi.core.lesson_status", "incomplete");
 			} else {
-				console.log("[SCORM] Setting cmi.completion_status = incomplete");
 				scorm.set("cmi.completion_status", "incomplete");
 			}
 			scorm.save();
@@ -167,8 +204,19 @@ const ScormProvider = ({ children }) => {
 			lastName,
 			displayName, // First Last
 			scorm,
+			readSuspend,
+			writeSuspend,
 		}),
-		[lmsConnected, learnerName, firstName, lastName, displayName, scorm]
+		[
+			lmsConnected,
+			learnerName,
+			firstName,
+			lastName,
+			displayName,
+			scorm,
+			readSuspend,
+			writeSuspend,
+		]
 	);
 
 	return (
@@ -179,14 +227,140 @@ const ScormProvider = ({ children }) => {
 };
 
 /* ──────────────────────────────────────────────────────────────
-   2.  Main application
+   “Not Found / Language Restricted” page
+   ────────────────────────────────────────────────────────────── */
+const NotFound = ({ onNavigate, lang = "en", badId = "" }) => {
+	const msg =
+		lang === "fr"
+			? "Page introuvable ou non disponible dans cette langue."
+			: "Page not found or not available in this language.";
+	const label = lang === "fr" ? "Retour à l’accueil" : "Back to home";
+
+	return (
+		<div className="intro-wrapper">
+			<header className="hero" role="banner">
+				<h1 className="hero-title">404</h1>
+			</header>
+			<main className="quiz-container">
+				<p style={{ marginBottom: "1rem" }}>
+					{msg} {badId ? <em>({badId})</em> : null}
+				</p>
+				<button className="back-button" onClick={() => onNavigate?.("home")}>
+					&laquo;&nbsp;{label}
+				</button>
+			</main>
+		</div>
+	);
+};
+
+/* ──────────────────────────────────────────────────────────────
+   Main application
    ────────────────────────────────────────────────────────────── */
 function App() {
+	// current page (hash-first; fallback to localStorage)
 	const [currentPage, setCurrentPage] = useState("home");
-	const [visitedPages, setVisitedPages] = useState(new Set());
-	const [showTour, setShowTour] = useState(false); // <- tour state
+	const [badHash, setBadHash] = useState(""); // for 404 display
+	const [visitedPages, setVisitedPages] = useState(() => {
+		try {
+			const raw = localStorage.getItem("ilc:visited");
+			if (raw) {
+				const arr = JSON.parse(raw);
+				if (Array.isArray(arr)) return new Set(arr);
+			}
+		} catch {}
+		return new Set();
+	});
+	const [hydrated, setHydrated] = useState(false);
+
 	const lang = useLanguage();
-	const { scorm, lmsConnected } = useScorm();
+	const { scorm, lmsConnected, readSuspend, writeSuspend } = useScorm();
+
+	// 🚫 Prevent browser back navigation from leaving the course (keeps user in the SCO)
+	useEffect(() => {
+		const handlePopState = () => {
+			window.history.pushState(null, document.title, window.location.href);
+		};
+		window.history.pushState(null, document.title, window.location.href);
+		window.addEventListener("popstate", handlePopState);
+		return () => {
+			window.removeEventListener("popstate", handlePopState);
+		};
+	}, []);
+
+	// Helpers: language gating & section lookup
+	const getSection = useCallback((id) => sections.find((s) => s.id === id), []);
+	const isAllowedForLang = useCallback(
+		(sec) => (!sec ? false : sec.lang === "both" || sec.lang === lang),
+		[lang]
+	);
+
+	// Hash router: apply the current hash to state (with language guard)
+	const applyHashRoute = useCallback(() => {
+		const raw = (window.location.hash || "").replace(/^#/, "").trim();
+		const id = raw || "home";
+
+		if (id === "home") {
+			setBadHash("");
+			setCurrentPage("home");
+			try {
+				localStorage.setItem("ilc:lastPage", "home");
+			} catch {}
+			return;
+		}
+
+		const sec = getSection(id);
+		if (sec && isAllowedForLang(sec)) {
+			setBadHash("");
+			setCurrentPage(id);
+			try {
+				localStorage.setItem("ilc:lastPage", id);
+			} catch {}
+		} else {
+			// 404 / language restricted
+			setBadHash(id);
+			setCurrentPage("__404__");
+			try {
+				localStorage.setItem("ilc:lastPage", "home");
+			} catch {}
+		}
+	}, [getSection, isAllowedForLang]);
+
+	// Initial hydration: merge SCORM suspend_data, then route from hash (or lastPage)
+	useEffect(() => {
+		try {
+			const data = readSuspend?.();
+			if (data && Array.isArray(data.visited) && data.visited.length) {
+				setVisitedPages((prev) => {
+					const next = new Set(prev);
+					data.visited.forEach((id) => next.add(id));
+					return next;
+				});
+			}
+		} catch {}
+		// prefer hash if present
+		const hasHash = (window.location.hash || "").length > 1;
+		if (hasHash) {
+			applyHashRoute();
+		} else {
+			// fallback to lastPage
+			try {
+				const last = localStorage.getItem("ilc:lastPage") || "home";
+				window.location.hash = last === "home" ? "" : `#${last}`;
+			} catch {
+				window.location.hash = "";
+			}
+			applyHashRoute();
+		}
+		setHydrated(true);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [lmsConnected]);
+
+	// Listen to hash changes (manual URL edits / back-forward within hash history)
+	useEffect(() => {
+		const onHash = () => applyHashRoute();
+		window.addEventListener("hashchange", onHash);
+		return () => window.removeEventListener("hashchange", onHash);
+	}, [applyHashRoute]);
 
 	// Trackable pages for CURRENT language (plus shared "both")
 	const trackablePages = useMemo(
@@ -205,32 +379,27 @@ function App() {
 		[visitedPages, trackablePages]
 	);
 
-	// Load all visited IDs (keep across languages)
+	// If current page becomes invalid after a language switch, show 404
 	useEffect(() => {
-		if (!lmsConnected || !scorm) return;
-		const suspendData = scorm.get("cmi.suspend_data");
-		if (typeof suspendData === "string" && suspendData.length > 0) {
-			const loaded = suspendData.split(",").filter(Boolean);
-			setVisitedPages(new Set(loaded));
+		if (currentPage === "__404__") return;
+		if (currentPage === "home") return;
+		const sec = getSection(currentPage);
+		if (!sec || !isAllowedForLang(sec)) {
+			setBadHash(currentPage);
+			setCurrentPage("__404__");
 		}
-	}, [lmsConnected, scorm]);
+	}, [lang, currentPage, getSection, isAllowedForLang]);
 
-	// 🔥 Gather hero URLs for the current language
+	// 🔥 Preload heroes for current language
 	const heroUrlsToPreload = useMemo(() => {
-		// Prefer sections' own hero field if present
 		const fromSections = sections
 			.filter((s) => (s.lang === "both" || s.lang === lang) && s.hero)
 			.map((s) => s.hero);
-
 		if (fromSections.length) return Array.from(new Set(fromSections));
-
-		// Fallback to manual manifest if no hero fields on sections
 		const map = HERO_IMAGES[lang] || {};
 		return Array.from(new Set(Object.values(map)));
 	}, [lang]);
-	// top
 
-	// fastest: launch at language change
 	useEffect(() => {
 		if (!heroUrlsToPreload.length) return;
 		preloadAll(heroUrlsToPreload);
@@ -247,18 +416,18 @@ function App() {
 		[lang]
 	);
 
-	// Navigation: always record non-home visits + scroll-to-top
+	// Navigation: update hash (source of truth), record visits (non-home)
 	const handleNavigate = (id) => {
 		const newPageId = !id || id === "home" ? "home" : id;
-		setCurrentPage(newPageId);
 
-		// scroll page to top on navigation
-		const reduce =
-			typeof window !== "undefined" &&
-			window.matchMedia &&
-			window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-		window.scrollTo({ top: 0, left: 0, behavior: reduce ? "auto" : "smooth" });
+		// set hash (this will call applyHashRoute via hashchange handler)
+		if (newPageId === "home") {
+			window.location.hash = "";
+		} else {
+			window.location.hash = `#${newPageId}`;
+		}
 
+		// record visited only for valid pages (applyHashRoute sets currentPage)
 		if (newPageId !== "home") {
 			setVisitedPages((prev) => {
 				if (prev.has(newPageId)) return prev;
@@ -267,17 +436,28 @@ function App() {
 				return next;
 			});
 		}
+
+		// scroll page to top on navigation
+		const reduce =
+			typeof window !== "undefined" &&
+			window.matchMedia &&
+			window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		window.scrollTo({ top: 0, left: 0, behavior: reduce ? "auto" : "smooth" });
 	};
 
-	// Save ALL visited IDs (don’t lose cross-language progress)
+	// Persist visited to localStorage + SCORM suspend_data
+	useEffect(() => {
+		try {
+			localStorage.setItem("ilc:visited", JSON.stringify([...visitedPages]));
+		} catch {}
+		try {
+			writeSuspend?.({ visited: [...visitedPages] });
+		} catch {}
+	}, [visitedPages, writeSuspend]);
+
+	// Save completion to SCORM
 	useEffect(() => {
 		if (!lmsConnected || !scorm || !scorm.isActive) return;
-		if (visitedPages.size === 0 && !scorm.get("cmi.suspend_data")) return;
-
-		const toSave = [...visitedPages].join(",");
-		scorm.set("cmi.suspend_data", toSave);
-
-		// Completion is per-language (based on current filtered total)
 		if (scorm.version === "1.2") {
 			scorm.set(
 				"cmi.core.lesson_status",
@@ -290,19 +470,19 @@ function App() {
 			);
 		}
 		scorm.save();
-	}, [visitedPages, visitedTrackableCount, lmsConnected, scorm, totalPages]);
+	}, [visitedTrackableCount, lmsConnected, scorm, totalPages]);
 
-	// Show the tour once (on first visit to home)
-	useEffect(() => {
-		if (currentPage !== "home") return;
-		const seen = localStorage.getItem("tourSeen");
-		if (!seen) setShowTour(true);
-	}, [currentPage]);
-
-	const closeTour = () => {
-		localStorage.setItem("tourSeen", "1");
-		setShowTour(false);
-	};
+	// (Optional) Guided tour
+	// const [showTour, setShowTour] = useState(false);
+	// useEffect(() => {
+	//   if (currentPage !== "home") return;
+	//   const seen = localStorage.getItem("tourSeen");
+	//   if (!seen) setShowTour(true);
+	// }, [currentPage]);
+	// const closeTour = () => {
+	//   localStorage.setItem("tourSeen", "1");
+	//   setShowTour(false);
+	// };
 
 	const currentSection = sections.find((s) => s.id === currentPage);
 
@@ -335,99 +515,20 @@ function App() {
 	};
 
 	const Pages = lang === "fr" ? Pages_FR : Pages_EN;
-	const StaticPage = Pages[currentPage];
-
-	// Guided tour steps (EN/FR). Requires:
-	//  - .burger-button  on the header menu button
-	//  - .fullscreen-nav-links inside the open menu
-	//  - .close-menu     on the “X” button
-	//  - .content-navigation-container for the sections grid
-	const steps =
-		lang === "fr"
-			? [
-					{
-						target: null,
-						title: "Bienvenue",
-						body: "Cette courte visite vous montre comment naviguer: utilisez le menu burger et les contrôles intégrés (pas les boutons du navigateur).",
-						scrollToTarget: false,
-					},
-					{
-						target: ".burger-button",
-						title: "Menu principal",
-						body: "Voici le menu burger. Cliquez pour ouvrir les pages. Nous allons l’ouvrir pour vous à l’étape suivante.",
-					},
-					{
-						target: ".fullscreen-nav-links",
-						title: "Toutes les pages",
-						body: "Voici la liste des pages accessibles via le menu. Vous pouvez tout parcourir depuis l’interface.",
-						onEnter: () => {
-							document.querySelector(".burger-button")?.click();
-						},
-						recalcDelay: 300, // wait for menu animation
-					},
-					{
-						target: null,
-						title: "Fermer le menu",
-						body: "Le menu se ferme simplement avec le bouton de fermeture (X). Nous allons le fermer maintenant.",
-						onEnter: () => {
-							const btn = document.querySelector(".close-menu");
-							if (btn) btn.click();
-						},
-						recalcDelay: 250,
-					},
-					{
-						target: ".content-navigation-container",
-						title: "Sections du cours",
-						body: "Vous pouvez aussi naviguer par ces cartes de sections. Cliquez pour ouvrir une section.",
-					},
-			  ]
-			: [
-					{
-						target: null,
-						title: "Welcome",
-						body: "A quick tour: use the burger menu and in-app controls to navigate (no browser back/forward needed).",
-						scrollToTarget: false,
-					},
-					{
-						target: ".burger-button",
-						title: "Main menu",
-						body: "This is the burger menu. Click it to open navigation. We’ll open it for you next.",
-					},
-					{
-						target: ".fullscreen-nav-links",
-						title: "All pages",
-						body: "These are the pages you can jump to from the menu.",
-						onEnter: () => {
-							document.querySelector(".burger-button")?.click();
-						},
-						recalcDelay: 300,
-					},
-					{
-						target: null,
-						title: "Close the menu",
-						body: "The menu closes with the X button. We’ll close it now.",
-						onEnter: () => {
-							document.querySelector(".close-menu")?.click();
-						},
-						recalcDelay: 250,
-					},
-					{
-						target: ".content-navigation-container",
-						title: "Course sections",
-						body: "You can also navigate via these section cards on the page.",
-					},
-			  ];
+	const StaticPage = currentPage !== "__404__" ? Pages[currentPage] : null;
 
 	return (
 		<div className="app-wrapper">
 			<Header
 				onNavigate={handleNavigate}
-				currentPage={currentPage}
+				currentPage={currentPage === "__404__" ? "home" : currentPage}
 				lang={lang}
-				onPrefetch={preloadPageHero} // ⭐ prefetch on menu hover/focus
+				onPrefetch={preloadPageHero}
 			/>
 			<main id="main-content" className="main-content">
-				{currentPage === "home" ? (
+				{currentPage === "__404__" ? (
+					<NotFound onNavigate={handleNavigate} lang={lang} badId={badHash} />
+				) : currentPage === "home" ? (
 					<>
 						<div className="hero-section">
 							<Hero onNavigate={handleNavigate} />
@@ -435,7 +536,7 @@ function App() {
 						<div className="navigation-section">
 							<ContentNavigation
 								onNavigate={handleNavigate}
-								onPrefetch={preloadPageHero} // ⭐ optional: prefetch on grid hover/focus
+								onPrefetch={preloadPageHero}
 							/>
 							<KnowledgeActions onNavigate={handleNavigate} />
 						</div>
@@ -453,18 +554,18 @@ function App() {
 
 			<Footer
 				lang={lang}
-				visitedCount={visitedTrackableCount}
+				visitedCount={hydrated ? visitedTrackableCount : 0}
 				totalCount={totalPages}
 			/>
 
-			{/* Guided Tour */}
+			{/* Guided Tour (optional) */}
 			{/* <TourModal steps={steps} isOpen={showTour} onClose={closeTour} /> */}
 		</div>
 	);
 }
 
 /* ──────────────────────────────────────────────────────────────
-   3.  Export wrapped in the SCORM provider
+   Export wrapped in the SCORM provider
    ────────────────────────────────────────────────────────────── */
 export default function ScormEnabledApp() {
 	return (

@@ -1,19 +1,22 @@
 // src/pages/en/Resources.jsx
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./resources.css";
 import BackToTop from "../components/BackToTop";
 import { getHeroURL } from "../prefetchHeroes";
 import { useHeroSrc } from "../utils/useHeroSrc";
+import { useScorm } from "../App";
+
+const VISITED_KEY_LOCAL = "ilc:visitedPages";
+const clearVisitedLocal = () => {
+	try {
+		localStorage.removeItem(VISITED_KEY_LOCAL);
+	} catch {}
+};
 
 const Resources = ({ onNavigate }) => {
 	const url = getHeroURL("en", "resources");
 	const src = useHeroSrc(url);
-
-	// SCORM handle (safe if not present)
-	const scorm = useMemo(
-		() => (window.pipwerks ? window.pipwerks.SCORM : null),
-		[]
-	);
+	const { scorm, readSuspend, writeSuspend } = useScorm();
 
 	const t = {
 		pageTitle: "Resources",
@@ -28,8 +31,9 @@ const Resources = ({ onNavigate }) => {
 	};
 
 	const [showExitModal, setShowExitModal] = useState(false);
+	const [exitFailed, setExitFailed] = useState(false);
 
-	/* Helper: clear all course-related storage keys (mirrors FR) */
+	// Clear only course-related keys
 	const clearCourseStorage = () => {
 		try {
 			const prefixes = ["knowledge-check-v1:", "ilc:"];
@@ -42,7 +46,7 @@ const Resources = ({ onNavigate }) => {
 		} catch {}
 	};
 
-	/* Prevent background scroll + allow ESC to close when modal is open */
+	// Prevent background scroll + allow ESC to close when modal is open
 	useEffect(() => {
 		if (!showExitModal) return;
 		const prevOverflow = document.body.style.overflow;
@@ -58,38 +62,68 @@ const Resources = ({ onNavigate }) => {
 		};
 	}, [showExitModal]);
 
-	// 👉 Open the modal only when the user clicks the breadcrumb "Home" (Next)
 	const handleHomeClick = () => {
+		setExitFailed(false);
 		setShowExitModal(true);
 	};
 
+	// try to truly close; if blocked, keep page and show instruction
+	const tryCloseWindow = () => {
+		let attempted = false;
+		try {
+			window.top?.close?.();
+			attempted = true;
+		} catch {}
+		try {
+			window.close();
+			attempted = true;
+		} catch {}
+		try {
+			window.open("", "_self")?.close?.();
+			attempted = true;
+		} catch {}
+
+		// notify parent (LMS shell) if embedded
+		try {
+			window.parent?.postMessage?.({ type: "ILC_EXIT_REQUEST" }, "*");
+		} catch {}
+
+		// We DO NOT navigate to about:blank here (to avoid “blank page”).
+		// After a short delay, if we’re still here, show a helper message.
+		setTimeout(() => {
+			// If we're not closed, code keeps running → show fallback message
+			setExitFailed(true);
+		}, 200);
+	};
+
 	const handleExitWindow = () => {
+		// final SCORM commit + explicit quit (end attempt)
 		try {
 			if (scorm && scorm.API?.isFound?.()) {
 				scorm.save();
 				scorm.quit?.();
 			}
 		} catch {}
+
+		// clear storages
 		clearCourseStorage();
+		clearVisitedLocal();
 
-		// Best-effort close attempts (may be blocked by browser)
 		try {
-			window.top?.close?.();
-		} catch {}
-		try {
-			window.open("", "_self")?.close?.();
-		} catch {}
-		try {
-			window.close();
+			const data = readSuspend?.();
+			writeSuspend?.({ ...data, visited: [], quiz: {} });
 		} catch {}
 
-		// Fallback: route home
-		onNavigate?.("home");
+		// attempt true close
+		tryCloseWindow();
 	};
 
 	const handleGoHome = () => {
 		setShowExitModal(false);
-		clearCourseStorage();
+		setExitFailed(false);
+		try {
+			scorm?.save?.(); // commit, do not quit
+		} catch {}
 		onNavigate?.("home");
 	};
 
@@ -224,7 +258,6 @@ const Resources = ({ onNavigate }) => {
 							Indigenous languages | CBC News
 						</a>
 					</li>
-
 					<li>
 						<a
 							href="https://mila.quebec/en/ai4humanity/applied-projects/flair-initiative"
@@ -290,12 +323,28 @@ const Resources = ({ onNavigate }) => {
 							</button>
 							<button
 								className="btn-small"
-								onClick={() => setShowExitModal(false)}
+								onClick={() => {
+									setExitFailed(false);
+									setShowExitModal(false);
+								}}
 								aria-label={t.cancel}
 							>
 								{t.cancel}
 							</button>
 						</div>
+
+						{exitFailed && (
+							<div
+								className="exit-fallback"
+								role="status"
+								style={{ marginTop: "0.75rem" }}
+							>
+								<p style={{ margin: 0 }}>
+									If this tab didn’t close automatically, please close this
+									window manually.
+								</p>
+							</div>
+						)}
 					</div>
 				</div>
 			)}

@@ -355,3 +355,6 @@
 .main-header.scrolled .welcome-message {
 	color: #005a9c; /* force it to stay blue */
 }
+.welcome-message {
+	letter-spacing: 1px !important;
+}
