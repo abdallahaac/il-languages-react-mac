@@ -8,15 +8,15 @@
                       http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd">
   <organizations default="ORGC256PESLE">
     <organization identifier="ORGC256PESLE">
-      <!-- <title>Revitalizing Voices: Navigating the Indigenous Languages Ac</title>
+      <title>Revitalizing Voices: Navigating the Indigenous Languages Ac</title>
       <item identifier="C256PESLE_I01" identifierref="C256PESLE_S01" isvisible="true">
-        <title>	Revitalizing Voices: Navigating the Indigenous Languages Act</title> -->
+        <title>	Revitalizing Voices: Navigating the Indigenous Languages Act</title>
 
-      <title>	Revitalisation des voix autochtones : comprendre la Loi sur les langues
+      <!-- <title>	Revitalisation des voix autochtones : comprendre la Loi sur les langues
 			autochtones</title>
       <item identifier="C256PESLE_I01" identifierref="C256PESLE_S01" isvisible="true">
         <title>	Revitalisation des voix autochtones : comprendre la Loi sur les langues
-			autochtones</title>
+			autochtones</title> -->
 
 
         <metadata>
