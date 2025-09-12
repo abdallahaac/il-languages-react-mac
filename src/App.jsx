@@ -238,8 +238,14 @@ const NotFound = ({ onNavigate, lang = "en", badId = "" }) => {
 
 	return (
 		<div className="intro-wrapper">
-			<header className="hero" role="banner">
-				<h1 className="hero-title">404</h1>
+			<header
+				className="hero"
+				role="banner"
+				style={{ backgroundColor: "#61bdffff" }}
+			>
+				<h1 className="hero-title" style={{ fontSize: "200px" }}>
+					404
+				</h1>
 			</header>
 			<main className="quiz-container">
 				<p style={{ marginBottom: "1rem" }}>
