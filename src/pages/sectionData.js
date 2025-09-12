@@ -53,12 +53,12 @@ const sections = [
 	},
 	{
 		id: "indigenous-languages-act",
-		title: "Indigenous Languages Act",
+		title: "<em>Indigenous Languages Act</em>",
 		heroImage: new URL("../assets/hero-languages-act.png", import.meta.url)
 			.href,
 		lang: "both",
 		content: [
-			"The Indigenous Languages Act acknowledges the crucial role of Indigenous languages in Canada’s heritage.",
+			"The <em>Indigenous Languages Act</em> acknowledges the crucial role of Indigenous languages in Canada’s heritage.",
 			"It provides a framework to protect, preserve and revitalize Indigenous languages.",
 		],
 	},

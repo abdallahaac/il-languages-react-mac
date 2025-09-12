@@ -41,11 +41,11 @@ const useLanguage = () => {
 // --- Content Objects ---
 
 const content_en = {
-	title: "Indigenous Languages Act",
+	title: "<em>Indigenous Languages Act</em>",
 	sections: [
 		{
 			type: "main",
-			content: `On June 21, 2019, the <em>Indigenous Languages Act</em> received Royal Assent, with the overall purpose of supporting the efforts of Indigenous Peoples to reclaim, revitalize, maintain and strengthen Indigenous languages. The Act responds to Calls to Action 13, 14 and 15 of the Truth and Reconciliation Commission of Canada, and was developed with First Nations, Inuit, and Métis following extensive engagement and collaborative development work. The Indigenous Languages Act recognizes and supports all Indigenous languages in Canada and key elements are:`,
+			content: `On June 21, 2019, the <em>Indigenous Languages Act</em> received Royal Assent, with the overall purpose of supporting the efforts of Indigenous Peoples to reclaim, revitalize, maintain and strengthen Indigenous languages. The Act responds to Calls to Action 13, 14 and 15 of the Truth and Reconciliation Commission of Canada, and was developed with First Nations, Inuit, and Métis following extensive engagement and collaborative development work. The <em>Indigenous Languages Act</em> recognizes and supports all Indigenous languages in Canada and key elements are:`,
 			list: [
 				"Support and promote the use of Indigenous languages, including Indigenous sign languages.",
 				"Support the efforts of Indigenous peoples to reclaim, revitalize, maintain, and strengthen Indigenous languages.",
@@ -57,7 +57,7 @@ const content_en = {
 			],
 		},
 		{
-			heading: "Preamble and purpose of the Indigenous Languages Act",
+			heading: "Preamble and purpose of the <em>Indigenous Languages Act</em>",
 			paragraphs: [
 				"Preambles to legislation help explain the general objectives of a law. In the case of the <em>Indigenous Languages Act</em>, the preamble mentions the important objective of reclaiming, revitalizing, maintaining and strengthening Indigenous languages. This objective is linked to reconciliation between the Government of Canada and Indigenous Peoples, which includes consideration of the TRC Calls to Action and the UN Declaration.",
 				"The preamble also acknowledges that the history of discrimination in Canada has contributed to the decline of Indigenous languages and that there is an urgent need to support their revitalization. One key aspect of the preamble mentions that it is Indigenous Peoples who are best positioned to revitalize Indigenous languages, while underscoring the important role played by the Government of Canada in supporting and promoting this and other objectives of the Act.",
@@ -131,7 +131,7 @@ const IndigenousLanguagesAct = ({ onNavigate }) => {
 			<header className="hero" role="banner">
 				<img
 					src={src}
-					alt="Decorative image related to the Indigenous Languages Act"
+					alt="Decorative image related to the <em>Indigenous Languages Act</em>"
 					className="hero-img"
 					aria-hidden="true"
 					loading="eager"

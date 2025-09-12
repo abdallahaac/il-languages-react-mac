@@ -95,7 +95,7 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 					{ text: "b) la <em>Loi sur les Indiens</em>", value: "b" },
 					{ text: "c) la rafle des années 60", value: "c" },
 					{
-						text: "d) Toutes les réponses ci-dessus",
+						text: "d) Toutes ces réponses",
 						value: "d",
 						correct: true,
 					},
@@ -209,7 +209,7 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 						value: "d",
 					},
 					{
-						text: "e) Toutes les réponses ci-dessus",
+						text: "e) Toutes ces réponses",
 						value: "e",
 						correct: true,
 					},

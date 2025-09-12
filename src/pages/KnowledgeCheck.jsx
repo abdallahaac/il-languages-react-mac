@@ -4,6 +4,7 @@ import "./KnowledgeCheck.css";
 import BackToTop from "../components/BackToTop";
 import { getHeroURL } from "../prefetchHeroes";
 import { useHeroSrc } from "../utils/useHeroSrc";
+import { useScorm } from "../App";
 
 /* ===== SINGLE SOURCE OF TRUTH (module-scope) ===== */
 const STORAGE_KEY = (lang) => `knowledge-check-v1:${lang}`;
@@ -23,10 +24,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 	const url = getHeroURL(lang, "knowledge-check");
 	const src = useHeroSrc(url);
 
-	const scorm = useMemo(
-		() => (window.pipwerks ? window.pipwerks.SCORM : null),
-		[]
-	);
+	const { scorm, readSuspend, writeSuspend } = useScorm();
 
 	// Define the pages required to unlock the quiz
 	const requiredPages = useMemo(
@@ -173,7 +171,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 						text: "c) Facilitate the resolution of disputes and review complaints to the extent provided by the <em>Indigenous Languages Act</em>",
 						value: "c",
 					},
-					{ text: "d) All the above", value: "d", correct: true },
+					{ text: "d) All of the above", value: "d", correct: true },
 				],
 				feedback:
 					"All the options listed are part of the mandate of the Office of the Commissioner of Indigenous Languages.",
@@ -222,23 +220,41 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 	const containerRef = useRef(null);
 	const questionRefs = useRef({});
 
-	/* ---- Hydrate from localStorage once ---- */
+	/* ---- Hydrate: prefer suspend_data JSON, fallback to localStorage ---- */
 	useEffect(() => {
+		let loaded = false;
 		try {
-			const raw = localStorage.getItem(STORAGE_KEY(lang));
-			if (raw) {
-				const parsed = JSON.parse(raw);
-				if (parsed && typeof parsed === "object") {
-					setAnswers(parsed.answers || {});
-					setFeedback(parsed.feedback || {});
-					setShowFeedback(!!parsed.showFeedback);
-					setScore(Number(parsed.score || 0));
-					setViewResults(!!parsed.viewResults);
-					setAttempts(Number(parsed.attempts || 0));
-				}
+			const data = readSuspend?.(); // { visited, quiz }
+			const q = data?.quiz?.[lang];
+			if (q && typeof q === "object") {
+				setAnswers(q.answers || {});
+				setFeedback(q.feedback || {});
+				setShowFeedback(!!q.showFeedback);
+				setScore(Number(q.score || 0));
+				setViewResults(!!q.viewResults);
+				setAttempts(Number(q.attempts || 0));
+				loaded = true;
 			}
 		} catch {}
-		// clear any leftover inline height styles from a previous visit
+
+		if (!loaded) {
+			try {
+				const raw = localStorage.getItem(STORAGE_KEY(lang));
+				if (raw) {
+					const parsed = JSON.parse(raw);
+					if (parsed && typeof parsed === "object") {
+						setAnswers(parsed.answers || {});
+						setFeedback(parsed.feedback || {});
+						setShowFeedback(!!parsed.showFeedback);
+						setScore(Number(parsed.score || 0));
+						setViewResults(!!parsed.viewResults);
+						setAttempts(Number(parsed.attempts || 0));
+					}
+				}
+			} catch {}
+		}
+
+		// clear leftover inline height from previous visit
 		requestAnimationFrame(() => {
 			if (containerRef.current) {
 				containerRef.current.style.height = "";
@@ -246,12 +262,11 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 			}
 		});
 		setHydrated(true);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [lang, readSuspend]);
 
-	/* ---- Persist whenever things change ---- */
+	/* ---- Persist: mirror to localStorage and suspend_data JSON ---- */
 	useEffect(() => {
-		if (!hydrated) return; // avoid saving default empty state before hydration
+		if (!hydrated) return; // avoid saving empty before hydration
 		const state = {
 			answers,
 			feedback,
@@ -261,8 +276,17 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 			attempts,
 			savedAt: Date.now(),
 		};
+		// local mirror
 		try {
 			localStorage.setItem(STORAGE_KEY(lang), JSON.stringify(state));
+		} catch {}
+
+		// suspend_data JSON (merge with existing visited/other-lang quiz)
+		try {
+			const data = readSuspend?.() || { visited: [], quiz: {} };
+			const quiz = { ...(data.quiz || {}) };
+			quiz[lang] = state;
+			writeSuspend?.({ visited: data.visited || [], quiz });
 		} catch {}
 	}, [
 		answers,
@@ -271,8 +295,10 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 		score,
 		viewResults,
 		attempts,
-		lang,
 		hydrated,
+		lang,
+		readSuspend,
+		writeSuspend,
 	]);
 
 	/* ---- Derived ---- */
@@ -309,7 +335,7 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 		setShowFeedback(true);
 		setAttempts((n) => n + 1);
 
-		/* NEW: lightweight flags for non-SCORM contexts (Resources page) */
+		/* lightweight flags for non-SCORM contexts (Resources page) */
 		try {
 			localStorage.setItem("ilc:quizAttempted", "1");
 			if (finalScore >= 80) localStorage.setItem("ilc:quizPassed", "1");
@@ -630,6 +656,15 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 													style={{ marginLeft: "0.5rem" }}
 												>
 													{isGrading ? t.calculating : t.resubmit}
+												</button>
+												<button
+													type="button"
+													className="btn-ghost"
+													onClick={resetIncorrect}
+													disabled={isGrading}
+													style={{ marginLeft: "0.5rem" }}
+												>
+													Clear incorrect answers
 												</button>
 											</div>
 										)}

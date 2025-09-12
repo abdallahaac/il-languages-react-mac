@@ -4,16 +4,20 @@ import "../resources.css";
 import BackToTop from "../../components/BackToTop";
 import { getHeroURL } from "../../prefetchHeroes";
 import { useHeroSrc } from "../../utils/useHeroSrc";
+import { useScorm } from "../../App";
+
+// Keep this key consistent with App.jsx
+const VISITED_KEY_LOCAL = "ilc:visited";
+const clearVisitedLocal = () => {
+	try {
+		localStorage.removeItem(VISITED_KEY_LOCAL);
+	} catch {}
+};
 
 const Resources = ({ onNavigate }) => {
 	const url = getHeroURL("fr", "resources");
 	const src = useHeroSrc(url);
-
-	// SCORM handle (safe if not present)
-	const scorm = useMemo(
-		() => (window.pipwerks ? window.pipwerks.SCORM : null),
-		[]
-	);
+	const { scorm, readSuspend, writeSuspend } = useScorm();
 
 	const t = {
 		pageTitle: "Ressources",
@@ -28,9 +32,8 @@ const Resources = ({ onNavigate }) => {
 	};
 
 	const [showExitModal, setShowExitModal] = useState(false);
-	const [hasAttemptedQuiz, setHasAttemptedQuiz] = useState(false);
 
-	/* Helper: clear all course-related storage keys */
+	// Effacer uniquement les clés liées au cours
 	const clearCourseStorage = () => {
 		try {
 			const prefixes = ["knowledge-check-v1:", "ilc:"];
@@ -43,31 +46,7 @@ const Resources = ({ onNavigate }) => {
 		} catch {}
 	};
 
-	/* Detect attempt/passed via SCORM or localStorage flags (kept if you need it elsewhere) */
-	useEffect(() => {
-		try {
-			let attempted = false;
-			let status = "";
-			if (scorm && scorm.API?.isFound?.()) {
-				const rawStatus = scorm.get("cmi.core.lesson_status") || "";
-				status = String(rawStatus).trim().toLowerCase();
-				const attemptedStatuses = new Set([
-					"passed",
-					"failed",
-					"completed",
-					"incomplete",
-				]);
-				attempted = attemptedStatuses.has(status);
-			}
-			const lsAttempted = localStorage.getItem("ilc:quizAttempted") === "1";
-			setHasAttemptedQuiz(attempted || lsAttempted);
-		} catch {
-			const lsAttempted = localStorage.getItem("ilc:quizAttempted") === "1";
-			setHasAttemptedQuiz(lsAttempted);
-		}
-	}, [scorm]);
-
-	/* Lock background scroll + Escape to close when modal open */
+	// Empêcher le défilement en arrière-plan + Échap pour fermer lorsque le modal est ouvert
 	useEffect(() => {
 		if (!showExitModal) return;
 		const prevOverflow = document.body.style.overflow;
@@ -83,37 +62,27 @@ const Resources = ({ onNavigate }) => {
 		};
 	}, [showExitModal]);
 
-	/* OPTIONAL: clear storage on real page leave (refresh/close/navigation)
-     Remove this effect if you ONLY want clearing on explicit Exit/Home buttons. */
-	useEffect(() => {
-		const onBeforeUnload = () => {
-			try {
-				if (scorm && scorm.API?.isFound?.()) {
-					scorm.save();
-					scorm.quit?.();
-				}
-			} catch {}
-			clearCourseStorage();
-		};
-		window.addEventListener("beforeunload", onBeforeUnload);
-		return () => window.removeEventListener("beforeunload", onBeforeUnload);
-	}, [scorm]);
-
-	// 👉 Open the modal only when the user clicks the breadcrumb Next
-	const handleHomeClick = () => {
-		setShowExitModal(true);
-	};
+	const handleHomeClick = () => setShowExitModal(true);
 
 	const handleExitWindow = () => {
 		try {
 			if (scorm && scorm.API?.isFound?.()) {
-				scorm.save();
-				scorm.quit?.();
+				scorm.save(); // commit final
+				scorm.quit?.(); // terminer la tentative SCORM uniquement sur « Fermer »
 			}
 		} catch {}
-		clearCourseStorage();
 
-		// Best-effort close attempts (may be blocked by browser)
+		// Nettoyage local
+		clearCourseStorage();
+		clearVisitedLocal();
+
+		// Nettoyer également visited (et quiz) dans le JSON suspend_data
+		try {
+			const data = readSuspend?.();
+			writeSuspend?.({ ...(data || {}), visited: [], quiz: {} });
+		} catch {}
+
+		// Tentatives « best-effort » pour fermer la fenêtre (selon navigateur / politique)
 		try {
 			window.top?.close?.();
 		} catch {}
@@ -124,13 +93,26 @@ const Resources = ({ onNavigate }) => {
 			window.close();
 		} catch {}
 
-		// Fallback: route home
+		// Fallback supplémentaire : se rediriger vers about:blank puis fermer
+		try {
+			window.location.replace("about:blank");
+			setTimeout(() => {
+				try {
+					window.close();
+				} catch {}
+			}, 0);
+		} catch {}
+
+		// Dernier recours : revenir à l’accueil dans l’app
 		onNavigate?.("home");
 	};
 
 	const handleGoHome = () => {
 		setShowExitModal(false);
-		clearCourseStorage();
+		// Commit SCORM (sans quitter ni effacer)
+		try {
+			scorm?.save?.();
+		} catch {}
 		onNavigate?.("home");
 	};
 
@@ -255,7 +237,6 @@ const Resources = ({ onNavigate }) => {
 				</ul>
 
 				<h2>Innovation et langues autochtones</h2>
-				<h2>Innovation et langues autochtones</h2>
 				<ul className="res">
 					<li>
 						<a
@@ -292,7 +273,7 @@ const Resources = ({ onNavigate }) => {
 			<BackToTop />
 
 			{/* Fil d’Ariane / Navigation */}
-			<nav className="breadcrumb" aria-label="Navigation de la page">
+			<nav className="breadcrumb" aria-label="Navigation">
 				<button
 					onClick={() => {
 						window.scrollTo({ top: 0, left: 0, behavior: "smooth" });

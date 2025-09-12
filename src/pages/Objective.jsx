@@ -52,13 +52,13 @@ const Objective = ({ onNavigate }) => {
 						This course is designed to deepen public servants’ understanding of
 						the significance of Indigenous languages in Canada and their role in
 						cultural identity, governance and reconciliation. It provides a
-						foundational overview of the Indigenous Languages Act, explores
-						distinctions-based perspectives of First Nations, Inuit and Métis
-						Peoples, and highlights the responsibilities of federal institutions
-						in supporting Indigenous-led language revitalization efforts.
-						Through reflection and practical guidance, participants will be
-						better equipped to respectfully support Indigenous languages within
-						their roles in the public service.
+						foundational overview of the <em>Indigenous Languages Act</em>,
+						explores distinctions-based perspectives of First Nations, Inuit and
+						Métis Peoples, and highlights the responsibilities of federal
+						institutions in supporting Indigenous-led language revitalization
+						efforts. Through reflection and practical guidance, participants
+						will be better equipped to respectfully support Indigenous languages
+						within their roles in the public service.
 					</p>
 				</article>
 
