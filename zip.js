@@ -21,7 +21,7 @@ const getTimestamp = () => {
 
 // Construct the dynamic filename using the timestamp.
 const timestamp = getTimestamp();
-const fileName = `fr-indigenous-languages-act-${timestamp}.zip`;
+const fileName = `en-indigenous-languages-act-${timestamp}.zip`;
 
 // Create a write stream with the new dynamic filename.
 const output = fs.createWriteStream(`./${fileName}`);
