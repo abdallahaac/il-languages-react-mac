@@ -57,7 +57,7 @@ const Results = ({ onNavigate }) => {
 							énumérer les principales responsabilités du ministère du
 							Patrimoine canadien, du Bureau du commissaire aux langues
 							autochtones et des autres institutions fédérales prévues par la
-							<em>Loi sur les langues autochtones</em>;
+							<em> Loi sur les langues autochtones</em>;
 						</li>
 						<li>
 							proposer au moins deux moyens respectueux et culturellement
