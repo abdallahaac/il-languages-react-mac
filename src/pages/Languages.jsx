@@ -210,19 +210,18 @@ const Languages = ({ onNavigate }) => {
 							target="_blank"
 							rel="noopener noreferrer"
 						></a>
-						<h3 className="gina">
+						<h3 className="gina">Indigenous languages: The road ahead</h3>
+						<p>
+							Read{" "}
 							<a
 								href=""
 								className="link-source"
 								target="_blank"
 								rel="noopener noreferrer"
 							>
-								Indigenous languages: The road ahead
-							</a>
-						</h3>
-						<p>
-							Read Gina Wilson's perspective on the importance of Indigenous
-							languages in Canada.
+								Gina Wilson's perspective
+							</a>{" "}
+							on the importance of Indigenous languages in Canada.
 						</p>
 					</div>
 					<img
