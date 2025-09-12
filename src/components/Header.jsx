@@ -71,7 +71,10 @@ const Header = ({ onNavigate, currentPage, lang: langProp, onPrefetch }) => {
 		{ label: "Indigenous Voices", id: "voices-en" },
 		{ label: "Indigenous Languages in Canada", id: "languages-en" },
 		{ label: "Foundational Documents", id: "foundational-documents" },
-		{ label: "Indigenous Languages Act", id: "indigenous-languages-act" },
+		{
+			label: "<em>Indigenous Languages Act</em>",
+			id: "indigenous-languages-act",
+		},
 		{
 			label: "Efforts to Revitalize Indigenous Languages",
 			id: "revitalization-efforts",
