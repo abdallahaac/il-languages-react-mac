@@ -255,19 +255,31 @@ const Resources = ({ onNavigate }) => {
 				</ul>
 
 				<h2>Innovation et langues autochtones</h2>
+				<h2>Innovation et langues autochtones</h2>
 				<ul className="res">
 					<li>
 						<a
-							href="https://www.lesoleil.com/science/2025/05/20/et-si-lia-contribuait-a-sauver-les-langues-autochtones-IDFW4BM4HJDLDKSUHEJHU3KHF4/"
+							href="https://ici.radio-canada.ca/espaces-autochtones/1978476/intelligence-artificielle-biais-langues-autochtones-biais"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Et si l’IA contribuait à sauver les langues autochtones?
+							L’intelligence artificielle pilotée par les Autochtones : comment
+							les systèmes de connaissance…
 						</a>
 					</li>
 					<li>
 						<a
-							href="https://mila.quebec/fr/ia-pour-lhumanite/projets-appliques/initiative-flair"
+							href="https://www.sshrc-crsh.gc.ca/funding-financement/nfrf-fnfr/stories-histoires/2023/inclusive_artificial_intelligence-intelligence_artificielle_inclusive-fra.aspx"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							Les savoirs autochtones au service de l’IA | La Décennie
+							internationale des langues autochtones
+						</a>
+					</li>
+					<li>
+						<a
+							href="https://mila.quebec/fr/initiative-flair"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
