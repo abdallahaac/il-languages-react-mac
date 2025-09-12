@@ -73,7 +73,6 @@
 	transform: translate(-50%, -50%);
 	pointer-events: none;
 	white-space: nowrap;
-	color: #005a9c !important;
 }
 
 /* Right section */
@@ -352,4 +351,7 @@
 .main-header:not(.scrolled) .logo-link:focus-visible span {
 	/* If you prefer a white focus outline on dark header */
 	outline-color: #fff;
+}
+.main-header.scrolled .welcome-message {
+	color: #005a9c; /* force it to stay blue */
 }
