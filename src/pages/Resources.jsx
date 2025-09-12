@@ -32,6 +32,44 @@ const Resources = ({ onNavigate }) => {
 
 	const [showExitModal, setShowExitModal] = useState(false);
 	const [exitFailed, setExitFailed] = useState(false);
+	const [quizPassed, setQuizPassed] = useState(false);
+
+	// Check quiz completion from suspend_data or SCORM status
+	useEffect(() => {
+		try {
+			const data = readSuspend?.();
+			const q = data?.quiz || {};
+			// Flexible checks: your Knowledge Check writer can set any of these
+			const passedByFlag =
+				q.passed === true || q.status === "passed" || q.result === "pass";
+			const passedByScore =
+				typeof q.score === "number" &&
+				typeof q.passScore === "number" &&
+				q.score >= q.passScore;
+
+			let passed = passedByFlag || passedByScore;
+
+			// Fallback: read SCORM statuses if available
+			if (!passed && scorm?.API?.isFound?.()) {
+				let s = "";
+				if (scorm.version === "1.2") {
+					s = (scorm.get("cmi.core.lesson_status") || "").toLowerCase();
+				} else {
+					const success = (scorm.get("cmi.success_status") || "").toLowerCase();
+					const completion = (
+						scorm.get("cmi.completion_status") || ""
+					).toLowerCase();
+					s = `${success} ${completion}`.trim();
+				}
+				if (s.includes("passed")) passed = true;
+			}
+
+			setQuizPassed(!!passed);
+		} catch {
+			// If anything goes wrong, default to not passed
+			setQuizPassed(false);
+		}
+	}, [readSuspend, scorm]);
 
 	// Clear only course-related keys
 	const clearCourseStorage = () => {
@@ -62,38 +100,33 @@ const Resources = ({ onNavigate }) => {
 		};
 	}, [showExitModal]);
 
+	// Home button: only show modal if quiz is complete; otherwise just go home
 	const handleHomeClick = () => {
 		setExitFailed(false);
-		setShowExitModal(true);
+		if (quizPassed) {
+			setShowExitModal(true);
+		} else {
+			onNavigate?.("home");
+		}
 	};
 
 	// try to truly close; if blocked, keep page and show instruction
 	const tryCloseWindow = () => {
-		let attempted = false;
 		try {
 			window.top?.close?.();
-			attempted = true;
 		} catch {}
 		try {
 			window.close();
-			attempted = true;
 		} catch {}
 		try {
 			window.open("", "_self")?.close?.();
-			attempted = true;
 		} catch {}
 
-		// notify parent (LMS shell) if embedded
 		try {
 			window.parent?.postMessage?.({ type: "ILC_EXIT_REQUEST" }, "*");
 		} catch {}
 
-		// We DO NOT navigate to about:blank here (to avoid “blank page”).
-		// After a short delay, if we’re still here, show a helper message.
-		setTimeout(() => {
-			// If we're not closed, code keeps running → show fallback message
-			setExitFailed(true);
-		}, 200);
+		setTimeout(() => setExitFailed(true), 200);
 	};
 
 	const handleExitWindow = () => {
@@ -109,6 +142,7 @@ const Resources = ({ onNavigate }) => {
 		clearCourseStorage();
 		clearVisitedLocal();
 
+		// Also reset suspend_data visited/quiz (optional)
 		try {
 			const data = readSuspend?.();
 			writeSuspend?.({ ...data, visited: [], quiz: {} });
@@ -293,7 +327,7 @@ const Resources = ({ onNavigate }) => {
 				</button>
 			</nav>
 
-			{/* Completion Modal */}
+			{/* Completion Modal (only appears if quizPassed === true) */}
 			{showExitModal && (
 				<div className="modal-overlay" role="presentation">
 					<div
