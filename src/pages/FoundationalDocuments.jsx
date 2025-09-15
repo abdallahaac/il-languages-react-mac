@@ -143,15 +143,19 @@ const FoundationalDocuments = ({ onNavigate }) => {
 		{
 			id: 2,
 			cardId: "trc-14",
-			front: "Call to Action 14",
-			back: `<p>We call upon the federal government to enact an Aboriginal Languages Act that incorporates the following principles:</p><ul><li style="font-size:18px">Aboriginal languages are a fundamental and valued element of Canadian culture and society, and there is an urgency to preserve them.</li><li style="font-size:18px">Aboriginal language rights are reinforced by the Treaties.</li><li style="font-size:18px">The federal government has a responsibility to provide sufficient funds for Aboriginal-language revitalization and preservation.</li><li style="font-size:18px">The preservation, revitalization, and strengthening of Aboriginal languages and cultures are best managed by Aboriginal people and communities.</li><li style="font-size:18px">Funding for Aboriginal language initiatives must reflect the diversity of Aboriginal languages.</li></ul>`,
+			front: "Call to Action 15",
+			back: `		We call upon the federal government to appoint, in consultation with Aboriginal groups, an Aboriginal Languages Commissioner. The commissioner should help promote Aboriginal languages and report on the adequacy of federal funding of Aboriginal-languages initiatives.`,
 			height: "420px",
 		},
 		{
 			id: 3,
 			cardId: "trc-15",
-			front: "Call to Action 15",
-			back: "We call upon the federal government to appoint, in consultation with Aboriginal groups, an Aboriginal Languages Commissioner. The commissioner should help promote Aboriginal languages and report on the adequacy of federal funding of Aboriginal-languages initiatives.",
+			front: "Call to Action 14",
+			back: `
+	
+			<p>We call upon the federal government to enact an Aboriginal Languages Act that incorporates the following principles:</p><ul><li style="font-size:18px">Aboriginal languages are a fundamental and valued element of Canadian culture and society, and there is an urgency to preserve them.</li><li style="font-size:18px">Aboriginal language rights are reinforced by the Treaties.</li><li style="font-size:18px">The federal government has a responsibility to provide sufficient funds for Aboriginal-language revitalization and preservation.</li><li style="font-size:18px">The preservation, revitalization, and strengthening of Aboriginal languages and cultures are best managed by Aboriginal people and communities.</li><li style="font-size:18px">Funding for Aboriginal language initiatives must reflect the diversity of Aboriginal languages.</li></ul>
+			
+			`,
 		},
 	];
 
