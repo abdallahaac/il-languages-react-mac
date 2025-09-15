@@ -142,9 +142,21 @@ const FoundationalDocuments = ({ onNavigate }) => {
 		{
 			id: 2,
 			cardId: "trc-14",
+			front: "Appel à l'action 15",
+			back: `
+						Nous demandons au gouvernement fédéral de nommer, à la suite de consultations avec les groupes autochtones, un commissaire aux langues autochtones. Plus précisément, nous demandons que ce commissaire soit chargé de contribuer à la promotion des langues autochtones et de présenter des comptes rendus sur l’efficacité du financement fédéral destiné aux initiatives liées aux langues autochtones.
+
+				`,
+			height: "420px",
+		},
+
+		{
+			id: 3,
+			cardId: "trc-15",
 			front: "Appel à l'action 14",
 			back: `
-					<div class="trc14-content">
+			
+				<div class="trc14-content">
 					<p style="font-size:18px">Nous demandons au gouvernement fédéral d’adopter une <em>Loi sur les langues autochtones</em> qui incorpore les principes suivants&nbsp;:</p>
 					<ol style="color:rgb(98, 28, 100)">
 						<li style="font-size:18px">Les langues autochtones représentent une composante fondamentale et valorisée de la culture et de la société canadiennes, et il y a urgence de les préserver.</li>
@@ -154,15 +166,8 @@ const FoundationalDocuments = ({ onNavigate }) => {
 						<li style="font-size:18px">Le financement accordé pour les besoins des initiatives liées aux langues autochtones doit refléter la diversité de ces langues.</li>
 					</ol>
 					</div>
-				`,
-			height: "420px",
-		},
-
-		{
-			id: 3,
-			cardId: "trc-15",
-			front: "Appel à l'action 15",
-			back: "Nous demandons au gouvernement fédéral de nommer, à la suite de consultations avec les groupes autochtones, un commissaire aux langues autochtones. Plus précisément, nous demandons que ce commissaire soit chargé de contribuer à la promotion des langues autochtones et de présenter des comptes rendus sur l’efficacité du financement fédéral destiné aux initiatives liées aux langues autochtones.",
+			
+			`,
 		},
 	];
 
