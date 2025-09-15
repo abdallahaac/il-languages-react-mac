@@ -107,13 +107,13 @@ const FoundationalDocuments = ({ onNavigate }) => {
 		{
 			id: 3,
 			cardId: "action-plan-93",
-			front: "Action Plan item 93",
+			front: "Plan d'action 93",
 			back: "Favoriser l’accès aux services fédéraux dans les langues autochtones, y compris la traduction de la documentation ministérielle essentielle. (Patrimoine canadien).",
 		},
 		{
 			id: 4,
 			cardId: "action-plan-11",
-			front: "Action Plan item 11",
+			front: "Plan d'action 11",
 			back: "Poursuivre l’élaboration conjointe de règlements avec les organisations inuites en vertu de la <em><em>Loi sur les langues autochtones</em></em>, qui prévoient la prestation de services fédéraux en langue inuktut dans l’Inuit Nunangat, en commençant par le Nunavut. (Patrimoine canadien). ",
 		},
 	];
@@ -474,8 +474,9 @@ const FoundationalDocuments = ({ onNavigate }) => {
 			</section>
 
 			<p style={{ width: "100%", display: "block" }}>
+				La
 				<em>
-					la<em> Loi sur les langues autochtones</em>
+					<em> Loi sur les langues autochtones</em>
 				</em>{" "}
 				ayant reçu la sanction royale, le gouvernement a répondu aux appels à
 				l’action 13 et 14. Il a donné suite à l’appel à l’action 15 en créant le
