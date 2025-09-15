@@ -184,13 +184,13 @@ const FoundationalDocuments = ({ onNavigate }) => {
 		{
 			id: 1,
 			cardId: "cfj-2-1",
-			front: "Appel à la Justice 2.1",
+			front: "Appel à la justice 2.1",
 			back: "Nous demandons à tous les gouvernements de reconnaître les droits des peuples autochtones à leurs cultures et à leurs langues comme des droits inhérents, protégés constitutionnellement en vertu de l'article 35 de la Constitution.",
 		},
 		{
 			id: 2,
 			cardId: "cfj-2-2",
-			front: "Appel à la Justice 2.2",
+			front: "Appel à la justice 2.2",
 			back: `
 
 <span style:"padding:10px; margin-top:10px">Nous demandons à tous les gouvernements de reconnaître les langues autochtones comme langues officielles, avec le même statut, la même reconnaissance et la même protection que le français et l'anglais. Cela inclut les directives suivantes :</span>
@@ -201,7 +201,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 		{
 			id: 3,
 			cardId: "cfj-2-3",
-			front: "Appel à la Justice 2.3",
+			front: "Appel à la justice 2.3",
 			back: "Nous demandons à tous les gouvernements de veiller à ce que toutes les femmes, les filles et les personnes 2ELGBTQIA+ autochtones aient un accès libre, sûr, permanent et concret à leurs cultures et à leurs langues afin de rétablir et de revitaliser leur identité culturelle. Tous les membres des communautés autochtones, des jeunes enfants aux Aînés, ont droit à cet accès. Les programmes et services permettant cet accès ne doivent pas être exclusivement liés à des institutions gérées par le gouvernement. De plus, tous les gouvernements doivent garantir aux enfants autochtones le droit de conserver leur langue autochtone et d'être éduqués dans celle-ci, en leur assurant l'accès à des programmes d'immersion de la maternelle à l'enseignement postsecondaire.",
 		},
 	];
