@@ -28,18 +28,20 @@ const Resources = ({ onNavigate }) => {
 		exit: "Exit window",
 		goHome: "Go to Home",
 		cancel: "Cancel",
+		exitHelp:
+			"If this tab didn’t close automatically, please close this window manually.",
 	};
 
 	const [showExitModal, setShowExitModal] = useState(false);
 	const [exitFailed, setExitFailed] = useState(false);
 	const [quizPassed, setQuizPassed] = useState(false);
 
-	// Check quiz completion from suspend_data or SCORM status
+	// Determine quiz completion
 	useEffect(() => {
 		try {
 			const data = readSuspend?.();
 			const q = data?.quiz || {};
-			// Flexible checks: your Knowledge Check writer can set any of these
+
 			const passedByFlag =
 				q.passed === true || q.status === "passed" || q.result === "pass";
 			const passedByScore =
@@ -49,29 +51,25 @@ const Resources = ({ onNavigate }) => {
 
 			let passed = passedByFlag || passedByScore;
 
-			// Fallback: read SCORM statuses if available
 			if (!passed && scorm?.API?.isFound?.()) {
-				let s = "";
 				if (scorm.version === "1.2") {
-					s = (scorm.get("cmi.core.lesson_status") || "").toLowerCase();
+					const s = (scorm.get("cmi.core.lesson_status") || "").toLowerCase();
+					if (s.includes("passed")) passed = true;
 				} else {
 					const success = (scorm.get("cmi.success_status") || "").toLowerCase();
 					const completion = (
 						scorm.get("cmi.completion_status") || ""
 					).toLowerCase();
-					s = `${success} ${completion}`.trim();
+					if (success.includes("passed")) passed = true;
 				}
-				if (s.includes("passed")) passed = true;
 			}
 
 			setQuizPassed(!!passed);
 		} catch {
-			// If anything goes wrong, default to not passed
 			setQuizPassed(false);
 		}
 	}, [readSuspend, scorm]);
 
-	// Clear only course-related keys
 	const clearCourseStorage = () => {
 		try {
 			const prefixes = ["knowledge-check-v1:", "ilc:"];
@@ -84,15 +82,13 @@ const Resources = ({ onNavigate }) => {
 		} catch {}
 	};
 
-	// Prevent background scroll + allow ESC to close when modal is open
+	// Lock background scroll when modal open + Esc to close
 	useEffect(() => {
 		if (!showExitModal) return;
 		const prevOverflow = document.body.style.overflow;
 		document.body.style.overflow = "hidden";
 		document.getElementById("exit-modal-primary")?.focus();
-		const onKeyDown = (e) => {
-			if (e.key === "Escape") setShowExitModal(false);
-		};
+		const onKeyDown = (e) => e.key === "Escape" && setShowExitModal(false);
 		document.addEventListener("keydown", onKeyDown);
 		return () => {
 			document.body.style.overflow = prevOverflow;
@@ -100,17 +96,14 @@ const Resources = ({ onNavigate }) => {
 		};
 	}, [showExitModal]);
 
-	// Home button: only show modal if quiz is complete; otherwise just go home
+	// Home: show modal only if passed; otherwise just go home
 	const handleHomeClick = () => {
 		setExitFailed(false);
-		if (quizPassed) {
-			setShowExitModal(true);
-		} else {
-			onNavigate?.("home");
-		}
+		if (quizPassed) setShowExitModal(true);
+		else onNavigate?.("home");
 	};
 
-	// try to truly close; if blocked, keep page and show instruction
+	// Try to actually close window; if blocked, show hint
 	const tryCloseWindow = () => {
 		try {
 			window.top?.close?.();
@@ -121,34 +114,28 @@ const Resources = ({ onNavigate }) => {
 		try {
 			window.open("", "_self")?.close?.();
 		} catch {}
-
 		try {
 			window.parent?.postMessage?.({ type: "ILC_EXIT_REQUEST" }, "*");
 		} catch {}
-
 		setTimeout(() => setExitFailed(true), 200);
 	};
 
 	const handleExitWindow = () => {
-		// final SCORM commit + explicit quit (end attempt)
 		try {
 			if (scorm && scorm.API?.isFound?.()) {
-				scorm.save();
-				scorm.quit?.();
+				scorm.save(); // final commit
+				scorm.quit?.(); // end attempt
 			}
 		} catch {}
 
-		// clear storages
+		// Optional: clear storages and suspend_data
 		clearCourseStorage();
 		clearVisitedLocal();
-
-		// Also reset suspend_data visited/quiz (optional)
 		try {
 			const data = readSuspend?.();
 			writeSuspend?.({ ...data, visited: [], quiz: {} });
 		} catch {}
 
-		// attempt true close
 		tryCloseWindow();
 	};
 
@@ -156,7 +143,7 @@ const Resources = ({ onNavigate }) => {
 		setShowExitModal(false);
 		setExitFailed(false);
 		try {
-			scorm?.save?.(); // commit, do not quit
+			scorm?.save?.(); // commit but don't quit
 		} catch {}
 		onNavigate?.("home");
 	};
@@ -327,7 +314,7 @@ const Resources = ({ onNavigate }) => {
 				</button>
 			</nav>
 
-			{/* Completion Modal (only appears if quizPassed === true) */}
+			{/* Completion Modal (only when quizPassed === true) */}
 			{showExitModal && (
 				<div className="modal-overlay" role="presentation">
 					<div
@@ -373,10 +360,7 @@ const Resources = ({ onNavigate }) => {
 								role="status"
 								style={{ marginTop: "0.75rem" }}
 							>
-								<p style={{ margin: 0 }}>
-									If this tab didn’t close automatically, please close this
-									window manually.
-								</p>
+								<p style={{ margin: 0 }}>{t.exitHelp}</p>
 							</div>
 						)}
 					</div>

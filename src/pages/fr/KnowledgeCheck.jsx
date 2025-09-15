@@ -36,6 +36,10 @@ const KnowledgeCheck_fr = ({ onNavigate, visitedPages, lang = "fr" }) => {
 			"indigenous-languages-act",
 			"revitalization-efforts",
 			"public-service",
+			"objective-fr",
+			"voices-fr",
+			"languages-fr",
+			"results-fr",
 		],
 		[]
 	);
