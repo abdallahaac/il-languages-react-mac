@@ -132,7 +132,7 @@ const FoundationalDocuments = ({ onNavigate }) => {
 			return newFlipped;
 		});
 	};
-
+	//
 	const trcCardData = [
 		{
 			id: 1,
