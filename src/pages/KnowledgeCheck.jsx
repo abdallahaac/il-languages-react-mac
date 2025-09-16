@@ -335,6 +335,12 @@ const KnowledgeCheck = ({ onNavigate, visitedPages, lang = "en" }) => {
 		});
 		const finalScore = (correctAnswers / questions.length) * 100;
 		setScore(finalScore);
+
+		// ✅ NEW: write a simple localhost fallback score for Resources page
+		try {
+			localStorage.setItem("ilc:quizScore", String(finalScore));
+		} catch {}
+
 		setFeedback(newFeedback);
 		setShowFeedback(true);
 		setAttempts((n) => n + 1);

@@ -1,4 +1,4 @@
-// src/pages/en/Resources.jsx
+// src/pages/Resources.jsx
 import React, { useState, useEffect } from "react";
 import "./resources.css";
 import BackToTop from "../components/BackToTop";
@@ -7,6 +7,8 @@ import { useHeroSrc } from "../utils/useHeroSrc";
 import { useScorm } from "../App";
 
 const VISITED_KEY_LOCAL = "ilc:visitedPages";
+const QUIZ_SCORE_LOCAL = "ilc:quizScore"; // localhost fallback
+const SHOW_EXIT_FLAG = "ilc:showExitModal"; // optional
 const clearVisitedLocal = () => {
 	try {
 		localStorage.removeItem(VISITED_KEY_LOCAL);
@@ -34,41 +36,76 @@ const Resources = ({ onNavigate }) => {
 
 	const [showExitModal, setShowExitModal] = useState(false);
 	const [exitFailed, setExitFailed] = useState(false);
-	const [quizPassed, setQuizPassed] = useState(false);
 
-	// Determine quiz completion
-	useEffect(() => {
+	// detect current doc language (so we can read quiz[lang] from suspend_data)
+	const lang =
+		(typeof document !== "undefined" &&
+			document.documentElement &&
+			(document.documentElement.lang || "en").slice(0, 2)) ||
+		"en";
+
+	// ✅ NEW: compute freshness at click-time, checking all possible sources
+	const STORAGE_KEY = (lg) => `knowledge-check-v1:${lg}`;
+	const getQuizCompleted = () => {
+		// 1) SCORM suspend_data -> quiz[lang]
 		try {
-			const data = readSuspend?.();
-			const q = data?.quiz || {};
+			const data = readSuspend?.(); // { visited, quiz }
+			const qByLang =
+				(data &&
+					data.quiz &&
+					(data.quiz[lang] || data.quiz?.[lang?.toLowerCase?.()])) ||
+				data?.quiz ||
+				{};
+			const score = Number(qByLang.score);
+			if (!Number.isNaN(score) && score > 0) return true;
+			if (
+				qByLang.passed === true ||
+				qByLang.status === "passed" ||
+				qByLang.result === "pass"
+			) {
+				return true;
+			}
+		} catch {}
 
-			const passedByFlag =
-				q.passed === true || q.status === "passed" || q.result === "pass";
-			const passedByScore =
-				typeof q.score === "number" &&
-				typeof q.passScore === "number" &&
-				q.score >= q.passScore;
-
-			let passed = passedByFlag || passedByScore;
-
-			if (!passed && scorm?.API?.isFound?.()) {
+		// 2) SCORM runtime score/status
+		try {
+			if (scorm?.API?.isFound?.()) {
 				if (scorm.version === "1.2") {
-					const s = (scorm.get("cmi.core.lesson_status") || "").toLowerCase();
-					if (s.includes("passed")) passed = true;
+					const raw = Number(scorm.get("cmi.core.score.raw") || "0");
+					if (!Number.isNaN(raw) && raw > 0) return true;
 				} else {
+					const raw = Number(scorm.get("cmi.score.raw") || "0");
+					if (!Number.isNaN(raw) && raw > 0) return true;
 					const success = (scorm.get("cmi.success_status") || "").toLowerCase();
-					const completion = (
-						scorm.get("cmi.completion_status") || ""
-					).toLowerCase();
-					if (success.includes("passed")) passed = true;
+					if (success.includes("passed")) return true;
 				}
 			}
+		} catch {}
 
-			setQuizPassed(!!passed);
-		} catch {
-			setQuizPassed(false);
-		}
-	}, [readSuspend, scorm]);
+		// 3) Local quiz state mirror -> knowledge-check-v1:<lang>
+		try {
+			const raw = localStorage.getItem(STORAGE_KEY(lang));
+			if (raw) {
+				const parsed = JSON.parse(raw);
+				const s = Number(parsed?.score);
+				if (!Number.isNaN(s) && s > 0) return true;
+			}
+		} catch {}
+
+		// 4) Localhost fallback explicit score
+		try {
+			const raw = localStorage.getItem(QUIZ_SCORE_LOCAL);
+			const s = raw == null ? NaN : Number(raw);
+			if (!Number.isNaN(s) && s > 0) return true;
+		} catch {}
+
+		// 5) Optional one-shot flag
+		try {
+			if (localStorage.getItem(SHOW_EXIT_FLAG) === "1") return true;
+		} catch {}
+
+		return false;
+	};
 
 	const clearCourseStorage = () => {
 		try {
@@ -82,7 +119,7 @@ const Resources = ({ onNavigate }) => {
 		} catch {}
 	};
 
-	// Lock background scroll when modal open + Esc to close
+	// Lock background scroll + Esc close when modal open
 	useEffect(() => {
 		if (!showExitModal) return;
 		const prevOverflow = document.body.style.overflow;
@@ -96,14 +133,13 @@ const Resources = ({ onNavigate }) => {
 		};
 	}, [showExitModal]);
 
-	// Home: show modal only if passed; otherwise just go home
+	// Home click: only show modal if quizCompleted; otherwise go home
 	const handleHomeClick = () => {
 		setExitFailed(false);
-		if (quizPassed) setShowExitModal(true);
+		if (getQuizCompleted()) setShowExitModal(true);
 		else onNavigate?.("home");
 	};
 
-	// Try to actually close window; if blocked, show hint
 	const tryCloseWindow = () => {
 		try {
 			window.top?.close?.();
@@ -128,7 +164,7 @@ const Resources = ({ onNavigate }) => {
 			}
 		} catch {}
 
-		// Optional: clear storages and suspend_data
+		// Optional: clear storages and suspend_data (reset for the next launch)
 		clearCourseStorage();
 		clearVisitedLocal();
 		try {
@@ -314,7 +350,7 @@ const Resources = ({ onNavigate }) => {
 				</button>
 			</nav>
 
-			{/* Completion Modal (only when quizPassed === true) */}
+			{/* Completion Modal (only when user clicks Home AND quizCompleted) */}
 			{showExitModal && (
 				<div className="modal-overlay" role="presentation">
 					<div

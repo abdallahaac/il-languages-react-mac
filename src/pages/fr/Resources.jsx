@@ -1,5 +1,5 @@
 // src/pages/fr/Resources.jsx
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../resources.css";
 import BackToTop from "../../components/BackToTop";
 import { getHeroURL } from "../../prefetchHeroes";
@@ -8,6 +8,9 @@ import { useScorm } from "../../App";
 
 // Keep this key consistent with App.jsx
 const VISITED_KEY_LOCAL = "ilc:visited";
+const QUIZ_SCORE_LOCAL = "ilc:quizScore"; // fallback hors-SCORM
+const SHOW_EXIT_FLAG = "ilc:showExitModal"; // optionnel
+
 const clearVisitedLocal = () => {
 	try {
 		localStorage.removeItem(VISITED_KEY_LOCAL);
@@ -29,9 +32,82 @@ const Resources = ({ onNavigate }) => {
 		exit: "Fermer la fenêtre",
 		goHome: "Aller à l’accueil",
 		cancel: "Annuler",
+		exitHelp:
+			"Si l’onglet ne s’est pas fermé automatiquement, veuillez fermer cette fenêtre manuellement.",
 	};
 
 	const [showExitModal, setShowExitModal] = useState(false);
+	const [exitFailed, setExitFailed] = useState(false);
+
+	// Détecter la langue du document
+	const lang =
+		(typeof document !== "undefined" &&
+			document.documentElement &&
+			(document.documentElement.lang || "fr").slice(0, 2)) ||
+		"fr";
+
+	// ✅ Vérifier l’achèvement « à la demande » (fraîcheur au clic)
+	const STORAGE_KEY = (lg) => `knowledge-check-v1:${lg}`;
+	const getQuizCompleted = () => {
+		// 1) SCORM suspend_data -> quiz[lang]
+		try {
+			const data = readSuspend?.(); // { visited, quiz }
+			const qByLang =
+				(data &&
+					data.quiz &&
+					(data.quiz[lang] || data.quiz?.[lang?.toLowerCase?.()])) ||
+				data?.quiz ||
+				{};
+			const score = Number(qByLang.score);
+			if (!Number.isNaN(score) && score > 0) return true;
+			if (
+				qByLang.passed === true ||
+				qByLang.status === "passed" ||
+				qByLang.result === "pass"
+			) {
+				return true;
+			}
+		} catch {}
+
+		// 2) SCORM runtime (1.2 / 2004)
+		try {
+			if (scorm?.API?.isFound?.()) {
+				if (scorm.version === "1.2") {
+					const raw = Number(scorm.get("cmi.core.score.raw") || "0");
+					if (!Number.isNaN(raw) && raw > 0) return true;
+				} else {
+					const raw = Number(scorm.get("cmi.score.raw") || "0");
+					if (!Number.isNaN(raw) && raw > 0) return true;
+					const success = (scorm.get("cmi.success_status") || "").toLowerCase();
+					if (success.includes("passed")) return true;
+				}
+			}
+		} catch {}
+
+		// 3) État local détaillé -> knowledge-check-v1:<lang>
+		try {
+			const raw = localStorage.getItem(STORAGE_KEY(lang));
+			if (raw) {
+				const parsed = JSON.parse(raw);
+				const s = Number(parsed?.score);
+				if (!Number.isNaN(s) && s > 0) return true;
+			}
+		} catch {}
+
+		// 4) Score local explicite (fallback simple)
+		try {
+			const raw = localStorage.getItem(QUIZ_SCORE_LOCAL);
+			const s = raw == null ? NaN : Number(raw);
+			if (!Number.isNaN(s) && s > 0) return true;
+		} catch {}
+
+		// 5) Drapeau one-shot optionnel
+		try {
+			if (localStorage.getItem(SHOW_EXIT_FLAG) === "1") return true;
+		} catch {}
+
+		return false;
+	};
 
 	// Effacer uniquement les clés liées au cours
 	const clearCourseStorage = () => {
@@ -62,27 +138,14 @@ const Resources = ({ onNavigate }) => {
 		};
 	}, [showExitModal]);
 
-	const handleHomeClick = () => setShowExitModal(true);
+	// Afficher le modal seulement si le questionnaire est complété
+	const handleHomeClick = () => {
+		setExitFailed(false);
+		if (getQuizCompleted()) setShowExitModal(true);
+		else onNavigate?.("home");
+	};
 
-	const handleExitWindow = () => {
-		try {
-			if (scorm && scorm.API?.isFound?.()) {
-				scorm.save(); // commit final
-				scorm.quit?.(); // terminer la tentative SCORM uniquement sur « Fermer »
-			}
-		} catch {}
-
-		// Nettoyage local
-		clearCourseStorage();
-		clearVisitedLocal();
-
-		// Nettoyer également visited (et quiz) dans le JSON suspend_data
-		try {
-			const data = readSuspend?.();
-			writeSuspend?.({ ...(data || {}), visited: [], quiz: {} });
-		} catch {}
-
-		// Tentatives « best-effort » pour fermer la fenêtre (selon navigateur / politique)
+	const tryCloseWindow = () => {
 		try {
 			window.top?.close?.();
 		} catch {}
@@ -92,24 +155,37 @@ const Resources = ({ onNavigate }) => {
 		try {
 			window.close();
 		} catch {}
-
-		// Fallback supplémentaire : se rediriger vers about:blank puis fermer
 		try {
-			window.location.replace("about:blank");
-			setTimeout(() => {
-				try {
-					window.close();
-				} catch {}
-			}, 0);
+			window.parent?.postMessage?.({ type: "ILC_EXIT_REQUEST" }, "*");
+		} catch {}
+		setTimeout(() => setExitFailed(true), 200);
+	};
+
+	const handleExitWindow = () => {
+		try {
+			if (scorm && scorm.API?.isFound?.()) {
+				scorm.save(); // commit final
+				scorm.quit?.(); // terminer la tentative SCORM
+			}
 		} catch {}
 
-		// Dernier recours : revenir à l’accueil dans l’app
-		onNavigate?.("home");
+		// Nettoyage local
+		clearCourseStorage();
+		clearVisitedLocal();
+
+		// Nettoyage suspend_data (visited + quiz)
+		try {
+			const data = readSuspend?.();
+			writeSuspend?.({ ...(data || {}), visited: [], quiz: {} });
+		} catch {}
+
+		tryCloseWindow();
 	};
 
 	const handleGoHome = () => {
 		setShowExitModal(false);
-		// Commit SCORM (sans quitter ni effacer)
+		setExitFailed(false);
+		// Commit SCORM (sans quitter)
 		try {
 			scorm?.save?.();
 		} catch {}
@@ -323,12 +399,25 @@ const Resources = ({ onNavigate }) => {
 							</button>
 							<button
 								className="btn-small"
-								onClick={() => setShowExitModal(false)}
+								onClick={() => {
+									setExitFailed(false);
+									setShowExitModal(false);
+								}}
 								aria-label={t.cancel}
 							>
 								{t.cancel}
 							</button>
 						</div>
+
+						{exitFailed && (
+							<div
+								className="exit-fallback"
+								role="status"
+								style={{ marginTop: "0.75rem" }}
+							>
+								<p style={{ margin: 0 }}>{t.exitHelp}</p>
+							</div>
+						)}
 					</div>
 				</div>
 			)}
